@@ -1,0 +1,8 @@
+
+.footer-container {
+    height: 5vh;
+    width: 100vw;
+    background-color: rgb(170, 170, 170);
+    box-sizing: border-box;
+    min-width: 700px;
+}

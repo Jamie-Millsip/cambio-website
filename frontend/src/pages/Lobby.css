@@ -1,0 +1,16 @@
+.main-container {
+    background-color: #d4d2d2;
+    display: flex;
+    flex-Direction: column;
+    align-Items: center;
+    height: auto;
+    width: 100%;
+    text-Align: center;
+    padding: 30px;  
+    margin: 30px;
+    align-Self: "start";
+    border-Radius: "20px";
+    outline: "2px solid black";
+    transition: 'all 0.3s ease-in-out';
+
+}

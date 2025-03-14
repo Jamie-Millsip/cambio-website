@@ -1,0 +1,17 @@
+
+.header-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 10vh;
+    background-color: rgb(170, 170, 170);
+    min-width: 700px;
+    box-sizing: border-box;
+
+}
+
+.header-text {
+    font-weight: bold;
+    font-size: 200%;
+}

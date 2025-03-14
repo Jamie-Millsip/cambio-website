@@ -1,0 +1,101 @@
+
+.body-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100vw;
+    height: 85vh;
+    max-height: 85vh;
+    min-height: 700px;
+    min-width: 700px;
+    box-sizing: border-box;
+    background-color: rgb(196, 196, 196);
+}
+
+
+
+.contents-container {
+    background-color: #dedede;
+    box-sizing: border-box;
+    display: flex;
+    flex-Direction: column;
+    align-Items: center;
+    height: fit-content;
+    width: 100%;
+    max-width: 60%;
+    text-Align: center;
+    padding: 30px;
+    margin: 30px;
+    align-self: normal;
+    border-Radius: 20px;
+    transition: 'all 0.3s ease-in-out';
+    box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.title{
+    font-weight: bold;
+    font-size: 1.6em;
+}
+
+.button{
+    background-color: rgb(203, 203, 203);
+    height: 2.5em;
+    padding: 0.15em;
+    border-radius: 0.3em;
+    font-Size: 2vw;
+    margin: 0.1em;
+    outline: none;
+}
+
+.button:hover{
+    background-color: rgb(186, 186, 186);
+    transform: scale(1.05);
+}
+
+.submit-button {
+    width: 4.5em;
+}
+
+
+.create-lobby-button {
+    width: 8em;
+}
+
+.ready-up-button{
+    width: 5em;
+}
+
+.textbox {
+    margin: 0.1em;
+    height: 2.5em;
+    padding: 0.15em;
+    border-Radius: 0.3em;
+    font-Size: 2vw;
+    outline: none;
+}
+
+.lobby-textbox{
+    width: 12em;
+}
+
+.nickname-textbox{
+    margin: 0em 0em 4em 0em;
+    width: 16.7em;
+}
+
+.player{
+    border-radius: 0.3em;
+    padding: 0.2em 1em;
+    color: white;
+    font-size: 1.1em;
+}
+.unready-player{
+    background-color: red;
+    transform: scale(1.05);
+}
+
+.ready-player{
+    background-color: green;
+    transform: scale(1.05);
+}
