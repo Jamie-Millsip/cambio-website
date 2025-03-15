@@ -4,7 +4,7 @@ import ErrorView from './LobbyContent components/ErrorView.jsx';
 import { useEffect, useContext, useState, useRef } from "react";
 import Stomp from 'stompjs';
 import axios from 'axios';
-import TestPage from '../../pages/testPage.jsx';
+import TestPage from '../../pages/GamePage.jsx';
 import LobbyContext from '../../pages/LobbyContext.jsx';
 import "../../pages/Body.css";
 

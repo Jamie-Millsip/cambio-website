@@ -60,7 +60,7 @@ public class GameController {
                 ArrayList<ArrayList<CardResponse>> cards = lobby.getCards();
 
                 // if the discarded card is from a pile
-                if (cardsIndex < 2){
+                if (cardsIndex < 2){    
                     CardResponse temp = cards.get(pile).getFirst();
                     cards.get(pile).removeFirst();
                     temp.getCard().setVisible(true);

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import "./Test.css"
+import "./Game.css"
 import "./Body.css"
 import LobbyContext from "./LobbyContext";
 import axios from "axios";
