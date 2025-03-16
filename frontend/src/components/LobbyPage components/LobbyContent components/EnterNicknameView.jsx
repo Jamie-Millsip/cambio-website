@@ -11,7 +11,7 @@ function EnterNicknameView({nicknameRef, setHasNickname}){
 
     const handleNicknameButton = async (newNickname) => {
         try{
-            let result = await axios.post(backendSite + "/addPlayer", {lobbyID: lobbyID, player: {nickname: newNickname}});
+            let result = await axios.post(backendSite + "addPlayer", {lobbyID: lobbyID, player: {nickname: newNickname}});
             if (result.data == 1){
                 nicknameRef.current = newNickname;
                 nickname = newNickname;

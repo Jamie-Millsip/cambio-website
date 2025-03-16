@@ -1,4 +1,4 @@
-import HomeContent from '../components/HomeContent.jsx';  
+import HomeContent from '../components/HomePage components/HomeContent'; 
 import {useState} from 'react';
 import axios from 'axios';
 

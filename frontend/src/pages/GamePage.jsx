@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import "./Test.css"
+import "./Game.css"
 import "./Body.css"
 import LobbyContext from "./LobbyContext";
 import axios from "axios";
@@ -15,12 +15,15 @@ import Card from "../components/GamePage components/Card";
  */
 const TestPage = ({ players, thisUser}) => {
 
-    const {lobbyID, nickname, setCurrentTurn, cards, setCards, currentTurn, selectedSwapCards, setSelectedSwapCards} = useContext(LobbyContext);
+    const {lobbyID, nickname, setCurrentTurn, cards, setCards, currentTurn, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext);
     const [gameStarted, setGameStarted] = useState(false)
     const [readyButtonStyle, setReadyButtonStyle] = useState("button-unready")
     const [state, setState] = useState(0)
     const [buttonMessage, setButtonMessage] = useState("Ready")
     const [buttonClassVar, setButtonClassVar] = useState("")
+    const [lastToDiscard, setLastToDiscard] = useState(0)
+    const [canFlip, setCanFlip] = useState(false)
+    const [message, setMessage] = useState("")
 
     const tableRef = useRef(null)
 
@@ -31,8 +34,6 @@ const TestPage = ({ players, thisUser}) => {
     let tableRotation = -((thisUser * 360) / players);
     let centerCardRotation = -tableRotation
     let scale = `scale(${scaleFactor})`;
-    const [ buttonXTranslate, setButtonXTranslate] = useState(0);
-    const [ buttonYTranslate, setButtonYTranslate] = useState(0);
     
     const webSocket = 'ws://localhost:8080/ws/lobby'
 
@@ -45,16 +46,21 @@ const TestPage = ({ players, thisUser}) => {
             client.connect({}, () => {
                 client.subscribe(`/topic/game/${lobbyID}`, (message) => {
                     const recievedMessage = JSON.parse(message.body);
-                    if (recievedMessage.type == "gameStart"){
+                    if (recievedMessage.type === "gameStart"){
                         setGameStarted(true)
                         setCurrentTurn(0)
                     }
-                    else if (recievedMessage.type == "changeState"){
+                    else{
                         if (recievedMessage.cards != null){
                             setCards(recievedMessage.cards)
                         }
+                        if (recievedMessage.type === "changeState"){
+                            setMessage(recievedMessage.message)
+                        }
+                        else if (recievedMessage.type === "returnToState"){
+                            setMessage("returnedState")
+                        }
                         setState(recievedMessage.state)
-
                     }
                 },
                 (error) => {console.error("error subscribing: ", error)}
@@ -66,8 +72,10 @@ const TestPage = ({ players, thisUser}) => {
         }, [lobbyID]);
 
         const handleUnload = () =>{
-
+            // implement later not important atm -- also not sure if i am gonna need this
         }
+
+
         useEffect(()=>{
             if (gameStarted){
                 cards[thisUser+2][0].card.visible = false
@@ -75,30 +83,31 @@ const TestPage = ({ players, thisUser}) => {
             }
         }, [gameStarted])
 
+
+        // updates necessary vars on game state change after websocket broadcast
         useEffect(()=>{
-            if (state == 0 && gameStarted){
-                if (currentTurn + 1 < players){
-                    setCurrentTurn(currentTurn+1)
+            // also deals with any messages set in after websocket broadcast as message and state are updated at the same time
+            message === "discard" ? setLastToDiscard(currentTurn) : null;
+            // if the state resets to draw, update the current player
+            if (message !== "returnedState"){
+
+                if (state == 0 && gameStarted){
+                    currentTurn + 1 < players ? setCurrentTurn(currentTurn+1): setCurrentTurn(0);
                 }
-                else{
-                    setCurrentTurn(0)
+            // if the player needs to swap cards, update the buttons for the active user to represent s wapping
+                else if (state === 4 || state == 5){
+                    thisUser === currentTurn ? setButtonMessage("Swap") : setButtonMessage("Cambio");
                 }
-            }
+            }   
         }, [state])
 
 
-
-    useEffect(()=>{
-        if (state === 4 || state == 5){
-            if (thisUser == currentTurn){
-                setButtonMessage("Swap")
-            }
-            else{
-                setButtonMessage("Cambio")
-            }
-        }
-    }, [state])
-
+    // updates bool deciding whether this user is currently able to flip cards
+    useEffect(()=> {
+        // cannot flip if the discard pile is empty
+        const cardLength = Array.isArray(cards[1]) ? cards[1].length : 0;
+        cardLength === 0 || lastToDiscard === thisUser ? setCanFlip(false) : setCanFlip(true);
+    }, [cards, lastToDiscard])
 
 
     /**
@@ -106,13 +115,8 @@ const TestPage = ({ players, thisUser}) => {
      */
     const gameReadyUp = async() =>{
         try{
-            if (readyButtonStyle == "button-unready"){
-                setReadyButtonStyle("button-ready")
-            }
-            else{
-                setReadyButtonStyle("button-unready")
-            }
-            await axios.post("http://localhost:8080/gameReadyUp", {lobbyID: lobbyID, player: {nickname: nickname}})
+            readyButtonStyle === "button-unready" ? setReadyButtonStyle("button-ready") : setReadyButtonStyle("button-unready")
+            await axios.post(backendSite + "gameReadyUp", {lobbyID: lobbyID, player: {nickname: nickname}})
         }
         catch(e){
             console.error("ERROR: ", e)
@@ -121,7 +125,6 @@ const TestPage = ({ players, thisUser}) => {
 
     const swapCards = async (swap) => {
         try{
-
             const swapRequest = {
                 swap: swap,
                 card1: {player : selectedSwapCards[0].player, row: selectedSwapCards[0].row, col: selectedSwapCards[0].col},
@@ -133,7 +136,7 @@ const TestPage = ({ players, thisUser}) => {
             }
             setSelectedSwapCards([])
             setButtonMessage("Cambio")
-            await axios.post(`http://localhost:8080/swapCards/${lobbyID}`, swapRequest, {
+            await axios.post(backendSite + `swapCards/${lobbyID}`, swapRequest, {
                 headers: {
                     "Content-Type": "application/json",
                 }
@@ -154,30 +157,14 @@ const TestPage = ({ players, thisUser}) => {
     }, [gameStarted])
 
 
-    // dynamically updates the position of the game button
-    useEffect(()=>{
-        const updateWindow = () =>{
-            if (tableRef.current){
-                const tableDim = tableRef.current.getBoundingClientRect()
-                setButtonXTranslate(tableDim.right*0.8)
-                setButtonYTranslate(tableDim.bottom/4)
-            }
-        }
-        updateWindow()
-        window.addEventListener("resize", updateWindow)
-
-        return() => window.removeEventListener("resize", updateWindow)
-    }, [])
-
-
-
 
   return (
     <div className = "body-container" key = "body">
         <div ref={tableRef} className="game-table" style = {{transform: `rotate(${tableRotation}deg)`}}>
             <div className="card-row-container" style = {{transform: `rotate(${centerCardRotation}deg) scale(${centerScaleFactor})`}}>
                 <div className="card-row">
-                    {Array.from({length: 2}).map((_, index) =>{
+                    {// places 2 cards in the middle of the game table to act as a draw and discard pile
+                    Array.from({length: 2}).map((_, index) =>{
                         return(
                             <Card 
                             key={`centerCard-${index}`}
@@ -186,11 +173,14 @@ const TestPage = ({ players, thisUser}) => {
                             playerIndex={-1}
                             row={-1} 
                             col={-1}
-                            state={state}/>
+                            state={state}
+                            setLastToDiscard={setLastToDiscard}
+                            canFlip={canFlip}/>
                         )
                     })}
                 </div>
                 <div className="button-row">
+                    {/* Creates 2 buttons below the draw / discard pile */}
                     <button className={`game-button ${readyButtonStyle} ${buttonClassVar}`} onClick={buttonMessage === "Ready" ? ()=>gameReadyUp() : buttonMessage === "Swap" ? ()=>swapCards(true) : null}>
                         {buttonMessage}
                     </button>
@@ -201,13 +191,16 @@ const TestPage = ({ players, thisUser}) => {
                     )}
                 </div>
             </div>
-            {Array.from({ length: players }).map((_, index) => {
+            {// iterates through every player, ensuring each player has a hand, and updating the position of the cards according to the player index
+            Array.from({ length: players }).map((_, index) => {
                 const angle = (index * 360) / players + 90;
                 return (
                     <div className = {`card-row-container`} key={`card-row-container-${index}`} style = {{transform: `rotate(${angle}deg) translate(${radius}%) rotate(-90deg) ${scale}`}}>
-                        {Array.from({length: 3}).map((_, row) => (
+                        {// splits the hand of cards into 3 rows
+                        Array.from({length: 3}).map((_, row) => (
                         <div className = {`card-row`} key={`card-row-${row}-${index}`}>
-                            {Array.from({length: 2}).map((_, col) => {
+                            {// creates 2 cards per row of a player's hand
+                            Array.from({length: 2}).map((_, col) => {
                                 return(
                                     <Card 
                                         key={`card-${col}-${row}-${index}`} 
@@ -216,7 +209,9 @@ const TestPage = ({ players, thisUser}) => {
                                         playerIndex={index}
                                         row={row}
                                         col={col}
-                                        state={state}/>
+                                        state={state}
+                                        setLastToDiscard={setLastToDiscard}
+                                        canFlip={canFlip}/>
                                 )
                             })}
                         </div>  

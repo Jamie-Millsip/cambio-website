@@ -16,7 +16,7 @@ export function LobbyProvider({children}){
     const [nickname, setNickname] = useState("");
 
     const [selectedSwapCards, setSelectedSwapCards] = useState([])
-    const backendSite = "http://localhost:8080";
+    const backendSite = "http://localhost:8080/";
 
     return(
         <LobbyContext.Provider value = {{

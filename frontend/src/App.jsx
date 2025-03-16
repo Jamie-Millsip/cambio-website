@@ -3,7 +3,7 @@ import LobbyPage from './pages/Lobbypage';
 import Header from "./components/header/Header.jsx";
 import Footer from "./components/footer/Footer.jsx";
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import TestPage from './pages/testPage';
+import TestPage from './pages/GamePage.jsx';
 import { LobbyProvider } from './pages/LobbyContext.jsx';
 
 
