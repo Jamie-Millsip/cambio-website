@@ -77,12 +77,7 @@ const TestPage = ({ players, thisUser}) => {
 
         useEffect(()=>{
             if (state == 0 && gameStarted){
-                if (currentTurn + 1 < players){
-                    setCurrentTurn(currentTurn+1)
-                }
-                else{
-                    setCurrentTurn(0)
-                }
+                curentTurn + 1 < players ? setCurrentTurn(currentTurn+1): setCurrentTurn(0);
             }
         }, [state])
 
@@ -90,12 +85,7 @@ const TestPage = ({ players, thisUser}) => {
 
     useEffect(()=>{
         if (state === 4 || state == 5){
-            if (thisUser == currentTurn){
-                setButtonMessage("Swap")
-            }
-            else{
-                setButtonMessage("Cambio")
-            }
+            thisUser === currentTurn ? setButtonMessage("Swap") : setButtonMessage("Cambio");
         }
     }, [state])
 
@@ -106,12 +96,7 @@ const TestPage = ({ players, thisUser}) => {
      */
     const gameReadyUp = async() =>{
         try{
-            if (readyButtonStyle == "button-unready"){
-                setReadyButtonStyle("button-ready")
-            }
-            else{
-                setReadyButtonStyle("button-unready")
-            }
+            readyButtonStyle === "button-unready" ? setReadyButtonStyle("button-ready") : setReadyButtonStyle("button-unready")
             await axios.post("http://localhost:8080/gameReadyUp", {lobbyID: lobbyID, player: {nickname: nickname}})
         }
         catch(e){
@@ -121,7 +106,6 @@ const TestPage = ({ players, thisUser}) => {
 
     const swapCards = async (swap) => {
         try{
-
             const swapRequest = {
                 swap: swap,
                 card1: {player : selectedSwapCards[0].player, row: selectedSwapCards[0].row, col: selectedSwapCards[0].col},
