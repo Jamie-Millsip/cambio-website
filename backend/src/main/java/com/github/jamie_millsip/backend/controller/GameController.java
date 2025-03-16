@@ -184,8 +184,9 @@ public class GameController {
     }
 
     @RequestMapping("/flipCard/{lobbyID}")
-    public void flipCard(@PathVariable String lobbyID, @RequestBody PositionData positionData){
+    public void flipCard(@PathVariable String lobbyID, @RequestBody FlipRequest flipRequest){
         System.out.println("Flip Card");
+        PositionData positionData = flipRequest.getPositionData();
         System.out.println("player inputted: " +  positionData.getPlayer());
         System.out.println("row: " + positionData.getRow());
         System.out.println("col inputted: " + positionData.getColumn());
@@ -218,7 +219,7 @@ public class GameController {
                         break;
                     }
                 }
-                triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards , 0, "flip"));
+                triggerBroadcast(lobbyID, new GameSocketResponse("returnToState", cards , flipRequest.getState(), "flip"));
                 break;
             }
         }

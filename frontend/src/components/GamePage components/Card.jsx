@@ -30,6 +30,11 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state, 
     const cardStyle = {"--scale-factor": scaleFactor}
     let card = null;
 
+    const [canDraw, setCanDraw] = useState(false);
+    const [canDiscard, setCanDiscard] = useState(false);
+    const [canLook, setCanLook] = useState(false)
+    const [canSwap, setCanSwap] = useState(false)
+
 
 
     useEffect(() => {
@@ -41,26 +46,37 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state, 
         }
     }, [cards, cardIndex, playerIndex, row, col]);
 
+    useEffect(()=>{
+        // 
+
+        state === 0 && thisUser === currentTurn && cardIndex < 2 ? setCanDraw(true) : setCanDraw(false);
+
+        state === 1 && thisUser === currentTurn && (cardIndex === selectedPile || playerIndex === thisUser) ? setCanDiscard(true) : setCanDiscard(false);
+
+        (state === 2 && thisUser === playerIndex) || (state === 3 && thisUser !== playerIndex) ? setCanLook(true) : setCanLook(false);
+
+        state === 4 || state === 5 ? setCanSwap(true) : setCanSwap(false)
+
+        !canDraw && !canDiscard && !canLook && !canSwap && canFlip
+    }, [state, thisUser, currentTurn, cardIndex, selectedPile,, playerIndex])
+
+
+
     const handleClick = () => {
         console.log("handleClick")
         console.log("currentTurn: ", currentTurn)
         console.log("thisuser: ", thisUser)
         console.log("state", state)
         console.log("canFlip", canFlip)
-        state === 0 ? drawCard()
-            : state === 1 ? discardCard()
-            : state === 2 || state === 3 ? lookCard()
-            : state === 4 || state === 5 ? swapCard()
-            : canFlip ? flipCard() : null
+        canDraw ? drawCard() : canDiscard ? discardCard() : canLook ? lookCard() : canSwap ? swapCard() : canFlip ? flipCard()  : null;
     }
 
     const flipCard = async () => {
         console.log("flippy")
         if (canFlip){
             const flipData = {
-                player: playerIndex,
-                row: row,
-                column: col
+                state: state,
+                positionData: {player: playerIndex, row: row, column: col}
             }
             try{
                 await axios.post(backendSite + `flipCard/${lobbyID}`, flipData, {
