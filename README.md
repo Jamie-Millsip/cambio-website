@@ -6,8 +6,12 @@ a website for playing the card game "cambio"
 
 - finish implementing card flipping
 
-  - ensure a player can only flip a card if that card's value is equal to the value of the top card of the discard pile
-  - ensure a player can only flip a card if they were not player who most recently discarded
+  - ensure a player can only flip a card if that card's value is equal to the value of the top card of the discard pile -- done
+  - ensure a player can only flip a card if they were not player who most recently discarded -- NEEDS WORK
+    - currently what happens when a card is clicked is dependent on state (ie if state === 0 drawcard)
+    - this prevents the flipcard function from ever running as the the if state condition is always met
+    - need to create bools for each state (ie canDiscard, canDraw, etc) to ensure that only cards that actually can do that action enter that func
+      and the rest are able to enter the flipCard func
   - ensure only one card can be flipped for each discarded card
 
 - add functionality to "cambio" button
