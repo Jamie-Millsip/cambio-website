@@ -28,6 +28,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state, 
     const [thisCard, setThisCard] = useState(null);
     const [suit, setSuit] = useState("")
     const cardStyle = {"--scale-factor": scaleFactor}
+    let card = null;
 
 
 
@@ -41,15 +42,20 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state, 
     }, [cards, cardIndex, playerIndex, row, col]);
 
     const handleClick = () => {
-        currentTurn !== thisUser ? flipCard 
-            : state === 0 ? drawCard
-            : state === 1 ? discardCard
-            : state === 2 || state === 3 ? lookCard
-            : state === 4 || state === 5 ? swapCard
-            : null
+        console.log("handleClick")
+        console.log("currentTurn: ", currentTurn)
+        console.log("thisuser: ", thisUser)
+        console.log("state", state)
+        console.log("canFlip", canFlip)
+        state === 0 ? drawCard()
+            : state === 1 ? discardCard()
+            : state === 2 || state === 3 ? lookCard()
+            : state === 4 || state === 5 ? swapCard()
+            : canFlip ? flipCard() : null
     }
 
     const flipCard = async () => {
+        console.log("flippy")
         if (canFlip){
             const flipData = {
                 player: playerIndex,
@@ -69,6 +75,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state, 
 
     const drawCard = async () => {
         // let the user draw a card if it is their turn and they are selecting a pile to draw from
+        console.log("draw")
         if (thisUser === currentTurn && cardIndex < 2){
             try{
                 console.log("cards: ", cards)
@@ -99,7 +106,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state, 
                     row: row,
                     col: col
                 };
-                setLastToDiscard(playerIndex);
+                setLastToDiscard(thisUser);
                 await axios.post(backendSite + `discardCard/${lobbyID}`, requestData, {
                     "Content-Type" : "application/json"
                 })
@@ -173,6 +180,12 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state, 
     }
 
 
+    useEffect(()=> {
+        if (card && card.card){
+            card.card.suit === "Diamonds" || card.card.suit === "Hearts" ? setSuit("red-card") : setSuit("black-card")
+        }
+    }, [card])
+
     // updates the card styles when gameState changes
     useEffect(()=>{
         // if it is this user's turn
@@ -198,9 +211,8 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state, 
     }, [currentTurn, state, thisUser, selectedSwapCards])
 
 
-    const card = returnCardContents()
-    card.card.suit === "Diamonds" || card.card.suit === "Hearts" ? setSuit("red-card") : setSuit("black-card");
-
+    card = returnCardContents()
+    
     if (card === null){
         return(
             <div key={`card-${row}${col}${playerIndex}`} className={`game-card game-card-space`}>
@@ -211,14 +223,13 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state, 
     else if (card.card.visible == false){
         return(
             <button 
-                className={`game-card face-down ${currentTurnStyle}`} 
-                onClick={handleClick}>
+            className={`game-card face-down ${currentTurnStyle}`} 
+            onClick={handleClick}>
                 <span className="card-text" style={{cardStyle}}></span>
             </button>
         )
     }
     
-
     return(
         <button
             className={`game-card face-up ${suit} ${currentTurnStyle}`} 

@@ -40,7 +40,7 @@ public class GameController {
 
     @RequestMapping("/drawCard/{lobbyID}")
     public void drawCard(@PathVariable String lobbyID, @RequestBody int pile){
-        triggerBroadcast(lobbyID, new GameSocketResponse("changeState", 1));
+        triggerBroadcast(lobbyID, new GameSocketResponse("changeState", null, 1, "draw"));
     }
 
     @RequestMapping("/discardCard/{lobbyID}")
@@ -117,7 +117,7 @@ public class GameController {
                     Collections.shuffle(cards.getFirst());
                 }
 
-                triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards, ability));
+                triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards, ability, "discard"));
             }
         }
     }
@@ -127,7 +127,7 @@ public class GameController {
         for (Lobby lobby : lobbyList) {
             if (lobby.getId().equals(lobbyID)) {
                 ArrayList<ArrayList<CardResponse>> cards = lobby.getCards();
-                triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards, 0));
+                triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards, 0, "look"));
             }
         }
     }
@@ -164,7 +164,7 @@ public class GameController {
                             }
                         }
                     }
-                    triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards, 0));
+                    triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards, 0, "swap"));
                 }
             }
         }
@@ -218,7 +218,7 @@ public class GameController {
                         break;
                     }
                 }
-                triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards , 0));
+                triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards , 0, "flip"));
                 break;
             }
         }

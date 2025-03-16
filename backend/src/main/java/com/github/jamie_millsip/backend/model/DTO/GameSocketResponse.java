@@ -20,9 +20,10 @@ public class GameSocketResponse {
         this.message = message;
     }
 
-    public GameSocketResponse(String type, ArrayList<ArrayList<CardResponse>> cards, String message) {
+    public GameSocketResponse(String type, ArrayList<ArrayList<CardResponse>> cards, int state, String message) {
         this.type = type;
         this.cards = cards;
+        this.state = state;
         this.message = message;
     }
 

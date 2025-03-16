@@ -23,6 +23,7 @@ const TestPage = ({ players, thisUser}) => {
     const [buttonClassVar, setButtonClassVar] = useState("")
     const [lastToDiscard, setLastToDiscard] = useState(0)
     const [canFlip, setCanFlip] = useState(false)
+    const [message, setMessage] = useState("")
     const [ buttonXTranslate, setButtonXTranslate] = useState(0);
     const [ buttonYTranslate, setButtonYTranslate] = useState(0);
 
@@ -56,6 +57,7 @@ const TestPage = ({ players, thisUser}) => {
                         if (recievedMessage.cards != null){
                             setCards(recievedMessage.cards)
                         }
+                        setMessage(recievedMessage.message)
                         setState(recievedMessage.state)
 
                     }
@@ -79,8 +81,9 @@ const TestPage = ({ players, thisUser}) => {
         }, [gameStarted])
 
         useEffect(()=>{
+            message === "discard" ? setLastToDiscard(currentTurn) : null;
             if (state == 0 && gameStarted){
-                curentTurn + 1 < players ? setCurrentTurn(currentTurn+1): setCurrentTurn(0);
+                currentTurn + 1 < players ? setCurrentTurn(currentTurn+1): setCurrentTurn(0);
             }
         }, [state])
 
@@ -94,7 +97,8 @@ const TestPage = ({ players, thisUser}) => {
 
 
     useEffect(()=> {
-        cards[1].length === 0 || lastToDiscard === thisUser ? setCanFlip(false) : setCanFlip(true);
+        const cardLength = Array.isArray(cards[0]) ? cards[0].length : 0;
+        cardLength === 0 || lastToDiscard === thisUser ? setCanFlip(false) : setCanFlip(true);
     }, [cards, lastToDiscard])
 
 

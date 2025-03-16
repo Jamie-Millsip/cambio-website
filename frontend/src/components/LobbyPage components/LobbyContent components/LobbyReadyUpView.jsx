@@ -12,7 +12,7 @@ function LobbyReadyUpView(){
 
     const readyUp = async () => {
         try{
-            await axios.post(backendSite + "/lobbyReadyUp", {lobbyID: lobbyID, player: {nickname: nickname}});
+            await axios.post(backendSite + "lobbyReadyUp", {lobbyID: lobbyID, player: {nickname: nickname}});
         }
         catch (e){console.error("ERROR readying up: ", e)}
     }
