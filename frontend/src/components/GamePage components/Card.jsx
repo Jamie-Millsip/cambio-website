@@ -40,6 +40,19 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state})
         }
     }, [cards, cardIndex, playerIndex, row, col]);
 
+    const handleClick = () => {
+        currentTurn !== thisUser ? flipCard 
+            : state === 0 ? drawCard
+            : state === 1 ? discardCard
+            : state === 2 || state === 3 ? lookCard
+            : state === 4 || state === 5 ? swapCard
+            : null
+    }
+
+    const flipCard = async () => {
+        
+    }
+
     const drawCard = async () => {
         // let the user draw a card if it is their turn and they are selecting a pile to draw from
         if (thisUser === currentTurn && cardIndex < 2){
@@ -184,13 +197,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state})
         return(
             <button 
                 className={`game-card face-down ${currentTurnStyle}`} 
-                onClick=
-                    {state === 0 ? drawCard
-                    : state === 1 ? discardCard
-                    : state === 2 || state === 3 ? lookCard
-                    : state === 4 || state === 5 ? swapCard
-                    : null
-                    }>
+                onClick={handleClick}>
                 <span className="card-text" style={{cardStyle}}></span>
             </button>
         )
@@ -199,17 +206,9 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state})
 
     return(
         <button
-        className={`game-card face-up ${suit} ${currentTurnStyle}`} 
-        onClick=
-            {state === 0 ? drawCard
-            : state === 1 ? discardCard
-            : state === 2 || state === 3 ? lookCard
-            : state === 4 || state === 5 ? swapCard
-            : null
-            }>
-            <span className="card-text" style={{cardStyle}}>
-            {card.card.face}
-            </span>            
+            className={`game-card face-up ${suit} ${currentTurnStyle}`} 
+            onClick={handleClick}>
+            <span className="card-text" style={{cardStyle}}> {card.card.face} </span>            
         </button> 
     )
 }
