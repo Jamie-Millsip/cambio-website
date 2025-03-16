@@ -75,7 +75,7 @@ function LobbyContent({lobbyID}){
      */
     const handleUnload = () => {
         navigator.sendBeacon(
-            backendSite + `/removePlayer/${lobbyID}`,
+            backendSite + `removePlayer/${lobbyID}`,
             (nicknameRef.current)
         );
     };
@@ -86,7 +86,7 @@ function LobbyContent({lobbyID}){
             if (gameScreen){
                 setPlayerCount(messageArray.length)
                 try{
-                    const result = await axios.post(backendSite + `/getCards/${lobbyID}`)
+                    const result = await axios.post(backendSite + `getCards/${lobbyID}`)
                     if (result.data != null){
                         setCards(result.data.cards)
                         result.data.cards[thisUser+2][0].card.visible = true;
@@ -114,7 +114,7 @@ function LobbyContent({lobbyID}){
             console.log("cards are now: ", cards)
             if (hasNickname){
                 try{
-                    const result = await axios.post(backendSite + `/getThisUserIndex/${lobbyID}`, {nickname: nicknameRef.current})
+                    const result = await axios.post(backendSite + `getThisUserIndex/${lobbyID}`, {nickname: nicknameRef.current})
                     if (result.data !== -1){
                         setThisUser(result.data)
                         thisUserRef.current = result.data;
@@ -133,7 +133,7 @@ function LobbyContent({lobbyID}){
             console.log("userIndex to be updated")
             if (hasNickname){
                 try{
-                    const result = await axios.post(backendSite + `/getThisUserIndex/${lobbyID}`, {nickname: nicknameRef.current})
+                    const result = await axios.post(backendSite + `getThisUserIndex/${lobbyID}`, {nickname: nicknameRef.current})
                     if (result.data !== -1){
                         setThisUser(result.data)
                         thisUserRef.current = result.data;
@@ -158,7 +158,7 @@ function LobbyContent({lobbyID}){
      */
     const checkLobby = async () => {
         try{
-            const result = await axios.post(backendSite + `/verifyHomePageData`, {id : lobbyID});
+            const result = await axios.post(backendSite + `verifyHomePageData`, {id : lobbyID});
             if (result.data === 3) setExists(true);
             else setExists(false);
 

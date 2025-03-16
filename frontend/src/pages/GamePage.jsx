@@ -15,12 +15,17 @@ import Card from "../components/GamePage components/Card";
  */
 const TestPage = ({ players, thisUser}) => {
 
-    const {lobbyID, nickname, setCurrentTurn, cards, setCards, currentTurn, selectedSwapCards, setSelectedSwapCards} = useContext(LobbyContext);
+    const {lobbyID, nickname, setCurrentTurn, cards, setCards, currentTurn, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext);
     const [gameStarted, setGameStarted] = useState(false)
     const [readyButtonStyle, setReadyButtonStyle] = useState("button-unready")
     const [state, setState] = useState(0)
     const [buttonMessage, setButtonMessage] = useState("Ready")
     const [buttonClassVar, setButtonClassVar] = useState("")
+    const [lastToDiscard, setLastToDiscard] = useState(0)
+    const [canFlip, setCanFlip] = useState(false)
+    const [ buttonXTranslate, setButtonXTranslate] = useState(0);
+    const [ buttonYTranslate, setButtonYTranslate] = useState(0);
+
 
     const tableRef = useRef(null)
 
@@ -31,8 +36,6 @@ const TestPage = ({ players, thisUser}) => {
     let tableRotation = -((thisUser * 360) / players);
     let centerCardRotation = -tableRotation
     let scale = `scale(${scaleFactor})`;
-    const [ buttonXTranslate, setButtonXTranslate] = useState(0);
-    const [ buttonYTranslate, setButtonYTranslate] = useState(0);
     
     const webSocket = 'ws://localhost:8080/ws/lobby'
 
@@ -90,6 +93,10 @@ const TestPage = ({ players, thisUser}) => {
     }, [state])
 
 
+    useEffect(()=> {
+        cards[1].length === 0 || lastToDiscard === thisUser ? setCanFlip(false) : setCanFlip(true);
+    }, [cards, lastToDiscard])
+
 
     /**
      * alerts the backend to this user's ready status, and updates the button visually to represent ready / not ready
@@ -97,7 +104,7 @@ const TestPage = ({ players, thisUser}) => {
     const gameReadyUp = async() =>{
         try{
             readyButtonStyle === "button-unready" ? setReadyButtonStyle("button-ready") : setReadyButtonStyle("button-unready")
-            await axios.post("http://localhost:8080/gameReadyUp", {lobbyID: lobbyID, player: {nickname: nickname}})
+            await axios.post(backendSite + "gameReadyUp", {lobbyID: lobbyID, player: {nickname: nickname}})
         }
         catch(e){
             console.error("ERROR: ", e)
@@ -117,7 +124,7 @@ const TestPage = ({ players, thisUser}) => {
             }
             setSelectedSwapCards([])
             setButtonMessage("Cambio")
-            await axios.post(`http://localhost:8080/swapCards/${lobbyID}`, swapRequest, {
+            await axios.post(backendSite + `swapCards/${lobbyID}`, swapRequest, {
                 headers: {
                     "Content-Type": "application/json",
                 }
@@ -170,7 +177,9 @@ const TestPage = ({ players, thisUser}) => {
                             playerIndex={-1}
                             row={-1} 
                             col={-1}
-                            state={state}/>
+                            state={state}
+                            setLastToDiscard={setLastToDiscard}
+                            canFlip={canFlip}/>
                         )
                     })}
                 </div>
@@ -200,7 +209,9 @@ const TestPage = ({ players, thisUser}) => {
                                         playerIndex={index}
                                         row={row}
                                         col={col}
-                                        state={state}/>
+                                        state={state}
+                                        setLastToDiscard={setLastToDiscard}
+                                        canFlip={canFlip}/>
                                 )
                             })}
                         </div>  

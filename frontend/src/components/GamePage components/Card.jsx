@@ -15,12 +15,12 @@ import axios from "axios";
  * 
  * @returns an interactive card object displayed onto the screen
  */
-function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state}){
+function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state, setLastToDiscard, canFlip}){
 
 
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
     
-    const {currentTurn, cards, lobbyID, selectedSwapCards, setSelectedSwapCards} = useContext(LobbyContext)
+    const {currentTurn, cards, lobbyID, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext)
 
     const [triggerVar, trigger] = useState(0)
     const [selectedPile, setSelectedPile] = useState();
@@ -50,7 +50,21 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state})
     }
 
     const flipCard = async () => {
-        
+        if (canFlip){
+            const flipData = {
+                player: playerIndex,
+                row: row,
+                column: col
+            }
+            try{
+                await axios.post(backendSite + `flipCard/${lobbyID}`, flipData, {
+                    "Content-Type" : "application/json"
+                })
+            }
+            catch(e){
+                console.error("ERROR: ", e)
+            }
+        }
     }
 
     const drawCard = async () => {
@@ -61,7 +75,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state})
                 cards[cardIndex][0].card.visible = true
                 trigger(1)
                 setSelectedPile(cardIndex)
-                await axios.post(`http://localhost:8080/drawCard/${lobbyID}`, cardIndex, {headers: {"Content-Type":"application/json"}}) // figure out what inputs are needed
+                await axios.post(backendSite + `drawCard/${lobbyID}`, cardIndex, {headers: {"Content-Type":"application/json"}}) // figure out what inputs are needed
             }
             catch(e){
                 console.error("ERROR: ", e)
@@ -84,8 +98,9 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state})
                     player: cardIndex,
                     row: row,
                     col: col
-                }
-                await axios.post(`http://localhost:8080/discardCard/${lobbyID}`, requestData, {
+                };
+                setLastToDiscard(playerIndex);
+                await axios.post(backendSite + `discardCard/${lobbyID}`, requestData, {
                     "Content-Type" : "application/json"
                 })
             }
@@ -103,7 +118,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, scaleFactor, state})
             await sleep(1500)
             thisCard.card.visible = false
             try{
-                await axios.post(`http://localhost:8080/look/${lobbyID}`)
+                await axios.post(backendSite + `look/${lobbyID}`)
             }
             catch(e){
                 console.error("ERROR: ", e)
