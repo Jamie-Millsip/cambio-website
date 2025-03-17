@@ -16,8 +16,10 @@ import Card from "./GameContent components/Card";
  */
 const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
+    const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+
     const {lobbyID, nickname, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext);
-    const {currentTurn, setCurrentTurn, state, setState, lastToDiscard, setLastToDiscard, setCanFlip} = useContext(GameContext);
+    const {currentTurn, setCurrentTurn, state, setState, lastToDiscard, setLastToDiscard, setCanFlip, trigger, triggerVar} = useContext(GameContext);
     const [gameStarted, setGameStarted] = useState(false)
 
 
@@ -53,10 +55,10 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                         setCurrentTurn(0)
                     }
                     else if (recievedMessage.type === "changePlayer"){
-                        currentTurn + 1 < players ? setCurrentTurn(currentTurn+1): setCurrentTurn(0);
+                        setMessage("changePlayer");
                     }
                     else if (recievedMessage.type === "endGame"){
-                        setGameScreen(false)
+                        setMessage("endGame")
                     }
                     else{
                         recievedMessage.cards !== null ? setCards(recievedMessage.cards) : null;
@@ -79,6 +81,14 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
             // implement later not important atm -- also not sure if i am gonna need this
         }
 
+        useEffect(()=>{
+            if (message === "changePlayer"){
+                currentTurn + 1 < players ? setCurrentTurn(currentTurn+1): setCurrentTurn(0);
+            }
+            else if (message === "endGame"){
+                endGame()
+            }
+        }, [message])
 
         useEffect(()=>{
             if (gameStarted){
@@ -146,8 +156,8 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
             // correctly formats the data required by the swapcards backend function
             const swapRequest = {
                 swap: swap,
-                card1: {player : selectedSwapCards[0].player, row: selectedSwapCards[0].row, col: selectedSwapCards[0].col},
-                card2: {player : selectedSwapCards[1].player, row: selectedSwapCards[1].row, col: selectedSwapCards[1].col},
+                card1: {player : selectedSwapCards[0].player, row: selectedSwapCards[0].row, column: selectedSwapCards[0].col},
+                card2: {player : selectedSwapCards[1].player, row: selectedSwapCards[1].row, column: selectedSwapCards[1].col},
             };
             // ensures any cards looked at by a look swap are reset
             if (state === 5){
@@ -180,6 +190,21 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         catch(e){
             console.error("ERROR: ", e)
         }
+    }
+
+    const endGame = async () => {
+        setState(-1)
+        for (let x = 2; x < cards.length; x++){
+            for (let y = 0; y < cards[x].length; y++){
+                if (cards[x][y] !== null){
+                    cards[x][y].card.visible = true;
+                }
+            }
+        }
+        console.log("cards at end: ", cards)
+        await trigger(triggerVar+1)
+        await sleep(5000)
+        setGameScreen(false)
     }
 
     // when the game starts, update the button text and resets its visual indicator
@@ -249,7 +274,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                             {// creates 2 cards per row of a player's hand
                             Array.from({length: 2}).map((_, col) => {
                                 return(
-                                    <Card key={`card-${col}-${row}-${index}`} 
+                                    <Card key={`card-${index}-${row}-${col}`} 
                                         thisUser={thisUser} 
                                         cardIndex={index+2} 
                                         playerIndex={index}

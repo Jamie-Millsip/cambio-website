@@ -15,6 +15,8 @@ function LobbyContent({lobbyID}){
         backendSite,
     } = useContext(LobbyContext);
 
+        const [triggerVar, trigger] = useState(0)
+
         const [messageArray, setMessageArray] = useState([])
         const [cards, setCards] = useState([])
         const [exists, setExists] = useState(false)
@@ -100,7 +102,6 @@ function LobbyContent({lobbyID}){
     // sets their bottom two cards to visible, preparing for the start of the game
     useEffect( () => {
         const getUserIndex = async () => {
-            console.log("cards are now: ", cards)
             if (hasNickname){
                 try{
                     const result = await axios.post(backendSite + `getThisUserIndex/${lobbyID}`, {nickname: nicknameRef.current})
@@ -114,7 +115,8 @@ function LobbyContent({lobbyID}){
             }
         }
         getUserIndex()
-    }, [hasNickname, cards])
+    }, [hasNickname, playerLeaveFlag])
+
 
     useEffect( () => {
         const updateUserIndex = async () => {

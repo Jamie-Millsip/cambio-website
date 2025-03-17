@@ -176,7 +176,8 @@ public class GameController {
 
     public CardResponse findSwapCard (PositionData posData, ArrayList<ArrayList<CardResponse>> cards){
         for (CardResponse card : cards.get(posData.getPlayer() + 2)){
-            if (card.getRow() == posData.getRow() && card.getCol() == posData.getColumn()) {
+
+            if (card!= null && (card.getRow() == posData.getRow() && card.getCol() == posData.getColumn())){
              return new CardResponse(card.getCard(), card.getPlayer(), card.getRow(), card.getCol());
             }
         }

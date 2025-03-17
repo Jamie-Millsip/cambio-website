@@ -22,9 +22,8 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
     
     const {lobbyID, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext)
-    const {currentTurn, state, setLastToDiscard, canFlip} = useContext(GameContext);
+    const {currentTurn, state, setLastToDiscard, canFlip, trigger, triggerVar} = useContext(GameContext);
 
-    const [triggerVar, trigger] = useState(0)
     const [selectedPile, setSelectedPile] = useState();
     const [currentTurnStyle, setCurrentTurnStyle]=useState("")
     const [thisCard, setThisCard] = useState(null);
@@ -54,9 +53,9 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
 
         state === 1 && thisUser === currentTurn && (cardIndex === selectedPile || playerIndex === thisUser) ? setCanDiscard(true) : setCanDiscard(false);
 
-        (state === 2 && thisUser === playerIndex) || (state === 3 && thisUser !== playerIndex) ? setCanLook(true) : setCanLook(false);
+        thisUser === currentTurn && ((state === 2 && thisUser === playerIndex) || (state === 3 && thisUser !== playerIndex)) ? setCanLook(true) : setCanLook(false);
 
-        (state === 4 || state === 5) && selectedSwapCards.length < 2 ? setCanSwap(true) : setCanSwap(false)
+        thisUser === currentTurn && ((state === 4 || state === 5) && selectedSwapCards.length < 2) ? setCanSwap(true) : setCanSwap(false)
 
         !canDraw && !canDiscard && !canLook && !canSwap && canFlip
     }, [state, thisUser, currentTurn, cardIndex, selectedPile,, playerIndex])
@@ -89,7 +88,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         console.log("draw")
         try{
             cards[cardIndex][0].card.visible = true
-            trigger(1)
+            trigger(triggerVar+1)
             setSelectedPile(cardIndex)
             await axios.post(backendSite + `drawCard/${lobbyID}`, cardIndex, {headers: {"Content-Type":"application/json"}}) // figure out what inputs are needed
         }
@@ -106,7 +105,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         // let a user discard a card if it is their turn and they select either the newly drawn card or one of their own cards 
         try{
             cards[cardIndex][0].card.visible = false;
-            trigger(1)
+            trigger(triggerVar+1)
             const requestData = {
                 pile: selectedPile,
                 player: cardIndex,
@@ -125,8 +124,8 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
 
     const lookCard = async () => {
         thisCard.card.visible = true
-        await sleep(10)
-        trigger(1)
+        await sleep(30)
+        trigger(triggerVar+1)
         await sleep(1500)
         thisCard.card.visible = false
         try{
@@ -145,7 +144,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         setSelectedSwapCards((selectedSwapCards) => [...selectedSwapCards, thisCard])
         if (state == 5){
             thisCard.card.visible = true;
-            trigger(1)
+            trigger(triggerVar+1)
         }
     }
 
