@@ -15,8 +15,6 @@ function LobbyContent({lobbyID}){
         backendSite,
     } = useContext(LobbyContext);
 
-        const [triggerVar, trigger] = useState(0)
-
         const [messageArray, setMessageArray] = useState([])
         const [cards, setCards] = useState([])
         const [exists, setExists] = useState(false)

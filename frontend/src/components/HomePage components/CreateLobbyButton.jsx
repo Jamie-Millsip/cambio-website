@@ -7,23 +7,25 @@ import "../../pages/Body.css"
 function CreateLobbyButton({}){
 
     const navigate = useNavigate();
-
+    
+    /**
+     * when a user clicks on the create lobby button, sends a backend request to create the lobby
+     * then retrieves the lobbyID from the backend and navigates to the new lobby page
+     */
     const handleClick = async () => {
         try{
             const result= await axios.post("http://localhost:8080/createLobby");
-            console.log("lobbyID: ",result.data);
             const lobbyID = result.data;
             navigate(`/lobby/${lobbyID}`);
-        }
+        }   
         catch{
-            console.log("error fetching from backend");
+            console.error("error fetching from backend");
         }
     }
 
+    // returns a button to allow users to create a lobby
     return(
-        <>
-            <button className="button create-lobby-button" onClick={handleClick}>Create Lobby</button>
-        </>
+        <button className="button create-lobby-button" onClick={handleClick}>Create Lobby</button>
     );
 }
 
