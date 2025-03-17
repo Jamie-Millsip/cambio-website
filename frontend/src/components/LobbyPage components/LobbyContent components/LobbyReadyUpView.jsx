@@ -4,7 +4,7 @@ import DisplayLobbyNames from "./DisplayLobbyNames";
 import LobbyContext from "../../../pages/LobbyContext";
 import { useContext } from "react";
 
-function LobbyReadyUpView(){
+function LobbyReadyUpView({messageArray}){
 
     const {lobbyID, nickname, backendSite} = useContext(LobbyContext);
 
@@ -21,7 +21,7 @@ function LobbyReadyUpView(){
     return(
         <>
         <p className="title">Ready Up to Play</p>
-        <DisplayLobbyNames/>
+        <DisplayLobbyNames messageArray={messageArray}/>
         <button className="button ready-up-button" onClick={readyUp}>Ready Up</button>
         </>
     )

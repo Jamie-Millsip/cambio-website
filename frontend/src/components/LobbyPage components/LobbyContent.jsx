@@ -4,21 +4,19 @@ import ErrorView from './LobbyContent components/ErrorView.jsx';
 import { useEffect, useContext, useState, useRef } from "react";
 import Stomp from 'stompjs';
 import axios from 'axios';
-import TestPage from '../../pages/GamePage.jsx';
+import GamePage from '../../pages/GamePage.jsx';
 import LobbyContext from '../../pages/LobbyContext.jsx';
 import "../../pages/Body.css";
 
 function LobbyContent({lobbyID}){
 
     const {
-        cards, 
-        setCards,
         setLobbyID,
         backendSite,
-        messageArray, 
-        setMessageArray,
     } = useContext(LobbyContext);
 
+        const [messageArray, setMessageArray] = useState([])
+        const [cards, setCards] = useState([])
         const [exists, setExists] = useState(false)
         const [gameScreen, setGameScreen] = useState(false)
         const [hasNickname, setHasNickname] = useState(false)
@@ -28,8 +26,6 @@ function LobbyContent({lobbyID}){
 
         const [thisUser, setThisUser] = useState(-1); 
         const [playerLeaveFlag, setPlayerLeaveFlag] = useState(false)
-        let cardRef = useRef([])
-        let thisUserRef = useRef(0);
         
         const webSocket = 'ws://localhost:8080/ws/lobby'
 
@@ -45,20 +41,18 @@ function LobbyContent({lobbyID}){
         const client = Stomp.over(socket);
 
         client.debug = () => {};
-
         client.connect({}, () => {
             client.subscribe(`/topic/${lobbyID}`, (message) => {
                 const recievedMessage = JSON.parse(message.body);
-                if (recievedMessage.type == "playerNames"){
+                if (recievedMessage.playerReadyArray !== null){
                     setMessageArray(recievedMessage.playerReadyArray)
                 }
-                else if (recievedMessage.type == "enterGameView"){
+                if (recievedMessage.type === "enterGameView"){
                     setGameScreen(true);
                 }
-                else if (recievedMessage.type == "removedPlayer"){
-                    setMessageArray(recievedMessage.playerReadyArray)
+                else if (recievedMessage.type === "removedPlayer"){
                     setPlayerLeaveFlag(true)
-                }
+                }   
             },
             (error) => {console.error("error subscribing: ", error)}
         )},
@@ -101,11 +95,6 @@ function LobbyContent({lobbyID}){
         gameStartFunc() 
     }, [gameScreen, playerLeaveFlag])
 
-    // updates the pointer to the cards array (cardsRef) whenever the cards array is updated
-    useEffect(()=>{
-        cardRef.current = cards
-    }, [cards])
-
 
     // fetches the index of the current player from the playerList stored in the backend,
     // sets their bottom two cards to visible, preparing for the start of the game
@@ -117,7 +106,6 @@ function LobbyContent({lobbyID}){
                     const result = await axios.post(backendSite + `getThisUserIndex/${lobbyID}`, {nickname: nicknameRef.current})
                     if (result.data !== -1){
                         setThisUser(result.data)
-                        thisUserRef.current = result.data;
                     }
                 }
                 catch(e){
@@ -136,7 +124,6 @@ function LobbyContent({lobbyID}){
                     const result = await axios.post(backendSite + `getThisUserIndex/${lobbyID}`, {nickname: nicknameRef.current})
                     if (result.data !== -1){
                         setThisUser(result.data)
-                        thisUserRef.current = result.data;
                     }
                 }
                 catch(e){
@@ -146,7 +133,6 @@ function LobbyContent({lobbyID}){
             }
         }
         updateUserIndex()
-
     }, [playerLeaveFlag])
 
     /**
@@ -182,16 +168,20 @@ function LobbyContent({lobbyID}){
                         setHasNickname={setHasNickname}
                     />)}
 
-                {exists && !loading && hasNickname && (<LobbyReadyUpView/>)}
+                {exists && !loading && hasNickname && (<LobbyReadyUpView messageArray={messageArray}/>)}
             </div>
         </div>
         )
     }
     else{
         return(
-            <TestPage 
-                players={playerCount} 
-                thisUser = {thisUser}/>
+            <GamePage
+                lobbyID={lobbyID}
+                players = {playerCount} 
+                thisUser = {thisUser}
+                setGameScreen = {setGameScreen}
+                cards={cards}
+                setCards={setCards}/>
         )
     }
 }

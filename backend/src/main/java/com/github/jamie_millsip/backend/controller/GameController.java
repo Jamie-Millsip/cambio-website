@@ -225,4 +225,14 @@ public class GameController {
         }
     }
 
+
+    @RequestMapping("/cambio/{lobbyID}")
+    public void callCambio (@PathVariable String lobbyID){
+        triggerBroadcast(lobbyID, new GameSocketResponse("changePlayer", null, 0));
+    }
+
+    @RequestMapping("endGame/{lobbyID}")
+    public void endGame(@PathVariable String lobbyID){
+        triggerBroadcast(lobbyID, new GameSocketResponse("endGame", null, 0));
+    }
 }
