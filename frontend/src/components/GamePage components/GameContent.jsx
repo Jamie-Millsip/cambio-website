@@ -6,6 +6,7 @@ import GameContext from "../../pages/GameContext";
 import axios from "axios";
 import Stomp from 'stompjs';
 import Card from "./GameContent components/Card";
+import EndGamePage from "../../pages/EndGamePage";
 
 /**
  * this page is used to display the game board and cards
@@ -28,6 +29,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     const [message, setMessage] = useState("")
     const [cambio, setCambio] = useState(false)
     const [cambioStyle, setCambioStyle] = useState("")
+    const [endGameScreen, setEndGameScreen] = useState(false)
 
     const tableRef = useRef(null)
 
@@ -204,7 +206,8 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         console.log("cards at end: ", cards)
         await trigger(triggerVar+1)
         await sleep(5000)
-        setGameScreen(false)
+        setEndGameScreen(true)
+        //setGameScreen(false)
     }
 
     // when the game starts, update the button text and resets its visual indicator
@@ -216,81 +219,87 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     }, [gameStarted])
 
 
-
-  return (
-    <div className = "body-container" key = "body">
-        <div ref={tableRef} className="game-table" style = {{transform: `rotate(${tableRotation}deg)`}}>
-            <div className="card-row-container" style = {{transform: `rotate(${centerCardRotation}deg) scale(${centerScaleFactor})`}}>
-                <div className="card-row">
-                    {// places 2 cards in the middle of the game table to act as a draw and discard pile
-                    Array.from({length: 2}).map((_, index) =>{
-                        return(
-                            <Card key={`centerCard-${index}`}
-                            thisUser={thisUser}
-                            cardIndex={index}
-                            playerIndex={-1}
-                            row={-1} 
-                            col={-1}
-                            cards={cards}/>
-                        )
-                    })}
-                </div>
-                <div className="button-row">
-                    {/* Creates 2 buttons below the draw / discard pile */}
-                    <button 
-                        className=
-                            {`game-button 
-                            ${readyButtonStyle} 
-                            ${buttonMessage === "Cambio" ? cambioStyle : "" } `} 
-                        onClick=
-                            { buttonMessage === "Ready" ? () => gameReadyUp() 
-                            : buttonMessage === "Swap" ? () => swapCards(true) 
-                            : buttonMessage === "Cambio" ? () => cambioClick() 
-                            : null
-                    }>
-                        {buttonMessage}
-                    </button>
-                    {(state === 5 || state === 4) && thisUser == currentTurn && (
-                        <button 
-                            className=
-                                {`game-button 
-                                ${readyButtonStyle}`} 
-                            onClick=
-                                {() => swapCards(false)
-                        }>
-                            keep
-                        </button>
-                    )}
-                </div>
-            </div>
-            {// iterates through every player, ensuring each player has a hand, and updating the position of the cards according to the player index
-            Array.from({ length: players }).map((_, index) => {
-                const angle = (index * 360) / players + 90;
-                return (
-                    <div className = {`card-row-container`} key={`card-row-container-${index}`} style = {{transform: `rotate(${angle}deg) translate(${radius}%) rotate(-90deg) ${scale}`}}>
-                        {// splits the hand of cards into 3 rows
-                        Array.from({length: 3}).map((_, row) => (
-                        <div className = {`card-row`} key={`card-row-${row}-${index}`}>
-                            {// creates 2 cards per row of a player's hand
-                            Array.from({length: 2}).map((_, col) => {
+    if (!endGameScreen){
+        return (
+            <div className = "body-container" key = "body">
+                <div ref={tableRef} className="game-table" style = {{transform: `rotate(${tableRotation}deg)`}}>
+                    <div className="card-row-container" style = {{transform: `rotate(${centerCardRotation}deg) scale(${centerScaleFactor})`}}>
+                        <div className="card-row">
+                            {// places 2 cards in the middle of the game table to act as a draw and discard pile
+                            Array.from({length: 2}).map((_, index) =>{
                                 return(
-                                    <Card key={`card-${index}-${row}-${col}`} 
-                                        thisUser={thisUser} 
-                                        cardIndex={index+2} 
-                                        playerIndex={index}
-                                        row={row}
-                                        col={col}
-                                        cards={cards}/>
+                                    <Card key={`centerCard-${index}`}
+                                    thisUser={thisUser}
+                                    cardIndex={index}
+                                    playerIndex={-1}
+                                    row={-1} 
+                                    col={-1}
+                                    cards={cards}/>
                                 )
                             })}
-                        </div>  
-                        ))}
+                        </div>
+                        <div className="button-row">
+                            {/* Creates 2 buttons below the draw / discard pile */}
+                            <button 
+                                className=
+                                {`game-button 
+                                    ${readyButtonStyle} 
+                                    ${buttonMessage === "Cambio" ? cambioStyle : "" } `} 
+                                onClick=
+                                { buttonMessage === "Ready" ? () => gameReadyUp() 
+                                    : buttonMessage === "Swap" ? () => swapCards(true) 
+                                    : buttonMessage === "Cambio" ? () => cambioClick() 
+                                    : null
+                                }>
+                                {buttonMessage}
+                            </button>
+                            {(state === 5 || state === 4) && thisUser == currentTurn && (
+                                <button 
+                                className=
+                                {`game-button 
+                                    ${readyButtonStyle}`} 
+                                    onClick=
+                                    {() => swapCards(false)
+                                    }>
+                                    keep
+                                </button>
+                            )}
+                        </div>
                     </div>
-                );
-            })}
-        </div>
-    </div>
-  );
+                    {// iterates through every player, ensuring each player has a hand, and updating the position of the cards according to the player index
+                    Array.from({ length: players }).map((_, index) => {
+                        const angle = (index * 360) / players + 90;
+                        return (
+                            <div className = {`card-row-container`} key={`card-row-container-${index}`} style = {{transform: `rotate(${angle}deg) translate(${radius}%) rotate(-90deg) ${scale}`}}>
+                                {// splits the hand of cards into 3 rows
+                                Array.from({length: 3}).map((_, row) => (
+                                    <div className = {`card-row`} key={`card-row-${row}-${index}`}>
+                                    {// creates 2 cards per row of a player's hand
+                                    Array.from({length: 2}).map((_, col) => {
+                                        return(
+                                            <Card key={`card-${index}-${row}-${col}`} 
+                                            thisUser={thisUser} 
+                                            cardIndex={index+2} 
+                                            playerIndex={index}
+                                            row={row}
+                                            col={col}
+                                            cards={cards}/>
+                                        )
+                                    })}
+                                </div>  
+                                ))}
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    }
+    else{
+        return(
+            <EndGamePage setGameScreen={setGameScreen}/>
+        );
+    }
 };
 
 export default GameContent;
