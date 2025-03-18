@@ -9,12 +9,13 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist -b main"
+    "deploy": "gh-pages -d dist -b main --dest frontend/dist"
   },
   "dependencies": {
     "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "gh-pages": "^6.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.5",
@@ -40,5 +41,4 @@
     "frontend"
   ],
   "homepage": "https://jamie-millsip.github.io/Cambio-Website/"
-
 }
