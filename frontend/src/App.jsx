@@ -12,7 +12,7 @@ function App(){
   return(
     <>
       <Header/>
-        <Router>
+        <Router basename='Cambio-Website'>
           <Routes>
             <Route path = "/" element = {<HomePage/>}/>
             <Route path = "/lobby/:lobbyID" element = {<LobbyPage/>}/>
