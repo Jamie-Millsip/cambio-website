@@ -7,5 +7,5 @@ export default defineConfig({
   define: {
     global: 'window',
   },
-  base: `/frontend/` 
+  base: `/Cambio-Website/frontend/` 
 })
