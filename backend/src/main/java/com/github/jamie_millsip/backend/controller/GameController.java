@@ -3,6 +3,7 @@ package com.github.jamie_millsip.backend.controller;
 
 import com.github.jamie_millsip.backend.model.DTO.*;
 import com.github.jamie_millsip.backend.model.Lobby;
+import com.github.jamie_millsip.backend.model.Player;
 import com.github.jamie_millsip.backend.model.SharedService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,20 +66,18 @@ public class GameController {
                     cards.get(pile).removeFirst();
                     temp.getCard().setVisible(true);
                     cards.get(1).addFirst(temp);
-
-                    if (cards.get(1).getFirst().getCard().getValue() > 6 && cards.get(1).getFirst().getCard().getValue() < 13 && cardsIndex == 0){
-                        // i am certain there is a better way of doing this, but for now this is fine
-                        System.out.println("SPECIAL CARD");
-                        if (cards.get(1).getFirst().getCard().getValue() < 9){
+                    int cardValue = cards.get(1).getFirst().getCard().getValue();
+                    if (cardValue > 6 && cardValue < 13 && cardsIndex == 0){
+                        if (cardValue < 9){
                             ability = 2;
                         }
-                        else if (cards.get(1).getFirst().getCard().getValue() < 11 ){
+                        else if (cardValue < 11 ){
                             ability = 3;
                         }
-                        else if (cards.get(1).getFirst().getCard().getValue() == 11){
+                        else if (cardValue == 11){
                             ability = 4;
                         }
-                        else if (cards.get(1).getFirst().getCard().getValue() == 12){
+                        else{
                             ability = 5;
                         }
                     }
@@ -176,7 +175,8 @@ public class GameController {
 
     public CardResponse findSwapCard (PositionData posData, ArrayList<ArrayList<CardResponse>> cards){
         for (CardResponse card : cards.get(posData.getPlayer() + 2)){
-            if (card.getRow() == posData.getRow() && card.getCol() == posData.getColumn()) {
+
+            if (card!= null && (card.getRow() == posData.getRow() && card.getCol() == posData.getColumn())){
              return new CardResponse(card.getCard(), card.getPlayer(), card.getRow(), card.getCol());
             }
         }
@@ -225,4 +225,40 @@ public class GameController {
         }
     }
 
+
+    @RequestMapping("/cambio/{lobbyID}")
+    public void callCambio (@PathVariable String lobbyID){
+        triggerBroadcast(lobbyID, new GameSocketResponse("changePlayer", null, 0));
+    }
+
+    @RequestMapping("/endGame/{lobbyID}")
+    public void endGame(@PathVariable String lobbyID){
+        triggerBroadcast(lobbyID, new GameSocketResponse("endGame", null, 0));
+    }
+
+    @RequestMapping("/getGameResults/{lobbyID}")
+    public GameResults getGameResults(@PathVariable String lobbyID){
+        for (Lobby lobby : lobbyList) {
+            if (lobby.getId().equals(lobbyID)) {
+                ArrayList<String> players = new ArrayList<>();
+                ArrayList<Integer> scores = new ArrayList<>();
+                for (Player player : lobby.getAllPlayers()){
+                    players.add(player.getNickname());
+                }
+                ArrayList<ArrayList<CardResponse>> cards = lobby.getCards();
+                for (int x = 2; x < cards.size(); x++) {
+                    int score = 0;
+                    for (int y = 0; y < cards.get(x).size(); y++) {
+                        if (cards.get(x).get(y) != null){
+                            score += cards.get(x).get(y).getCard().getValue();
+                        }
+                    }
+                    scores.add(score);
+                }
+
+                return new GameResults(players, scores);
+            }
+        }
+        return null;
+    }
 }

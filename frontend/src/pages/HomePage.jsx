@@ -5,22 +5,30 @@ import axios from 'axios';
 import "./Body.css"
 import { useNavigate } from 'react-router-dom';
 
-
+/**
+ * page to display main menu contents
+ * 
+ * @returns HomeContent component, providing the user the means to input a lobby ID to join an existing lobby,
+ * or create a new lobby
+ */
 function HomePage(){
   
   const [lobbyID, setLobbyID] = useState("");
   const [errMessage, setErrMessage] = useState("");
   const navigate = useNavigate();
 
-
+  /**
+   * Handles the response to users clicking on the button to enter a lobby after inputting a lobby ID
+   * 
+   * updates errMessage var to display an error message if the backend rejects the lobby ID
+   * 
+   * if the lobby ID is valid, navigates to the lobby page
+   */
   const handleClick = async () => {
     try{
-      const result = await axios.post(`http://localhost:8080/verifyHomePageData`, {id : lobbyID});
+      const result = await axios.get(`http://localhost:8080/verifyHomePageData`, {id : lobbyID});
       if (result.data === 0){
         setErrMessage("ERROR: No lobby Found");
-      }
-      else if (result.data === 1){
-        setErrMessage("ERROR: Name Invalid or Unavailable")
       }
       else if (result.data === 2){
         setErrMessage("ERROR: Incorrect Format");
@@ -35,18 +43,18 @@ function HomePage(){
 }
 
   
-        return(
-            <div className='body-container'>
-              <div className='contents-container'>
-                <HomeContent 
-                lobbyID={lobbyID} 
-                setLobbyID={setLobbyID} 
-                buttonResponse = {handleClick} 
-                setErrMessage={setErrMessage}/>
-                {errMessage}
-              </div>
-            </div>
-        )
+  return(
+    <div className='body-container'>
+      <div className='contents-container'>
+        <HomeContent 
+          lobbyID={lobbyID} 
+          setLobbyID={setLobbyID} 
+          buttonResponse = {handleClick} 
+        />
+          {errMessage}
+      </div>
+    </div>
+  )
 }
 
 export default HomePage;

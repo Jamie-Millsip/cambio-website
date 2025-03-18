@@ -6,20 +6,18 @@ a website for playing the card game "cambio"
 
 - finish implementing card flipping
 
-  - ensure a player can only flip a card if that card's value is equal to the value of the top card of the discard pile -- done
-  - ensure a player can only flip a card if they were not player who most recently discarded -- NEEDS WORK
-    - currently what happens when a card is clicked is dependent on state (ie if state === 0 drawcard)
-    - this prevents the flipcard function from ever running as the the if state condition is always met
-    - need to create bools for each state (ie canDiscard, canDraw, etc) to ensure that only cards that actually can do that action enter that func
-      and the rest are able to enter the flipCard func
   - ensure only one card can be flipped for each discarded card
+  - when flipping another persons card, allow the player to give that person one of their cards
 
-- add functionality to "cambio" button
+- finish implementing what happens at end of game
 
-  - allow players to click the cambio button to end the game
-  - add a menu for the end of the game to count the totals and declare a winner
-    - let this menu have a button to redirect all players back to the lobby page
-      - reset all variables used within the game to ensure the next round runs correctly
+  - currently:
+    - after the game ends, all cards become visible for 5 seconds to allow players to view their cards
+  - need to add:
+    - end game menu that:
+      - counts each players points and ranks them from in ascending order
+      - display the winner of the game
+      - includes a lobby button that returns the users back to the lobby to start another game
 
 - link game to a database
 
@@ -29,9 +27,12 @@ a website for playing the card game "cambio"
 
 - move backend calls & websocket connections to seperate API files
 
+  - better for maintainability as removes bloat from other files and makes the code more readable
+
 - refactor css to improve the look of the webpage
 
 - research ways of reducing race conditions when calling backend functions (ie when flipping cards)
+- allow dynamic scaling of webpage dependent on device type (desktop, tablet, phone)
 
 ## HOW TO PLAY
 
@@ -91,3 +92,10 @@ flipping cards:
 - if the card flip is incorrect:
   - the player that flipped is given a new card from the draw pile
   - if the player now has more than 6 cards, they are out of the game
+
+after the game ends:
+
+- each player's score is tallyed up and a winner is decided
+- if the player called cambio, they need a score exclusively lower than all other players to win
+- if the player did not call cambio, they need a score equal to or lower than all other players to win
+- ie in a game with 4 players who all ended with total 2, there would be 3 winners (every player who did not call cambio)

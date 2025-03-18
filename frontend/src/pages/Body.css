@@ -33,6 +33,24 @@
     box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.1);
 }
 
+
+.endgame-row-container {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+}
+
+.endgame-col-container {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.endgame-row-container-text {
+    padding: 1rem;
+}
+
 .title{
     font-weight: bold;
     font-size: 1.6em;

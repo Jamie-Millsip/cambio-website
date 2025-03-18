@@ -119,14 +119,10 @@ public class LobbyController {
 
     public void enterGameView(Lobby lobby){
         lobby.initCards();
-        triggerBroadcast(lobby.getId(), new LobbySocketResponse("enterGameView", ""));
-        cleanUpAfterEnterGameView(lobby);
-    }
-
-    public void cleanUpAfterEnterGameView(Lobby lobby){
         for (Player p : lobby.getAllPlayers()) {
             p.setLobbyReady(false);
         }
+        triggerBroadcast(lobby.getId(), new LobbySocketResponse("enterGameView", getPlayersReady(lobby.getId())));
     }
 
     @RequestMapping("/gameReadyUp")
@@ -154,6 +150,9 @@ public class LobbyController {
             }
         }
         if (allReadyUp) {
+            for (Player p : lobby.getAllPlayers()) {
+                p.setGameReady(false);
+            }
             triggerGameBroadcast(lobby.getId(), new GameSocketResponse("gameStart", ""));
         }
     }
