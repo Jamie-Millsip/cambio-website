@@ -142,15 +142,6 @@
     box-shadow: 0rem 0rem 0.5rem 0.2rem rgb(0, 127, 212);
 }
 
-@keyframes selected-card {
-    to{
-        transform: scale(1.3);
-    }
-    animationend{
-    }
-
-}
-
 
 .hidden{
     display: none;
