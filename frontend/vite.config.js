@@ -10,5 +10,5 @@ export default defineConfig({
   build: {
     outDir: `dist`
   },
-  base: `/Cambio-Website/frontend/` 
+  base: `/Cambio-Website/` 
 })
