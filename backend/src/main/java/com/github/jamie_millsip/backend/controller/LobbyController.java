@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://jamie-millsip.github.io")
 public class LobbyController {
 
     @Autowired
