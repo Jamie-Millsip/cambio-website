@@ -8,7 +8,7 @@ export default defineConfig({
     global: 'window',
   },
   build: {
-    outDir: `frontend/dist`
+    outDir: `dist`
   },
   base: `/Cambio-Website/frontend` 
 })
