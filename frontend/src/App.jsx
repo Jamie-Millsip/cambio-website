@@ -12,7 +12,7 @@ function App(){
   return(
     <>
       <Header/>
-        <Router>
+        <Router basename='https://jamie-millsip.github.io/Cambio-Website'>
           <Routes>
             <Route path = "/" element = {<HomePage/>}/>
             <Route path = "/lobby/:lobbyID" element = {<LobbyPage/>}/>
