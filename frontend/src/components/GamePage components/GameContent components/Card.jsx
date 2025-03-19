@@ -180,13 +180,6 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         return visibleCard ? visibleCard : null
     }
 
-
-    useEffect(()=> {
-        if (card && card.card){
-            card.card.suit === "Diamonds" || card.card.suit === "Hearts" ? setSuit("red-card") : setSuit("black-card")
-        }
-    }, [card])
-
     // updates the card styles when gameState changes
     useEffect(()=>{
         // if it is this user's turn
@@ -221,6 +214,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
                 </div>
         )
     }
+    
     else if (card.card.visible == false){
         return(
             <button 
@@ -230,6 +224,8 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
             </button>
         )
     }
+    
+    card.card.suit === "Diamonds" || card.card.suit === "Hearts" ? setSuit("red-card") : setSuit("black-card")
     
     return(
         <button
