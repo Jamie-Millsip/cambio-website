@@ -26,7 +26,9 @@ function HomePage(){
    */
   const handleClick = async () => {
     try{
-      const result = await axios.get(`http://localhost:8080/verifyHomePageData`, {id : lobbyID});
+      const result = await axios.get("http://localhost:8080/verifyHomePageData", {
+        params: { id: lobbyID }
+      });
       if (result.data === 0){
         setErrMessage("ERROR: No lobby Found");
       }
