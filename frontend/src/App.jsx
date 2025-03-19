@@ -2,7 +2,7 @@ import HomePage from './pages/HomePage';
 import LobbyPage from './pages/Lobbypage';
 import Header from "./components/header/Header.jsx";
 import Footer from "./components/footer/Footer.jsx";
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {HashRouter as Router, Route, Routes} from 'react-router-dom';
 
 function App(){
 
@@ -12,7 +12,7 @@ function App(){
   return(
     <>
       <Header/>
-        <Router basename='/Cambio-Website'>
+        <Router>
           <Routes>
             <Route path = "/" element = {<HomePage/>}/>
             <Route path = "/lobby/:lobbyID" element = {<LobbyPage/>}/>
