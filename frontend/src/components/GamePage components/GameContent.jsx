@@ -184,13 +184,15 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
     const cambioClick = async () => {
         console.log("aADWAHDUIAEGFH")
-        try{
-            setCambio(true);
-            console.log("state", state)
-            await axios.post(backendSite + `cambio/${lobbyID}`)
-        }
-        catch(e){
-            console.error("ERROR: ", e)
+        if (thisUser === currentTurn && state === 0){
+            try{
+                setCambio(true);
+                console.log("state", state)
+                await axios.post(backendSite + `cambio/${lobbyID}`)
+            }
+            catch(e){
+                console.error("ERROR: ", e)
+            }
         }
     }
 
