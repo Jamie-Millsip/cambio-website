@@ -76,7 +76,7 @@ function LobbyContent({lobbyID}){
         );
     };
 
-    useRef(()=>{
+    useEffect(()=>{
         if (cards){
             for (let x = 2; x < cards.length; x++){
                 for (let y = 0; y < cards[x].length; y++){
