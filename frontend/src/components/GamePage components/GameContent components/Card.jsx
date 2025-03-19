@@ -225,7 +225,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         )
     }
     
-    //card.card.suit === "Diamonds" || card.card.suit === "Hearts" ? setSuit("red-card") : setSuit("black-card")
+    (card.card.suit === "Diamonds" || card.card.suit === "Hearts") ? setSuit("red-card") : setSuit("black-card")
     
     return(
         <button
