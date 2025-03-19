@@ -10,7 +10,7 @@ export function LobbyProvider({children}){
     const [lobbyID, setLobbyID] = useState("");
     const [nickname, setNickname] = useState("");
     const [selectedSwapCards, setSelectedSwapCards] = useState([])
-    const backendSite = "https://cambio-backend-2smc.onrender.com/api/";
+    const backendSite = "https://cambio-backend-2smc.onrender.com/";
 
     return(
         <LobbyContext.Provider value = {{

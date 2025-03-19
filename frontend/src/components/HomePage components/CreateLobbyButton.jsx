@@ -8,7 +8,7 @@ function CreateLobbyButton({}){
 
     const navigate = useNavigate();
     
-    const backendSite =  "https://cambio-backend-2smc.onrender.com/api"
+    const backendSite =  "https://cambio-backend-2smc.onrender.com"
     /**
      * when a user clicks on the create lobby button, sends a backend request to create the lobby
      * then retrieves the lobbyID from the backend and navigates to the new lobby page

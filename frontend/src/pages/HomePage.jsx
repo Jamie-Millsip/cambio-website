@@ -17,7 +17,7 @@ function HomePage(){
   const [errMessage, setErrMessage] = useState("");
   const navigate = useNavigate();
 
-  const backendSite = "https://cambio-backend-2smc.onrender.com/api/"
+  const backendSite = "https://cambio-backend-2smc.onrender.com/"
 
   /**
    * Handles the response to users clicking on the button to enter a lobby after inputting a lobby ID
