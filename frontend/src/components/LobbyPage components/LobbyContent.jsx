@@ -135,7 +135,7 @@ function LobbyContent({lobbyID}){
     useEffect( () => {
         const updateUserIndex = async () => {
             console.log("userIndex to be updated")
-            if (hasNickname){
+            if (hasNickname && playerLeaveFlag){
                 try{
                     const result = await axios.post(backendSite + `getThisUserIndex/${lobbyID}`, {nickname: nicknameRef.current})
                     if (result.data !== -1){
