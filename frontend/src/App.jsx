@@ -9,10 +9,13 @@ function App(){
   // route the different pages of the website
   // each lobby has unique lobbyID at end of URL
 
+  // test test
+  console.log(1)
+
   return(
     <>
       <Header/>
-        <Router basename='Cambio-Website'>
+        <Router>
           <Routes>
             <Route path = "/" element = {<HomePage/>}/>
             <Route path = "/lobby/:lobbyID" element = {<LobbyPage/>}/>
