@@ -44,7 +44,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
             );
             setThisCard(foundCard || null);
         }
-    }, [cards, cardIndex, playerIndex, row, col]);
+    }, [cards]);
 
     useEffect(()=>{
         // 
@@ -58,7 +58,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         thisUser === currentTurn && ((state === 4 || state === 5) && selectedSwapCards.length < 2) ? setCanSwap(true) : setCanSwap(false)
 
         !canDraw && !canDiscard && !canLook && !canSwap && canFlip
-    }, [state, thisUser, currentTurn, cardIndex, selectedPile,, playerIndex])
+    }, [state, thisUser, currentTurn, cardIndex, selectedPile, playerIndex])
 
 
 
