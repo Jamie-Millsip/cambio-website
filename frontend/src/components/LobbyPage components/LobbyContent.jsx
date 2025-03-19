@@ -15,6 +15,8 @@ function LobbyContent({lobbyID}){
         backendSite,
     } = useContext(LobbyContext);
 
+
+        const [triggerVar, trigger] = useState(0)
         const [messageArray, setMessageArray] = useState([])
         const [cards, setCards] = useState([])
         const [exists, setExists] = useState(false)
@@ -82,6 +84,7 @@ function LobbyContent({lobbyID}){
                 }
             }
         }
+        trigger(triggerVar+1)
     }, [cards])
     
     // once all player's have readied up, fetches the cards from the backend to correctly display the game board
