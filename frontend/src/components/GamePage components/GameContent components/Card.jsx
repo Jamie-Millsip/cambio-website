@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import LobbyContext from "../../../pages/LobbyContext";
 import axios from "axios";
 import GameContext from "../../../pages/GameContext";
-import "../../../pages/Game.css";
 /**
  * this component is responsible for each individual game card, identifying the correct way of displaying the card, and for correctly dealing
  * with user inputs relating to the cards (ie clicking them)
@@ -19,7 +18,6 @@ import "../../../pages/Game.css";
  */
 function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
 
-    console.log("")
 
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
     
@@ -227,11 +225,12 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         )
     }
     
-    (card.card.suit === "Diamonds" || card.card.suit === "Hearts") ? setSuit("red-card") : setSuit("black-card")
+    //(card.card.suit === "Diamonds" || card.card.suit === "Hearts") ? setSuit("red-card") : setSuit("black-card")
     
     return(
         <button
-            className={`game-card face-up ${suit} ${currentTurnStyle}`} 
+            className={`game-card face-up ${suit} ${currentTurnStyle}`}
+            style={{color: (card.card.suit === "Diamonds" || card.card.suit === "Hearts") ? "red" : "black"}} 
             onClick={handleClick}>
             <span className="card-text"> {card.card.face} </span>            
         </button> 

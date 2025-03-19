@@ -17,6 +17,7 @@ import java.util.Objects;
 
 @RestController
 @CrossOrigin(origins = "https://jamie-millsip.github.io")
+//@CrossOrigin(origins = "http://localhost:5173")
 public class GameController {
 
 
@@ -133,6 +134,7 @@ public class GameController {
 
     @RequestMapping("/swapCards/{lobbyID}")
     public void swapCards(@PathVariable String lobbyID, @RequestBody SwapRequest swapRequest) {
+        System.out.println("WEKOIEFJSOFHNEIFBAK");
         // if the user decided to swap the cards
         ArrayList<CardResponse> swapCards = new ArrayList<>();
         boolean swap = swapRequest.getSwap();

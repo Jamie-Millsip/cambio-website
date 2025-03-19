@@ -13,6 +13,7 @@ function LobbyContent({lobbyID}){
     const {
         setLobbyID,
         backendSite,
+        webSocketSite
     } = useContext(LobbyContext);
 
 
@@ -29,8 +30,6 @@ function LobbyContent({lobbyID}){
         const [thisUser, setThisUser] = useState(-1); 
         const [playerLeaveFlag, setPlayerLeaveFlag] = useState(false)
         
-        const webSocket = 'wss://cambio-backend-2smc.onrender.com/ws/lobby'
-
     // as lobbyID is taken from the URL and passed into lobbyContent,
     // it needs to be saved to the useContext for use in other files
     useEffect(()=>(
@@ -39,7 +38,7 @@ function LobbyContent({lobbyID}){
 
     // manages a websocket connection to the backend and handles any broadcasts sent from the backend
     useEffect(() => {
-        const socket = new WebSocket(webSocket);
+        const socket = new WebSocket(webSocketSite);
         const client = Stomp.over(socket);
 
         client.debug = () => {};
