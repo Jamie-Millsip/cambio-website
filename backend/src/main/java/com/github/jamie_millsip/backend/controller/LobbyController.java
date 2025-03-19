@@ -45,11 +45,11 @@ public class LobbyController {
     }
 
     @RequestMapping("/verifyHomePageData")
-    public int LobbyExists(@RequestBody String id) {
-        System.out.println("LOBBY ID: " + id);
-        if(!Pattern.matches("[0-9]+", id) || id.length() != 5) return 2;
-        for (Lobby lobby : lobbyList) {
-            if (lobby.getId().equals(id)) {
+    public int LobbyExists(@RequestBody Lobby lobby) {
+        System.out.println("LOBBY ID: " + lobby.getId());
+        if(!Pattern.matches("[0-9]+", lobby.getId()) || lobby.getId().length() != 5) return 2;
+        for (Lobby l : lobbyList) {
+            if (lobby.getId().equals(l.getId())) {
                 return 3;
             }
         }
