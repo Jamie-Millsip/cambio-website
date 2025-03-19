@@ -73,6 +73,16 @@ function LobbyContent({lobbyID}){
             (nicknameRef.current)
         );
     };
+
+    useRef(()=>{
+        if (cards){
+            for (let x = 2; x < cards.length; x++){
+                for (let y = 0; y < cards[x].length; y++){
+                    cards[x][y].card.visible = true;
+                }
+            }
+        }
+    }, [cards])
     
     // once all player's have readied up, fetches the cards from the backend to correctly display the game board
     useEffect( ()=>{
