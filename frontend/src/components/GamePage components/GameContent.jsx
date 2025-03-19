@@ -41,7 +41,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     let centerCardRotation = -tableRotation
     let scale = `scale(${scaleFactor})`;
     
-    const webSocket = 'ws://localhost:8080/ws/lobby'
+    const webSocket = 'wss://cambio-backend-2smc.onrender.com/ws/lobby'
         // useEffect to connect to websocket and to handle any broadcasts sent from that websocket
         useEffect(() => {
             const socket = new WebSocket(webSocket);
