@@ -2,6 +2,10 @@
 
 a website for playing the card game "cambio"
 
+# READ
+
+Because the site is currently hosted on github pages, which only allows static webpages, please do not attempt to navigate through the webpage by manipulating the URL as this will not work (unless you are navigating back to the home menu at "https://jamie-millsip.github.io/Cambio-Website/"), instead use the provided buttons
+
 ## TODO
 
 - finish implementing card flipping

@@ -206,8 +206,15 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         console.log("cards at end: ", cards)
         await trigger(triggerVar+1)
         await sleep(5000)
+        for (let x = 2; x < cards.length; x++){
+            for (let y = 0; y < cards[x].length; y++){
+                if (cards[x][y] !== null){
+                    cards[x][y].card.visible = false;
+                }
+            }
+        }
+        trigger(triggerVar+1)
         setEndGameScreen(true)
-        //setGameScreen(false)
     }
 
     // when the game starts, update the button text and resets its visual indicator
