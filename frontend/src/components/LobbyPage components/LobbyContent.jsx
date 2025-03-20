@@ -13,8 +13,11 @@ function LobbyContent({lobbyID}){
     const {
         setLobbyID,
         backendSite,
+        webSocketSite
     } = useContext(LobbyContext);
 
+
+        const [triggerVar, trigger] = useState(0)
         const [messageArray, setMessageArray] = useState([])
         const [cards, setCards] = useState([])
         const [exists, setExists] = useState(false)
@@ -27,8 +30,6 @@ function LobbyContent({lobbyID}){
         const [thisUser, setThisUser] = useState(-1); 
         const [playerLeaveFlag, setPlayerLeaveFlag] = useState(false)
         
-        const webSocket = 'ws://localhost:8080/ws/lobby'
-
     // as lobbyID is taken from the URL and passed into lobbyContent,
     // it needs to be saved to the useContext for use in other files
     useEffect(()=>(
@@ -37,7 +38,7 @@ function LobbyContent({lobbyID}){
 
     // manages a websocket connection to the backend and handles any broadcasts sent from the backend
     useEffect(() => {
-        const socket = new WebSocket(webSocket);
+        const socket = new WebSocket(webSocketSite);
         const client = Stomp.over(socket);
 
         client.debug = () => {};
@@ -69,11 +70,11 @@ function LobbyContent({lobbyID}){
      */
     const handleUnload = () => {
         navigator.sendBeacon(
-            backendSite + `removePlayer/${lobbyID}`,
+            backendSite + `exitLobby/${lobbyID}`,
             (nicknameRef.current)
         );
     };
-    
+
     // once all player's have readied up, fetches the cards from the backend to correctly display the game board
     useEffect( ()=>{
         const gameStartFunc = async () => {
@@ -119,7 +120,7 @@ function LobbyContent({lobbyID}){
     useEffect( () => {
         const updateUserIndex = async () => {
             console.log("userIndex to be updated")
-            if (hasNickname){
+            if (hasNickname && playerLeaveFlag){
                 try{
                     const result = await axios.post(backendSite + `getThisUserIndex/${lobbyID}`, {nickname: nicknameRef.current})
                     if (result.data !== -1){

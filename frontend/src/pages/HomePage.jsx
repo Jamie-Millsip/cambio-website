@@ -17,6 +17,9 @@ function HomePage(){
   const [errMessage, setErrMessage] = useState("");
   const navigate = useNavigate();
 
+  const backendSite = "https://cambio-backend-2smc.onrender.com/"
+  //const backendSite = "http://localhost:8080/"
+
   /**
    * Handles the response to users clicking on the button to enter a lobby after inputting a lobby ID
    * 
@@ -26,7 +29,8 @@ function HomePage(){
    */
   const handleClick = async () => {
     try{
-      const result = await axios.get(`http://localhost:8080/verifyHomePageData`, {id : lobbyID});
+      const result = await axios.post(backendSite + "verifyHomePageData", {id: lobbyID});
+      console.log("RESULTS OF VERIFY: ", result.data)
       if (result.data === 0){
         setErrMessage("ERROR: No lobby Found");
       }

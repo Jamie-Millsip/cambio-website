@@ -2,6 +2,7 @@ package com.github.jamie_millsip.backend.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.socket.config.annotation.*;
 
 
@@ -19,6 +20,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         System.out.println("Registering stomp endpoints");
-        registry.addEndpoint("/ws/lobby").setAllowedOrigins("http://localhost:5173");
+        registry.addEndpoint("/ws/lobby")
+                //.setAllowedOrigins("http://localhost:5173");
+                .setAllowedOrigins("https://jamie-millsip.github.io");
     }
 }

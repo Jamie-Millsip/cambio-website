@@ -44,7 +44,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
             );
             setThisCard(foundCard || null);
         }
-    }, [cards, cardIndex, playerIndex, row, col]);
+    }, [cards]);
 
     useEffect(()=>{
         // 
@@ -58,7 +58,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         thisUser === currentTurn && ((state === 4 || state === 5) && selectedSwapCards.length < 2) ? setCanSwap(true) : setCanSwap(false)
 
         !canDraw && !canDiscard && !canLook && !canSwap && canFlip
-    }, [state, thisUser, currentTurn, cardIndex, selectedPile,, playerIndex])
+    }, [state, thisUser, currentTurn, cardIndex, selectedPile, playerIndex])
 
 
 
@@ -180,13 +180,6 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         return visibleCard ? visibleCard : null
     }
 
-
-    useEffect(()=> {
-        if (card && card.card){
-            card.card.suit === "Diamonds" || card.card.suit === "Hearts" ? setSuit("red-card") : setSuit("black-card")
-        }
-    }, [card])
-
     // updates the card styles when gameState changes
     useEffect(()=>{
         // if it is this user's turn
@@ -221,6 +214,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
                 </div>
         )
     }
+    
     else if (card.card.visible == false){
         return(
             <button 
@@ -231,9 +225,12 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         )
     }
     
+    //(card.card.suit === "Diamonds" || card.card.suit === "Hearts") ? setSuit("red-card") : setSuit("black-card")
+    
     return(
         <button
-            className={`game-card face-up ${suit} ${currentTurnStyle}`} 
+            className={`game-card face-up ${suit} ${currentTurnStyle}`}
+            style={{color: (card.card.suit === "Diamonds" || card.card.suit === "Hearts") ? "red" : "black"}} 
             onClick={handleClick}>
             <span className="card-text"> {card.card.face} </span>            
         </button> 

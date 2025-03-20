@@ -2,6 +2,12 @@
 
 a website for playing the card game "cambio"
 
+# READ
+
+this website tracks when a player leaves the site, this is to ensure lobbys only consist of current players, and to ensure the game is not stuck waiting for a player who has left the game to take their turn
+
+ad-blockers prevent this tracking from reaching the backend, and therefore need to be turned off when playing the game
+
 ## TODO
 
 - finish implementing card flipping
@@ -9,15 +15,9 @@ a website for playing the card game "cambio"
   - ensure only one card can be flipped for each discarded card
   - when flipping another persons card, allow the player to give that person one of their cards
 
-- finish implementing what happens at end of game
+- finish implementing endGame screen
 
-  - currently:
-    - after the game ends, all cards become visible for 5 seconds to allow players to view their cards
-  - need to add:
-    - end game menu that:
-      - counts each players points and ranks them from in ascending order
-      - display the winner of the game
-      - includes a lobby button that returns the users back to the lobby to start another game
+  - sort the players by results, displaying the winner first at the top of the page
 
 - link game to a database
 

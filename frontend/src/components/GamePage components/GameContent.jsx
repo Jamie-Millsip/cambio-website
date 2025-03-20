@@ -19,7 +19,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
-    const {lobbyID, nickname, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext);
+    const {lobbyID, nickname, selectedSwapCards, setSelectedSwapCards, backendSite, webSocketSite} = useContext(LobbyContext);
     const {currentTurn, setCurrentTurn, state, setState, lastToDiscard, setLastToDiscard, setCanFlip, trigger, triggerVar} = useContext(GameContext);
     const [gameStarted, setGameStarted] = useState(false)
 
@@ -41,10 +41,9 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     let centerCardRotation = -tableRotation
     let scale = `scale(${scaleFactor})`;
     
-    const webSocket = 'ws://localhost:8080/ws/lobby'
         // useEffect to connect to websocket and to handle any broadcasts sent from that websocket
         useEffect(() => {
-            const socket = new WebSocket(webSocket);
+            const socket = new WebSocket(webSocketSite);
             const client = Stomp.over(socket);
     
             client.debug = () => {};
@@ -184,13 +183,15 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
     const cambioClick = async () => {
         console.log("aADWAHDUIAEGFH")
-        try{
-            setCambio(true);
-            console.log("state", state)
-            await axios.post(backendSite + `cambio/${lobbyID}`)
-        }
-        catch(e){
-            console.error("ERROR: ", e)
+        if (thisUser === currentTurn && state === 0){
+            try{
+                setCambio(true);
+                console.log("state", state)
+                await axios.post(backendSite + `cambio/${lobbyID}`)
+            }
+            catch(e){
+                console.error("ERROR: ", e)
+            }
         }
     }
 
@@ -206,8 +207,15 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         console.log("cards at end: ", cards)
         await trigger(triggerVar+1)
         await sleep(5000)
+        for (let x = 2; x < cards.length; x++){
+            for (let y = 0; y < cards[x].length; y++){
+                if (cards[x][y] !== null){
+                    cards[x][y].card.visible = false;
+                }
+            }
+        }
+        trigger(triggerVar+1)
         setEndGameScreen(true)
-        //setGameScreen(false)
     }
 
     // when the game starts, update the button text and resets its visual indicator
@@ -227,6 +235,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                         <div className="card-row">
                             {// places 2 cards in the middle of the game table to act as a draw and discard pile
                             Array.from({length: 2}).map((_, index) =>{
+                                console.log("middle cards")
                                 return(
                                     <Card key={`centerCard-${index}`}
                                     thisUser={thisUser}
@@ -276,6 +285,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                                     <div className = {`card-row`} key={`card-row-${row}-${index}`}>
                                     {// creates 2 cards per row of a player's hand
                                     Array.from({length: 2}).map((_, col) => {
+                                        console.log("player row col: ", index, row, col)
                                         return(
                                             <Card key={`card-${index}-${row}-${col}`} 
                                             thisUser={thisUser} 

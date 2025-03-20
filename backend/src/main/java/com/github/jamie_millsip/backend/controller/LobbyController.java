@@ -17,7 +17,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://jamie-millsip.github.io")
+//@CrossOrigin(origins = "http://localhost:5173")
 public class LobbyController {
 
     @Autowired
@@ -46,10 +47,10 @@ public class LobbyController {
 
     @RequestMapping("/verifyHomePageData")
     public int LobbyExists(@RequestBody Lobby lobby) {
-        if (lobby == null || lobby.getId()== null) return 2;
+        System.out.println("LOBBY ID: " + lobby.getId());
         if(!Pattern.matches("[0-9]+", lobby.getId()) || lobby.getId().length() != 5) return 2;
         for (Lobby l : lobbyList) {
-            if (l.getId().equals(lobby.getId())) {
+            if (lobby.getId().equals(l.getId())) {
                 return 3;
             }
         }
@@ -185,6 +186,7 @@ public class LobbyController {
 
     @RequestMapping("/createLobby")
     public String createLobby(){
+        System.out.println("CREATE LOBBY");
         Random random = new Random();
         DecimalFormat codeFormat = new DecimalFormat("00000");
         int lobbyCode = random.nextInt(100000);
@@ -195,8 +197,9 @@ public class LobbyController {
     }
 
 
-        @PostMapping(value = "/removePlayer/{lobbyID}")
+        @PostMapping(value = "/exitLobby/{lobbyID}")
         public void removeUser(@PathVariable String lobbyID, @RequestBody String nickname){
+            System.out.println("REMOVE USER");
             boolean lobbyExists = false;
             for (Lobby l : lobbyList) {
                 if (l.getId().equals(lobbyID)) {
