@@ -186,6 +186,7 @@ public class LobbyController {
 
     @RequestMapping("/createLobby")
     public String createLobby(){
+        System.out.println("CREATE LOBBY");
         Random random = new Random();
         DecimalFormat codeFormat = new DecimalFormat("00000");
         int lobbyCode = random.nextInt(100000);
@@ -196,8 +197,9 @@ public class LobbyController {
     }
 
 
-        @PostMapping(value = "/removePlayer/{lobbyID}")
+        @PostMapping(value = "/exitLobby/{lobbyID}")
         public void removeUser(@PathVariable String lobbyID, @RequestBody String nickname){
+            System.out.println("REMOVE USER");
             boolean lobbyExists = false;
             for (Lobby l : lobbyList) {
                 if (l.getId().equals(lobbyID)) {

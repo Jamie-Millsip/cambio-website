@@ -70,7 +70,7 @@ function LobbyContent({lobbyID}){
      */
     const handleUnload = () => {
         navigator.sendBeacon(
-            backendSite + `removePlayer/${lobbyID}`,
+            backendSite + `exitLobby/${lobbyID}`,
             (nicknameRef.current)
         );
     };
