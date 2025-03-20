@@ -196,7 +196,7 @@ public class LobbyController {
     }
 
 
-        @PostMapping(value = "/removePlayer/{lobbyID}")
+        @PostMapping(value = "/exitLobby/{lobbyID}")
         public void removeUser(@PathVariable String lobbyID, @RequestBody String nickname){
             boolean lobbyExists = false;
             for (Lobby l : lobbyList) {
