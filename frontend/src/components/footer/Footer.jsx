@@ -4,7 +4,9 @@ import "./footer.css"
 function Footer () {
 
     return(
-        <div className="footer-container"/>
+        <div className="footer-container">
+            <p>Please disable ad-blockers for full functionality</p>
+        </div>
     )
 }
 
