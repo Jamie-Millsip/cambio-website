@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { forwardRef, useContext, useEffect, useState } from "react";
 import LobbyContext from "../../../pages/LobbyContext";
 import axios from "axios";
 import GameContext from "../../../pages/GameContext";
@@ -16,7 +16,8 @@ import GameContext from "../../../pages/GameContext";
  * 
  * @returns an interactive card object displayed onto the screen
  */
-function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
+
+const  Card = forwardRef(({thisUser, cardIndex, playerIndex, row, col, cards}, ref) => {
 
 
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
@@ -27,7 +28,6 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
     const [selectedPile, setSelectedPile] = useState();
     const [currentTurnStyle, setCurrentTurnStyle]=useState("")
     const [thisCard, setThisCard] = useState(null);
-    const [suit, setSuit] = useState("")
     let card = null;
 
     const [canDraw, setCanDraw] = useState(false);
@@ -123,13 +123,15 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
     }
 
     const lookCard = async () => {
-        thisCard.card.visible = true
-        await sleep(30)
-        trigger(triggerVar+1)
-        await sleep(1500)
-        thisCard.card.visible = false
+        const posData = {
+            player: cardIndex,
+            row: row,
+            column: col
+        }
         try{
-            await axios.post(backendSite + `look/${lobbyID}`)
+            await axios.post(backendSite + `look/${lobbyID}`, posData, {
+                "Content-Type" : "application/json"
+            })
         }
         catch(e){
             console.error("ERROR: ", e)
@@ -209,7 +211,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
     
     if (card === null){
         return(
-            <div key={`card-${row}${col}${playerIndex}`} className={`game-card game-card-space`}>
+            <div key={`card-${row}${col}${playerIndex}`} className={`game-card game-card-space`} ref={ref}>
                 <span className="card-text"></span>
                 </div>
         )
@@ -217,7 +219,8 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
     
     else if (card.card.visible == false){
         return(
-            <button 
+            <button
+            ref={ref}
             className={`game-card face-down ${currentTurnStyle}`} 
             onClick={handleClick}>
                 <span className="card-text"></span>
@@ -225,17 +228,17 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         )
     }
     
-    //(card.card.suit === "Diamonds" || card.card.suit === "Hearts") ? setSuit("red-card") : setSuit("black-card")
     
     return(
         <button
-            className={`game-card face-up ${suit} ${currentTurnStyle}`}
+            ref={ref}
+            className={`game-card face-up ${currentTurnStyle}`}
             style={{color: (card.card.suit === "Diamonds" || card.card.suit === "Hearts") ? "red" : "black"}} 
             onClick={handleClick}>
             <span className="card-text"> {card.card.face} </span>            
         </button> 
     )
-}
+})
 
 
 export default Card

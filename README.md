@@ -2,6 +2,8 @@
 
 a website for playing the card game "cambio"
 
+hosted at https://jamie-millsip.github.io/Cambio-Website/
+
 # READ
 
 this website tracks when a player leaves the site, this is to ensure lobbys only consist of current players, and to ensure the game is not stuck waiting for a player who has left the game to take their turn

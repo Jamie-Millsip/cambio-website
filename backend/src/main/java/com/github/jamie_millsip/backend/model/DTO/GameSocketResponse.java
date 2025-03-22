@@ -5,15 +5,12 @@ import java.util.ArrayList;
 public class GameSocketResponse {
 
     private String type;
-    private int pile;
     private String message;
     private ArrayList<ArrayList<CardResponse>> cards;
     private int state;
+    private PositionData card1Data;
+    private PositionData card2Data;
 
-    public GameSocketResponse(String type, int state) {
-        this.type = type;
-        this.state = state;
-    }
 
     public GameSocketResponse(String type, String message) {
         this.type = type;
@@ -27,10 +24,43 @@ public class GameSocketResponse {
         this.message = message;
     }
 
+    public GameSocketResponse(String type, ArrayList<ArrayList<CardResponse>> cards, int state, String message, PositionData card1Data) {
+        this.type = type;
+        this.cards = cards;
+        this.state = state;
+        this.message = message;
+        this.card1Data = card1Data;
+    }
+
+    public GameSocketResponse(String type, ArrayList<ArrayList<CardResponse>> cards, int state, String message, PositionData card1Data, PositionData card2Data) {
+        this.type = type;
+        this.cards = cards;
+        this.state = state;
+        this.message = message;
+        this.card1Data = card1Data;
+        this.card2Data = card2Data;
+    }
+
     public GameSocketResponse(String type, ArrayList<ArrayList<CardResponse>> cards, int state) {
         this.type = type;
         this.cards = cards;
         this.state = state;
+    }
+
+    public PositionData getCard1Data() {
+        return card1Data;
+    }
+
+    public void setCard1Data(PositionData card1Data) {
+        this.card1Data = card1Data;
+    }
+
+    public PositionData getCard2Data() {
+        return card2Data;
+    }
+
+    public void setCard2Data(PositionData card2Data) {
+        this.card2Data = card2Data;
     }
 
     public int getState(){
@@ -45,16 +75,8 @@ public class GameSocketResponse {
         return type;
     }
 
-    public int getPile() {
-        return pile;
-    }
-
     public void setType(String type) {
         this.type = type;
-    }
-
-    public void setPile(int pile) {
-        this.pile = pile;
     }
 
     public String getMessage() {

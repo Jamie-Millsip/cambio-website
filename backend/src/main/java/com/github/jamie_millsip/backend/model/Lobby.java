@@ -29,7 +29,7 @@ public class Lobby {
         // initialises draw pile and discard pile, adds them to cards 2d arraylist
         int[] values = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
         String[] suits = {"Diamonds", "Hearts", "Clubs", "Spades"};
-        String[] specialFaces = {"Ja", "Q", "K", "Jo"};
+        String[] specialFaces = {"J", "Q", "K", "Jo"};
 
         ArrayList<CardResponse> drawPile = new ArrayList<>();
         ArrayList<CardResponse> discardPile = new ArrayList<>();

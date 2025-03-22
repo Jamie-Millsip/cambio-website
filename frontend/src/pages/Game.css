@@ -1,8 +1,9 @@
 
 
 .game-card {
-    --z-priority: 1;
+    z-index: 1;
     box-sizing: border-box;
+    position: relative;
     height: 90%;
     aspect-ratio: 2/3;
     margin: 0em 0.1em;
@@ -11,7 +12,6 @@
     background-color: darkgray;
     align-items: center;
     justify-content: center;
-    z-index: var(--z-priority);
 }
 .game-card:hover{
     transform: scale(1.1);
@@ -58,6 +58,8 @@
 
 .card-row{
     box-sizing: border-box;
+    z-index: 1;
+    position: relative;
     display: flex;
     width: 100%;
     aspect-ratio: 4/3;
@@ -76,6 +78,7 @@
     box-sizing: border-box;
     position: absolute;
     display: flex;
+    z-index: 3;
     flex-direction: column;
     justify-content: center;
     height: 25%;

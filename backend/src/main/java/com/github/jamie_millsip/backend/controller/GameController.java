@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@CrossOrigin(origins = "https://jamie-millsip.github.io")
-//@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "https://jamie-millsip.github.io")
+@CrossOrigin(origins = "http://localhost:5173")
 public class GameController {
 
 
@@ -42,7 +42,8 @@ public class GameController {
 
     @RequestMapping("/drawCard/{lobbyID}")
     public void drawCard(@PathVariable String lobbyID, @RequestBody int pile){
-        triggerBroadcast(lobbyID, new GameSocketResponse("changeState", null, 1, "draw"));
+        PositionData pileData = new PositionData(pile, -1, -1);
+        triggerBroadcast(lobbyID, new GameSocketResponse("changeState", null, 1, "draw", pileData));
     }
 
     @RequestMapping("/discardCard/{lobbyID}")
@@ -116,18 +117,19 @@ public class GameController {
                     }
                     Collections.shuffle(cards.getFirst());
                 }
-
-                triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards, ability, "discard"));
+                PositionData card1Pos = new PositionData(pile, -1, -1);
+                PositionData card2Pos = new PositionData(cardsIndex, row, col);
+                triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards, ability, "discard", card1Pos, card2Pos));
             }
         }
     }
 
     @RequestMapping("/look/{lobbyID}")
-    public void cardLook(@PathVariable String lobbyID){
+    public void cardLook(@PathVariable String lobbyID, @RequestBody PositionData cardLookedAt){
         for (Lobby lobby : lobbyList) {
             if (lobby.getId().equals(lobbyID)) {
                 ArrayList<ArrayList<CardResponse>> cards = lobby.getCards();
-                triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards, 0, "look"));
+                triggerBroadcast(lobbyID, new GameSocketResponse("changeState", cards, 0, "look", cardLookedAt));
             }
         }
     }
