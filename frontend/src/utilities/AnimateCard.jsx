@@ -86,8 +86,6 @@ const animateDiscardCard = async (refs, pileCard, discardedCard, pileCardIndex, 
 const animateLookCard = async (refs, card, trigger, triggerVar, isLooking) =>{
     const cardEl = refs.get(`${card.player+2}-${card.row}-${card.col}`);
     if (cardEl) {
-        console.log("animate cards 2")
-        console.log("ANIMATED LOOK CARD: ", card)
         // if its the current users turn, make the card visible
         if (isLooking){
             card.card.visible = true;
