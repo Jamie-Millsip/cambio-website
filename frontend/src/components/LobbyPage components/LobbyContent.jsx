@@ -136,6 +136,8 @@ function LobbyContent({lobbyID}){
         updateUserIndex()
     }, [playerLeaveFlag])
 
+    /**
+
     useEffect(()=>{
         if (cards){
             for (let x = 0; x < cards.length; x++){
@@ -148,6 +150,7 @@ function LobbyContent({lobbyID}){
         }
         console.log("CADDDASSDS: ", cards)
     }, [cards])
+    */
 
     /**
      * checks if the lobby the user has entered exists or not
