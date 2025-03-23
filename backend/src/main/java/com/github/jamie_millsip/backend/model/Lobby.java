@@ -39,19 +39,19 @@ public class Lobby {
         for (int i = 0; i < 13; i++) {
             for (int j = 0; j < 4; j++) {
                 if (i < 10){
-                    drawPile.add(new CardResponse(new Card(values[i], suits[j], String.valueOf(values[i]))));
+                    drawPile.add(new CardResponse(new Card(values[i], suits[j], String.valueOf(values[i])), 0));
                 }
                 else{
-                    if (i == 12 && j < 2) drawPile.add(new CardResponse(new Card(-2, suits[j], specialFaces[i-10])));
+                    if (i == 12 && j < 2) drawPile.add(new CardResponse(new Card(-2, suits[j], specialFaces[i-10]), 0));
 
-                    else if (i == 12)drawPile.add(new CardResponse(new Card(values[12], suits[j], specialFaces[i-10])));
+                    else if (i == 12)drawPile.add(new CardResponse(new Card(values[12], suits[j], specialFaces[i-10]), 0));
 
-                    else drawPile.add(new CardResponse(new Card(values[i], suits[j], specialFaces[i-10])));
+                    else drawPile.add(new CardResponse(new Card(values[i], suits[j], specialFaces[i-10]), 0));
                 }
             }
         }
-        drawPile.add(new CardResponse(new Card(-1, suits[0], specialFaces[3])));
-        drawPile.add(new CardResponse(new Card(-1, suits[2], specialFaces[3])));
+        drawPile.add(new CardResponse(new Card(-1, suits[0], specialFaces[3]), 0));
+        drawPile.add(new CardResponse(new Card(-1, suits[2], specialFaces[3]), 0));
 
         // shuffles drawpile cards
         Collections.shuffle(cards.getFirst());
@@ -69,11 +69,11 @@ public class Lobby {
                     }
                     else{
                         CardResponse newPlayerCard = cards.getFirst().getLast();
-                        newPlayerCard.setPlayer(x);
+                        newPlayerCard.setPlayer(x+2);
                         newPlayerCard.setRow(i);
                         newPlayerCard.setCol(j);
                         playerHand.add(newPlayerCard);
-                        getPlayer(x).setCard(cards.getFirst().getLast().getCard(), i, j);
+                        getPlayer(x).setCard(cards.getFirst().getFirst().getCard(), i, j);
                         cards.getFirst().remove(cards.getFirst().getLast());
                     }
                 }

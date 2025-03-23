@@ -19,6 +19,13 @@ public class CardResponse {
         this.col = col;
     }
 
+    public CardResponse(Card card, int player) {
+        this.card = card;
+        this.player = player;
+        this.row = -1;
+        this.col = -1;
+    }
+
     public CardResponse(Card card) {
         this.card = card;
         this.player = -1;

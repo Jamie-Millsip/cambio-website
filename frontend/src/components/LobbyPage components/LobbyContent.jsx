@@ -84,8 +84,8 @@ function LobbyContent({lobbyID}){
                     const result = await axios.post(backendSite + `getCards/${lobbyID}`)
                     if (result.data != null){
                         setCards(result.data.cards)
-                        result.data.cards[thisUser+2][0].card.visible = true;
-                        result.data.cards[thisUser+2][1].card.visible = true;
+                        result.data.cards[thisUser][0].card.visible = true;
+                        result.data.cards[thisUser][1].card.visible = true;
                     }
                 }
                 catch(e){
@@ -135,6 +135,19 @@ function LobbyContent({lobbyID}){
         }
         updateUserIndex()
     }, [playerLeaveFlag])
+
+    useEffect(()=>{
+        if (cards){
+            for (let x = 0; x < cards.length; x++){
+                for (let y = 0; y < cards[x].length; y++){
+                    if (cards[x][y]){
+                        cards[x][y].card.visible = true;
+                    }
+                }
+            }
+        }
+        console.log("CADDDASSDS: ", cards)
+    }, [cards])
 
     /**
      * checks if the lobby the user has entered exists or not

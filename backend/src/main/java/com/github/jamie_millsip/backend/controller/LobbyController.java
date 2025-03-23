@@ -36,18 +36,15 @@ public class LobbyController {
 
 
     public void triggerBroadcast(String lobbyID, LobbySocketResponse response){
-        System.out.println("Broadcast Triggered");
         messagingTemplate.convertAndSend("/topic/" + lobbyID, response);
     }
 
     public void triggerGameBroadcast(String lobbyID, GameSocketResponse response){
-        System.out.println("Broadcast Triggered");
         messagingTemplate.convertAndSend("/topic/game/" + lobbyID, response);
     }
 
     @RequestMapping("/verifyHomePageData")
     public int LobbyExists(@RequestBody Lobby lobby) {
-        System.out.println("LOBBY ID: " + lobby.getId());
         if(!Pattern.matches("[0-9]+", lobby.getId()) || lobby.getId().length() != 5) return 2;
         for (Lobby l : lobbyList) {
             if (lobby.getId().equals(l.getId())) {
@@ -85,9 +82,7 @@ public class LobbyController {
     }
 
     @RequestMapping("/lobbyReadyUp")
-    public void lobbyReadyUp(@RequestBody ReadyUpPost request){
-        System.out.println("entering readyup place");
-        String lobbyID = request.getLobbyID();
+    public void lobbyReadyUp(@RequestBody ReadyUpPost request){        String lobbyID = request.getLobbyID();
         String nickname = request.getPlayer().getNickname();
         Lobby lobby = null;
         for (Lobby l : lobbyList) {
@@ -128,7 +123,6 @@ public class LobbyController {
 
     @RequestMapping("/gameReadyUp")
     public void gameReadyUp(@RequestBody ReadyUpPost request){
-        System.out.println("entering readyup place");
         String lobbyID = request.getLobbyID();
         String nickname = request.getPlayer().getNickname();
         Lobby lobby = null;
@@ -175,7 +169,7 @@ public class LobbyController {
             if (l.getId().equals(lobbyID)) {
                 for (int i = 0; i < l.getAllPlayers().size(); i++) {
                     if (l.getPlayer(i).getNickname().equals(request.getNickname())) {
-                        return i;
+                        return i+2;
                     }
                 }
             }
@@ -186,7 +180,6 @@ public class LobbyController {
 
     @RequestMapping("/createLobby")
     public String createLobby(){
-        System.out.println("CREATE LOBBY");
         Random random = new Random();
         DecimalFormat codeFormat = new DecimalFormat("00000");
         int lobbyCode = random.nextInt(100000);
@@ -199,7 +192,6 @@ public class LobbyController {
 
         @PostMapping(value = "/exitLobby/{lobbyID}")
         public void removeUser(@PathVariable String lobbyID, @RequestBody String nickname){
-            System.out.println("REMOVE USER");
             boolean lobbyExists = false;
             for (Lobby l : lobbyList) {
                 if (l.getId().equals(lobbyID)) {
@@ -209,7 +201,6 @@ public class LobbyController {
                 }
             }
             if (!lobbyExists) {
-                System.out.println("no lobby smh");
                 return;
             }
             PlayerReady[] playersArray = getPlayersReady(lobbyID);
