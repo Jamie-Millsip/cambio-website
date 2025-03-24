@@ -326,7 +326,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         setState(-1)
         for (let x = 2; x < cards.length; x++){
             for (let y = 0; y < cards[x].length; y++){
-                if (cards[x][y] !== null){
+                if (cards[x][y] !== null && cards[x][y].card !== null){
                     cards[x][y].card.visible = true;
                 }
             }
