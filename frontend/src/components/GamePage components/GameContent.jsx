@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { swapCards } from "../../utilities/CardAPIs"
+import { gameReadyUp, cambioClick, sendEndgameRequest } from "../../utilities/GameAPIs"
 import "../../pages/Game.css"
 import "../../pages/Body.css"
 import {animateDrawCard, animateDiscardCard, animateLookCard, 
@@ -28,16 +30,16 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
     const {lobbyID, nickname, selectedSwapCards, setSelectedSwapCards, backendSite, webSocketSite} = useContext(LobbyContext);
     const {currentTurn, setCurrentTurn, state, setState,lastToDiscard,
-        setLastToDiscard, setCanFlip, trigger, triggerVar, hasFlipped} = useContext(GameContext);
+        setLastToDiscard, setCanFlip, trigger, triggerVar} = useContext(GameContext);
     const [gameStarted, setGameStarted] = useState(false)
 
+    const [hasFlipped, setHasFlipped] = useState(false)
     const [readyButtonStyle, setReadyButtonStyle] = useState("button-unready")
     const [buttonMessage, setButtonMessage] = useState("Ready")
-    const [message, setMessage] = useState("")
     const [cambio, setCambio] = useState(false)
     const [cambioStyle, setCambioStyle] = useState("")
     const [endGameScreen, setEndGameScreen] = useState(false)
-    const [webSocketData, setWebSocketData] = useState()
+    const [webSocketData, setWebSocketData] = useState(null)
     // define vars used in correctly displaying the dynamic game board
     let radius = 270 + players*4;
     let scaleFactor = 1.4 - players/40;
@@ -67,7 +69,6 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                         setGameStarted(true)
                         setCurrentTurn(2)
                     }
-                    else {setMessage(recievedMessage.message)}
                 },
                 (error) => {console.error("error subscribing: ", error)}
             )},
@@ -96,24 +97,26 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         useEffect(()=>{
             const checkMessage = async () => {
                 // if the previous user called cambio, move to the next turn
-                if (message === "callCambio"){
+                if (webSocketData.message === "callCambio"){
                     currentTurn + 1 < players+2 ? setCurrentTurn(currentTurn+1): setCurrentTurn(2);
-                }
+                }   
                 // ends the game if told to by backend
-                else if (message === "endGame"){
-                    endGame()
+                else if (webSocketData.message === "endGame"){
+                    await endGame()
                 }
                 // if the game state has changed, animates the moved cards
                 else if (webSocketData && webSocketData.type === "changeState"){
                     console.log("WEBSOCKETDATA: ", webSocketData)
                     const card1Data = webSocketData.card1Data;
                     // if the user drew a card, animate the card being drawn from the pile
-                    if (message === "draw"){
+                    if (webSocketData.message === "draw"){
                         await animateDrawCard(cardRefs.current, card1Data.player)
                     }
                     // if the user discarded a card, animate the card getting sent to the discard pile
                     // and potentially animate the drawn card entering the players hand
-                    else if (message === "discard"){
+                    else if (webSocketData.message === "discard"){
+                        setHasFlipped(false)
+                        setLastToDiscard(currentTurn)
                         const card2Data = webSocketData.card2Data
                         const pileCard = cards[card1Data.player][0]
                         const discardedCard = cards[card2Data.player].find((card) => card === null ? false : card.row === card2Data.row && card.col === card2Data.column)
@@ -121,7 +124,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                         await animateDiscardCard(cardRefs.current, pileCard, discardedCard, getAngle(card2Data), radius, trigger, triggerVar)
                     }
                     // if the user looked at a card, animate the card getting looked a
-                    else if (message === "look"){
+                    else if (webSocketData.message === "look"){
                         let isMyTurn;
                         if (thisUser === currentTurn){
                             isMyTurn = true;
@@ -133,7 +136,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                         await animateLookCard(cardRefs.current, cardToAnimate, trigger, triggerVar, isMyTurn)
                     }
                     // if the user swapped 2 cards, animate the cards moving to their new positions
-                    else if (message === "swap"){
+                    else if (webSocketData.message === "swap"){
                         console.log("WEBSOCKET contents on swap: ", webSocketData)
                         const card2Data = webSocketData.card2Data
                         const card1 = cards[card1Data.player].find((card) => card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
@@ -153,11 +156,16 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                     // if the user has just flipped a card, animate that card
                     console.log("WENSOCKETDAAT FLOP: ", webSocketData)
                     const card1Data = webSocketData.card1Data
-                    if (message === "flipCardSuccess"){
+                    if (webSocketData.message === "flipCardSuccess"){
+                        setHasFlipped(true)
+                        console.log("SUCCESS")
                         const card1 = cards[card1Data.player].find((card) => card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
                         await animateFlipCardSuccess(cardRefs.current, card1, getAngle(card1Data), radius, trigger, triggerVar)
+                        if (webSocketData.newCurrentPlayer !== -1){
+                            setCurrentTurn(webSocketData.newCurrentPlayer)
+                        }
                     }
-                    else if (message === "flipCardFail"){
+                    else if (webSocketData.message === "flipCardFail"){
                         const card2Data = webSocketData.card2Data;
                         const card1 = cards[card1Data.player].find((card) => card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
                         const card2 = cards[card2Data.player].find((card) => card === null ? false : card.row === card2Data.row && card.col === card2Data.column)
@@ -166,15 +174,18 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                     }
                     // if the user needs to give one of their cards away after a flip,
                     // animate that card moving to it's new hand
-                    else if (message === "giveCard"){
+                    else if (webSocketData.message === "giveCard"){
                         await animateGiveCard()
+                        setCurrentTurn(webSocketData.newCurrentPlayer)
                     }
                     // update the cards / state accordingly
                     webSocketData.cards !== null ? setCards(webSocketData.cards) : null;
                     setState(webSocketData.state)
                 }
             }
-            checkMessage();
+            if (webSocketData){
+                checkMessage();
+            }
         }, [webSocketData])
 
 
@@ -196,10 +207,9 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
         // updates necessary vars on game state change after websocket broadcast
         useEffect(()=>{
-            // also deals with any messages set in after websocket broadcast as message and state are updated at the same time
-            message === "discard" ? setLastToDiscard(currentTurn) : null;
             // if the state resets to draw, update the current player
-            if (message !== "returnedState"){
+
+            if (webSocketData === null || webSocketData.type === null || webSocketData.type !== "flipCard"){
                 if (state == 0 && gameStarted){
                     currentTurn + 1 < players+2 ? setCurrentTurn(currentTurn+1): setCurrentTurn(2);
                 }
@@ -218,15 +228,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         // tells the backend to end the game if this user has previously called cambio and it is now their turn again
         useEffect(()=>{
             if (thisUser === currentTurn && cambio){
-                const sendEndgameRequest = async () => {
-                    try{
-                        await axios.post(backendSite + `endGame/${lobbyID}`)
-                    }
-                    catch(e){
-                        console.error("ERROR: ", e)
-                    }
-                }
-                sendEndgameRequest()
+                sendEndgameRequest(sleep, backendSite, lobbyID)
             }
         }, [currentTurn])
 
@@ -241,80 +243,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         const cardLength = Array.isArray(cards[1]) ? cards[1].length : 0;
         // cannot flip if this user was the last to discard a card
         cardLength === 0 || lastToDiscard === thisUser || hasFlipped ? setCanFlip(false) : setCanFlip(true);
-    }, [cards, lastToDiscard])
-
-
-
-
-
-
-    /**
-     * alerts the backend to this user's ready status, and updates the button visually to represent ready / not ready
-     */
-    const gameReadyUp = async() =>{
-        try{
-            readyButtonStyle === "button-unready" ? setReadyButtonStyle("button-ready") : setReadyButtonStyle("button-unready")
-            await axios.post(backendSite + "gameReadyUp", {lobbyID: lobbyID, player: {nickname: nickname}})
-        }
-        catch(e){
-            console.error("ERROR: ", e)
-        }
-    }
-
-
-
-
-
-
-    // swaps the two cads in the selectedSwapCards array 
-    const swapCards = async (swap) => {
-        try{
-            // correctly formats the data required by the swapcards backend function
-            console.log("selectswapcard: ", selectedSwapCards)
-            const swapRequest = {
-                swap: swap,
-                card1: {player : selectedSwapCards[0].player, row: selectedSwapCards[0].row, column: selectedSwapCards[0].col},
-                card2: {player : selectedSwapCards[1].player, row: selectedSwapCards[1].row, column: selectedSwapCards[1].col},
-            };
-            // ensures any cards looked at by a look swap are reset
-            if (state === 5){
-                for (let x = 0; x < selectedSwapCards.length; x++){
-                    selectedSwapCards[x].card.visible = false
-                }
-            }
-            // resets used variables
-            setSelectedSwapCards([])
-            setButtonMessage("Cambio")
-            // posts swapCards request to backend
-            await axios.post(backendSite + `swapCards/${lobbyID}`, swapRequest, {
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            })
-        }
-        catch(e){
-            console.error("ERROR: ", e)
-        }
-    }
-
-
-
-
-
-
-    // if this user calls cambio on their turn, alert the backend
-    const cambioClick = async () => {
-        if (thisUser === currentTurn && state === 0){
-            try{
-                setCambio(true);
-                console.log("state", state)
-                await axios.post(backendSite + `cambio/${lobbyID}`)
-            }
-            catch(e){
-                console.error("ERROR: ", e)
-            }
-        }
-    }
+    }, [cards, lastToDiscard, hasFlipped])
 
 
 
@@ -331,16 +260,9 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                 }
             }
         }
-        await trigger(triggerVar+1)
+        await sleep(20)
+        trigger(-1)
         await sleep(5000)
-        for (let x = 2; x < cards.length; x++){
-            for (let y = 0; y < cards[x].length; y++){
-                if (cards[x][y] !== null){
-                    cards[x][y].card.visible = false;
-                }
-            }
-        }
-        trigger(triggerVar+1)
         setEndGameScreen(true)
     }
 
@@ -389,15 +311,15 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                                     ${readyButtonStyle} 
                                     ${buttonMessage === "Cambio" ? cambioStyle : "" } `} 
                                 onClick=
-                                    { buttonMessage === "Ready" ? () => gameReadyUp() 
-                                    : buttonMessage === "Swap" ? () => swapCards(true) 
-                                    : buttonMessage === "Cambio" ? () => cambioClick() 
+                                    { buttonMessage === "Ready" ? () => gameReadyUp(readyButtonStyle, setReadyButtonStyle, backendSite, lobbyID, nickname) 
+                                    : buttonMessage === "Swap" ? () => swapCards(true, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, backendSite, lobbyID) 
+                                    : buttonMessage === "Cambio" ? () => cambioClick(thisUser, currentTurn, state, backendSite, lobbyID, setCambio) 
                                     : null}
                             >
                                 {buttonMessage}
                             </button>
                             {(state === 5 || state === 4) && thisUser == currentTurn && (
-                                <button className= {`game-button ${readyButtonStyle}`} onClick= {() => swapCards(false)}>
+                                <button className= {`game-button ${readyButtonStyle}`} onClick= {() => swapCards(false, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, backendSite, lobbyID)}>
                                     keep
                                 </button>
                             )}

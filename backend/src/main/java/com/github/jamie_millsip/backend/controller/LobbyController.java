@@ -1,6 +1,9 @@
 package com.github.jamie_millsip.backend.controller;
 
 import com.github.jamie_millsip.backend.model.DTO.*;
+import com.github.jamie_millsip.backend.model.DTO.response.GameSocketResponse;
+import com.github.jamie_millsip.backend.model.DTO.response.LobbySocketResponse;
+import com.github.jamie_millsip.backend.model.DTO.response.getCardsResponse;
 import com.github.jamie_millsip.backend.model.Lobby;
 import com.github.jamie_millsip.backend.model.Player;
 import com.github.jamie_millsip.backend.model.SharedService;
@@ -148,7 +151,7 @@ public class LobbyController {
             for (Player p : lobby.getAllPlayers()) {
                 p.setGameReady(false);
             }
-            triggerGameBroadcast(lobby.getId(), new GameSocketResponse("gameStart", ""));
+            triggerGameBroadcast(lobby.getId(), new GameSocketResponse("gameStart"));
         }
     }
 

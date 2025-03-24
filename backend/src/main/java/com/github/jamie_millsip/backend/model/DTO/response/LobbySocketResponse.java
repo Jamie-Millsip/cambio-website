@@ -1,15 +1,12 @@
-package com.github.jamie_millsip.backend.model.DTO;
+package com.github.jamie_millsip.backend.model.DTO.response;
+
+import com.github.jamie_millsip.backend.model.DTO.PlayerReady;
 
 public class LobbySocketResponse {
 
     private String type;
     private String message;
     private PlayerReady[] playerReadyArray;
-
-    public LobbySocketResponse(String type, String message) {
-        this.type = type;
-        this.message = message;
-    }
 
     public LobbySocketResponse(String type, PlayerReady[] playerReadyArray) {
         this.type = type;

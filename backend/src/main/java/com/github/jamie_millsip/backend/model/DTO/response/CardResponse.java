@@ -1,4 +1,4 @@
-package com.github.jamie_millsip.backend.model.DTO;
+package com.github.jamie_millsip.backend.model.DTO.response;
 
 import com.github.jamie_millsip.backend.model.Card;
 
@@ -9,8 +9,7 @@ public class CardResponse {
     private int row;
     private int col;
 
-    public CardResponse() {
-    }
+
 
     public CardResponse(Card card, int player, int row, int col) {
         this.card = card;
@@ -22,13 +21,6 @@ public class CardResponse {
     public CardResponse(Card card, int player) {
         this.card = card;
         this.player = player;
-        this.row = -1;
-        this.col = -1;
-    }
-
-    public CardResponse(Card card) {
-        this.card = card;
-        this.player = -1;
         this.row = -1;
         this.col = -1;
     }

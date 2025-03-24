@@ -192,6 +192,7 @@ const animateSwapCard = async (refs, card1, card2, card1Angle, card2Angle, radiu
 const animateFlipCardSuccess = async (refs, card, angle, radius, trigger, triggerVar) => {
     const cardEl = refs.get(`${card.player}-${card.row}-${card.col}`);
     const discardPileEl = refs.get(`1--1--1`);
+    console.log("ANIMATEFLIPCARDSUCCESSCARDEL: ", cardEl)
     if (cardEl){
         card.card.visible = true;
         trigger(triggerVar+1)

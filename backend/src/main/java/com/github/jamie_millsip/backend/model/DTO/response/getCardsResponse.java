@@ -1,6 +1,4 @@
-package com.github.jamie_millsip.backend.model.DTO;
-
-import com.github.jamie_millsip.backend.model.Card;
+package com.github.jamie_millsip.backend.model.DTO.response;
 
 import java.util.ArrayList;
 

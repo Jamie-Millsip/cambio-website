@@ -1,4 +1,4 @@
-package com.github.jamie_millsip.backend.model.DTO;
+package com.github.jamie_millsip.backend.model.DTO.request;
 
 public class DiscardCardRequest {
 

@@ -27,6 +27,8 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 
   - make animations edit zIndex of card-row-container to make
     the animated card always appear above the other cards
+  - currently has bug where if 2 incorrect cards are flipped at the same time, it does not correctly animate draw pile card entering players' hands
+    - to fix, I will create flag isAnimating, and only allow animations to play when is animating is false (will make pending animations wait until animation is over)
 
 - finish implementing endGame screen
 

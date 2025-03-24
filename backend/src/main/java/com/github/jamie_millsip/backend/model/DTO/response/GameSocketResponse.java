@@ -1,4 +1,6 @@
-package com.github.jamie_millsip.backend.model.DTO;
+package com.github.jamie_millsip.backend.model.DTO.response;
+
+import com.github.jamie_millsip.backend.model.DTO.PositionData;
 
 import java.util.ArrayList;
 
@@ -8,13 +10,13 @@ public class GameSocketResponse {
     private String message;
     private ArrayList<ArrayList<CardResponse>> cards;
     private int state;
+    private int newCurrentPlayer;
     private PositionData card1Data;
     private PositionData card2Data;
 
 
-    public GameSocketResponse(String type, String message) {
+    public GameSocketResponse(String type) {
         this.type = type;
-        this.message = message;
     }
 
     public GameSocketResponse(String type, ArrayList<ArrayList<CardResponse>> cards, int state, String message) {
@@ -24,27 +26,15 @@ public class GameSocketResponse {
         this.message = message;
     }
 
-    public GameSocketResponse(String type, ArrayList<ArrayList<CardResponse>> cards, int state, String message, PositionData card1Data) {
-        this.type = type;
-        this.cards = cards;
-        this.state = state;
-        this.message = message;
-        this.card1Data = card1Data;
-    }
-
-    public GameSocketResponse(String type, ArrayList<ArrayList<CardResponse>> cards, int state, String message, PositionData card1Data, PositionData card2Data) {
+    public GameSocketResponse(String type, ArrayList<ArrayList<CardResponse>> cards, int state, String message,
+                              PositionData card1Data, PositionData card2Data, int newCurrentPlayer) {
         this.type = type;
         this.cards = cards;
         this.state = state;
         this.message = message;
         this.card1Data = card1Data;
         this.card2Data = card2Data;
-    }
-
-    public GameSocketResponse(String type, ArrayList<ArrayList<CardResponse>> cards, int state) {
-        this.type = type;
-        this.cards = cards;
-        this.state = state;
+        this.newCurrentPlayer = newCurrentPlayer;
     }
 
     public PositionData getCard1Data() {
@@ -93,5 +83,13 @@ public class GameSocketResponse {
 
     public void setCards(ArrayList<ArrayList<CardResponse>> cards) {
         this.cards = cards;
+    }
+
+    public int getNewCurrentPlayer() {
+        return newCurrentPlayer;
+    }
+
+    public void setNewCurrentPlayer(int newCurrentPlayer) {
+        this.newCurrentPlayer = newCurrentPlayer;
     }
 }

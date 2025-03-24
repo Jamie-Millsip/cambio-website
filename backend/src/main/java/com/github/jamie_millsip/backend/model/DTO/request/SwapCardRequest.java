@@ -1,6 +1,8 @@
-package com.github.jamie_millsip.backend.model.DTO;
+package com.github.jamie_millsip.backend.model.DTO.request;
 
-public class SwapRequest {
+import com.github.jamie_millsip.backend.model.DTO.PositionData;
+
+public class SwapCardRequest {
 
     private boolean swap;
     private PositionData card1;
@@ -8,7 +10,7 @@ public class SwapRequest {
 
 
 
-    public SwapRequest(boolean swap, PositionData card1, PositionData card2) {
+    public SwapCardRequest(boolean swap, PositionData card1, PositionData card2) {
         this.swap = swap;
         this.card1 = card1;
         this.card2 = card2;

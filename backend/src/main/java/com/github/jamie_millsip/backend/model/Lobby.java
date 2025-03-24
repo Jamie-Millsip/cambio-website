@@ -2,7 +2,7 @@ package com.github.jamie_millsip.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.jamie_millsip.backend.model.DTO.CardResponse;
+import com.github.jamie_millsip.backend.model.DTO.response.CardResponse;
 
 import java.util.*;
 
@@ -14,6 +14,9 @@ public class Lobby {
     private ArrayList<ArrayList<CardResponse>> cards = new ArrayList<>();
     private boolean gameStarted = false;
     private int currentPlayer = 0;
+    private int stateToReturnTo = -1;
+    private int playersToReturnTo = -1;
+    private int playerToGiveCard = -1;
 
 
 
@@ -148,5 +151,29 @@ public class Lobby {
 
     public ArrayList<ArrayList<CardResponse>> getCards() {
         return cards;
+    }
+
+    public int getStateToReturnTo(){
+        return stateToReturnTo;
+    }
+
+    public void setStateToReturnTo(int stateToReturnTo){
+        this.stateToReturnTo = stateToReturnTo;
+    }
+
+    public int getPlayersToReturnTo(){
+        return playersToReturnTo;
+    }
+
+    public void setPlayersToReturnTo(int playersToReturnTo){
+        this.playersToReturnTo = playersToReturnTo;
+    }
+
+    public int getPlayerToGiveCard(){
+        return playerToGiveCard;
+    }
+
+    public void setPlayerToGiveCard(int playerToGiveCard){
+        this.playerToGiveCard = playerToGiveCard;
     }
 }

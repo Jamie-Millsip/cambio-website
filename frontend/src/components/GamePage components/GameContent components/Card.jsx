@@ -1,4 +1,5 @@
 import { forwardRef, useContext, useEffect, useState } from "react";
+import { drawCard, discardCard, lookCard, flipCard, giveCard} from "../../../utilities/CardAPIs"
 import LobbyContext from "../../../pages/LobbyContext";
 import axios from "axios";
 import GameContext from "../../../pages/GameContext";
@@ -23,7 +24,7 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
     
     const {lobbyID, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext)
-    const {currentTurn, state, setHasFlipped, canFlip, trigger, triggerVar, selectedPile, setSelectedPile} = useContext(GameContext);
+    const {currentTurn, state, canFlip, trigger, triggerVar, selectedPile, setSelectedPile} = useContext(GameContext);
 
     const [currentTurnStyle, setCurrentTurnStyle]=useState("")
     const [thisCard, setThisCard] = useState(null);
@@ -32,6 +33,7 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
     const [canDraw, setCanDraw] = useState(false);
     const [canDiscard, setCanDiscard] = useState(false);
     const [canLook, setCanLook] = useState(false)
+    const [canGiveCard, setCanGiveCard] = useState(false)
     const [canSwap, setCanSwap] = useState(false)
 
 
@@ -56,93 +58,22 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
 
         thisUser === currentTurn && ((state === 4 || state === 5) && selectedSwapCards.length < 2) ? setCanSwap(true) : setCanSwap(false)
 
-        !canDraw && !canDiscard && !canLook && !canSwap && canFlip
+        thisUser === currentTurn && state === 6 && thisUser === cardIndex ? setCanGiveCard(true) : setCanGiveCard(false)
     }, [state, thisUser, currentTurn, cardIndex, selectedPile, cardIndex])
 
 
 
     const handleClick = () => {
-        canDraw ? drawCard() : canDiscard ? discardCard() : canLook ? lookCard() : canSwap ? swapCard() : canFlip ? flipCard() : null;
+        canDraw ? drawCard(cards, cardIndex, trigger, triggerVar, backendSite, lobbyID, setSelectedPile) : 
+        canDiscard ? discardCard(selectedPile, cardIndex, row, col, backendSite, lobbyID) : 
+        canLook ? lookCard(cardIndex, row, col, backendSite, lobbyID) : 
+        canSwap ? swapCard() : 
+        canGiveCard ? giveCard(cardIndex, row, col, backendSite, lobbyID) :
+        canFlip ? flipCard(state, thisUser, cardIndex, row, col, currentTurn, thisCard, backendSite, lobbyID, cards) : 
+        null;
     }
 
-    const flipCard = async () => {
-        try{
-            const flipData = {
-                state: state,
-                thisPlayer: thisUser,
-                positionData: {player: cardIndex, row: row, column: col}
-            }
-            if (thisCard.card.value === cards[1][0].card.value){
-                setHasFlipped(true)
-                console.log("MATCHING CARD")
-                await axios.post(backendSite + `flipCardSuccess/${lobbyID}`, flipData, {
-                    "Content-Type" : "application/json"
-                })
-            }
-            else{
-                console.log("NOT MATCHING CARD")
-                await axios.post(backendSite + `flipCardFail/${lobbyID}`, flipData, {
-                    "Content-Type" : "application/json"
-                })
-            }
-        }
-        catch(e){
-            console.error("ERROR: ", e)
-        }
-    }
-
-    const drawCard = async () => {
-        // let the user draw a card if it is their turn and they are selecting a pile to draw from
-        try{
-            cards[cardIndex][0].card.visible = true
-            trigger(triggerVar+1)
-            setSelectedPile(cardIndex)
-            await axios.post(backendSite + `drawCard/${lobbyID}`, cardIndex, {headers: {"Content-Type":"application/json"}}) // figure out what inputs are needed
-        }
-        catch(e){
-            console.error("ERROR: ", e)
-        }
-    }
-
-
-    /**
-     * checks if discarding the selected card is a valid move, if so, sends a request to the backend to discard the selected card
-     */
-    const discardCard = async () => {
-        // let a user discard a card if it is their turn and they select either the newly drawn card or one of their own cards 
-        try{
-            //cards[cardIndex][0].card.visible = false;
-            //trigger(triggerVar+1)
-            const requestData = {
-                pile: selectedPile,
-                player: cardIndex,
-                row: row,
-                col: col
-            };
-            await axios.post(backendSite + `discardCard/${lobbyID}`, requestData, {
-                "Content-Type" : "application/json"
-            })
-        }
-        catch(e){
-            console.error("ERROR: ", e)
-        }
-    }
-
-    const lookCard = async () => {
-        const posData = {
-            player: cardIndex,
-            row: row,
-            column: col
-        }
-        try{
-            await axios.post(backendSite + `look/${lobbyID}`, posData, {
-                "Content-Type" : "application/json"
-            })
-        }
-        catch(e){
-            console.error("ERROR: ", e)
-        }
-    }
+    
 
     const swapCard = async () => {
         let card = selectedSwapCards.find((card) => row === card.row && cardIndex === card.player && card.col === col)
@@ -203,6 +134,7 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
         // or the player needs to swap 2 cards, and this card belongs to a player and isnt already selected
         || ((state === 4 || state === 5) && cardIndex > 1 &&
         !selectedSwapCards.some(card => card !== null && card.player === cardIndex && card.row === row && card.col === col))
+        || (state === 6 && cardIndex === thisUser)
         )){
             setCurrentTurnStyle("current-player")
         }
