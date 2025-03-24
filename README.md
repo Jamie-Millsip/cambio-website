@@ -12,10 +12,21 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 
 ## TODO
 
-- finish implementing card flipping
+- testing
 
-  - ensure only one card can be flipped for each discarded card
-  - when flipping another persons card, allow the player to give that person one of their cards
+  - because I was learning both spring boot and react for this project, I decided to do test driven refactoring rather than test driven development (ie, program the project, then write tests, then refactor the code around the newly written tests) as I felt it would be better to write tests when I knew more about the frameworks and how / what to test.
+
+- Gameplay
+
+  - remove players from the game when they flip incorrectly when having 7 cards (currently does nothing)
+  - stop abilities from being played if there are not enough cards on the board to play them (<2 cards for swaps, <1 for looks)
+  - finish implementing card flipping
+    - when flipping another persons card, allow the player to give that person one of their cards
+
+- Animations
+
+  - make animations edit zIndex of card-row-container to make
+    the animated card always appear above the other cards
 
 - finish implementing endGame screen
 

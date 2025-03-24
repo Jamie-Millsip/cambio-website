@@ -18,6 +18,7 @@ export function GameProvider({children}){
     const [state, setState] = useState(0);
     const [lastToDiscard, setLastToDiscard] = useState(0);
     const [canFlip, setCanFlip] = useState(false);
+    const [hasFlipped, setHasFlipped] = useState(false);
     const [triggerVar, trigger] = useState(0)
     const [selectedPile, setSelectedPile] = useState();
 
@@ -28,6 +29,7 @@ export function GameProvider({children}){
     return(
         <GameContext.Provider value = {{
             selectedPile, setSelectedPile,
+            hasFlipped, setHasFlipped,
             currentTurn, setCurrentTurn, state, setState,
             lastToDiscard, setLastToDiscard, canFlip, setCanFlip,
             triggerVar, trigger, sleep

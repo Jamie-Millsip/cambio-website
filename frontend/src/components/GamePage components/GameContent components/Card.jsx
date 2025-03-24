@@ -23,7 +23,7 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
     
     const {lobbyID, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext)
-    const {currentTurn, state, setLastToDiscard, canFlip, trigger, triggerVar, selectedPile, setSelectedPile} = useContext(GameContext);
+    const {currentTurn, state, setHasFlipped, canFlip, trigger, triggerVar, selectedPile, setSelectedPile} = useContext(GameContext);
 
     const [currentTurnStyle, setCurrentTurnStyle]=useState("")
     const [thisCard, setThisCard] = useState(null);
@@ -66,19 +66,28 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
     }
 
     const flipCard = async () => {
-        if (canFlip){
+        try{
             const flipData = {
                 state: state,
+                thisPlayer: thisUser,
                 positionData: {player: cardIndex, row: row, column: col}
             }
-            try{
-                await axios.post(backendSite + `flipCard/${lobbyID}`, flipData, {
+            if (thisCard.card.value === cards[1][0].card.value){
+                setHasFlipped(true)
+                console.log("MATCHING CARD")
+                await axios.post(backendSite + `flipCardSuccess/${lobbyID}`, flipData, {
                     "Content-Type" : "application/json"
                 })
             }
-            catch(e){
-                console.error("ERROR: ", e)
+            else{
+                console.log("NOT MATCHING CARD")
+                await axios.post(backendSite + `flipCardFail/${lobbyID}`, flipData, {
+                    "Content-Type" : "application/json"
+                })
             }
+        }
+        catch(e){
+            console.error("ERROR: ", e)
         }
     }
 
@@ -110,7 +119,6 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
                 row: row,
                 col: col
             };
-            setLastToDiscard(thisUser);
             await axios.post(backendSite + `discardCard/${lobbyID}`, requestData, {
                 "Content-Type" : "application/json"
             })
@@ -207,14 +215,16 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
 
     card = returnCardContents()
     
-    if (card === null){
+    if (card === null || card.card === null){
         return(
-            <div key={`card-${row}${col}${cardIndex}`} className={`game-card game-card-space`} ref={ref}>
+            <div 
+                key={`card-${row}${col}${cardIndex}`} 
+                className={`game-card game-card-space`} 
+                ref={ref}>
                 <span className="card-text"></span>
                 </div>
         )
     }
-    
     else if (card.card.visible == false){
         return(
             <button
@@ -225,8 +235,6 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
             </button>
         )
     }
-    
-    
     return(
         <button
             ref={ref}

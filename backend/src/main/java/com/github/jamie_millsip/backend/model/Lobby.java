@@ -63,8 +63,7 @@ public class Lobby {
             for (int i = 2; i > -1; i--){
                 for (int j = 0; j < 2; j++){
                     if (i == 0) {
-                        CardResponse nullPlayer = null;
-                            playerHand.add(nullPlayer);
+                            playerHand.add(new CardResponse(null, x+2, i, j));
                             getPlayer(x).setCard(null, i, j);
                     }
                     else{
@@ -84,7 +83,7 @@ public class Lobby {
 
         for (ArrayList<CardResponse> cardSet : cards) {
             for (CardResponse card : cardSet) {
-                if (card == null){
+                if (card == null || card.getCard() == null){
                     System.out.println("this card is null");
                 }
                 else{

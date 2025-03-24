@@ -1,6 +1,7 @@
 package com.github.jamie_millsip.backend.controller;
 
 
+import com.github.jamie_millsip.backend.model.Card;
 import com.github.jamie_millsip.backend.model.DTO.*;
 import com.github.jamie_millsip.backend.model.Lobby;
 import com.github.jamie_millsip.backend.model.Player;
@@ -16,8 +17,8 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-//@CrossOrigin(origins = "https://jamie-millsip.github.io")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://jamie-millsip.github.io")
+//@CrossOrigin(origins = "http://localhost:5173")
 public class GameController {
 
 
@@ -69,7 +70,7 @@ public class GameController {
                     temp.getCard().setVisible(true);
                     cards.get(1).addFirst(temp);
                     int cardValue = cards.get(1).getFirst().getCard().getValue();
-                    if (cardValue > 6 && cardValue < 13 && cardsIndex == 0){
+                    if (cardValue > 6 && cardValue < 13 /* && cardsIndex == 0*/){
                         if (cardValue < 9){
                             ability = 2;
                         }
@@ -184,8 +185,8 @@ public class GameController {
         return null;
     }
 
-    @RequestMapping("/flipCard/{lobbyID}")
-    public void flipCard(@PathVariable String lobbyID, @RequestBody FlipRequest flipRequest){
+    @RequestMapping("/flipCardSuccess/{lobbyID}")
+    public void flipCardSuccess(@PathVariable String lobbyID, @RequestBody FlipRequest flipRequest){
         PositionData positionData = flipRequest.getPositionData();
         for (Lobby lobby : lobbyList) {
             if (lobby.getId().equals(lobbyID)) {
@@ -196,9 +197,9 @@ public class GameController {
                             if (cards.get(x).get(y) != null){
                                 if (cards.get(x).get(y).getCol() == positionData.getColumn() && cards.get(x).get(y).getRow() == positionData.getRow()) {
                                     if (Objects.equals(cards.get(1).getFirst().getCard().getFace(), cards.get(x).get(y).getCard().getFace())){
-                                        CardResponse temp = new CardResponse(cards.get(x).get(y).getCard(), -1, -1, -1);
+                                        CardResponse temp = new CardResponse(cards.get(x).get(y).getCard(), 1, -1, -1);
                                         temp.getCard().setVisible(true);
-                                        cards.get(x).set(y, null);
+                                        cards.get(x).get(y).setCard(null);
                                         cards.get(1).addFirst(temp);
                                         break;
                                     }
@@ -208,12 +209,44 @@ public class GameController {
                         break;
                     }
                 }
-                triggerBroadcast(lobbyID, new GameSocketResponse("returnToState", cards , flipRequest.getState(), "flipCard"));
+                PositionData card1Data = flipRequest.getPositionData();
+                triggerBroadcast(lobbyID, new GameSocketResponse("flipCard", cards , flipRequest.getState(), "flipCardSuccess", card1Data));
                 break;
             }
         }
     }
 
+    @RequestMapping("/flipCardFail/{lobbyID}")
+    public void flipCardFail(@PathVariable String lobbyID, @RequestBody FlipRequest flipRequest){
+        for (Lobby lobby : lobbyList) {
+            if (lobby.getId().equals(lobbyID)) {
+                PositionData card1Data = null;
+                ArrayList<ArrayList<CardResponse>> cards = lobby.getCards();
+                for (int x = 0; x < cards.get(flipRequest.getThisPlayer()).size(); x++) {
+                    if (cards.get(flipRequest.getThisPlayer()).get(x).getCard() == null){
+                        CardResponse temp = new CardResponse(
+                                cards.get(0).get(0).getCard(),
+                                flipRequest.getThisPlayer(),
+                                cards.get(flipRequest.getThisPlayer()).get(x).getRow(),
+                                cards.get(flipRequest.getThisPlayer()).get(x).getCol()
+                        );
+                        cards.get(flipRequest.getThisPlayer()).get(x).setCard(
+                                new Card(cards.getFirst().getFirst().getCard()));
+                        cards.get(0).removeFirst();
+
+                        card1Data = new PositionData(
+                                flipRequest.getThisPlayer(),
+                                cards.get(flipRequest.getThisPlayer()).get(x).getRow(),
+                                cards.get(flipRequest.getThisPlayer()).get(x).getCol()
+                        );
+                        break;
+                    }
+                }
+                PositionData card2Data = flipRequest.getPositionData();
+                triggerBroadcast(lobbyID, new GameSocketResponse("flipCard", cards , flipRequest.getState(), "flipCardFail", card1Data, card2Data));
+            }
+        }
+    }
 
     @RequestMapping("/cambio/{lobbyID}")
     public void callCambio (@PathVariable String lobbyID){

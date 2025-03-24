@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "../../pages/Game.css"
 import "../../pages/Body.css"
-import {animateDrawCard, animateDiscardCard, animateLookCard, animateSwapCard, animateFlipCard} from "../../utilities/AnimateCard";
+import {animateDrawCard, animateDiscardCard, animateLookCard, 
+    animateSwapCard, animateFlipCardSuccess, animateFlipCardFail,
+    animateGiveCard} from "../../utilities/AnimateCard";
 import LobbyContext from "../../pages/LobbyContext";
 import GameContext from "../../pages/GameContext";
 import axios from "axios";
@@ -17,14 +19,17 @@ import EndGamePage from "../../pages/EndGamePage";
  */
 const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
+
+
+
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
     const setCardRef = (key, el) => { el ? cardRefs.current.set(key, el) : cardRefs.current.delete(key);};
 
     const {lobbyID, nickname, selectedSwapCards, setSelectedSwapCards, backendSite, webSocketSite} = useContext(LobbyContext);
-    const {currentTurn, setCurrentTurn, state, setState, lastToDiscard, setLastToDiscard, setCanFlip, trigger, triggerVar} = useContext(GameContext);
+    const {currentTurn, setCurrentTurn, state, setState,lastToDiscard,
+        setLastToDiscard, setCanFlip, trigger, triggerVar, hasFlipped} = useContext(GameContext);
     const [gameStarted, setGameStarted] = useState(false)
-
 
     const [readyButtonStyle, setReadyButtonStyle] = useState("button-unready")
     const [buttonMessage, setButtonMessage] = useState("Ready")
@@ -33,9 +38,6 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     const [cambioStyle, setCambioStyle] = useState("")
     const [endGameScreen, setEndGameScreen] = useState(false)
     const [webSocketData, setWebSocketData] = useState()
-
-    const tableRef = useRef(null)
-
     // define vars used in correctly displaying the dynamic game board
     let radius = 270 + players*4;
     let scaleFactor = 1.4 - players/40;
@@ -45,6 +47,10 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     let scale = `scale(${scaleFactor})`;
 
     const cardRefs = useRef(new Map());
+
+
+
+
 
     
         // useEffect to connect to websocket and to handle any broadcasts sent from that websocket
@@ -70,36 +76,51 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
             window.addEventListener("beforeunload", handleUnload)
             return() => {window.removeEventListener("beforeunload", handleUnload)}   
         }, [lobbyID]);
-        const handleUnload = () =>{
-            // implement later not important atm -- also not sure if i am gonna need this
-        }
+        const handleUnload = () =>{}
+
+
+
+
 
 
         const getAngle = (card2) => {
                 return( -((((card2.player-2) * 360) / players) + 90) + ((((thisUser-2) * 360) / players) + 90))
         }
 
+
+
+
+
+
+        // runs after websocket broadcast and animates cards in response to the new info
         useEffect(()=>{
             const checkMessage = async () => {
+                // if the previous user called cambio, move to the next turn
                 if (message === "callCambio"){
                     currentTurn + 1 < players+2 ? setCurrentTurn(currentTurn+1): setCurrentTurn(2);
                 }
+                // ends the game if told to by backend
                 else if (message === "endGame"){
                     endGame()
                 }
+                // if the game state has changed, animates the moved cards
                 else if (webSocketData && webSocketData.type === "changeState"){
-                    console.log("websocketData: ", webSocketData)
+                    console.log("WEBSOCKETDATA: ", webSocketData)
                     const card1Data = webSocketData.card1Data;
+                    // if the user drew a card, animate the card being drawn from the pile
                     if (message === "draw"){
                         await animateDrawCard(cardRefs.current, card1Data.player)
                     }
+                    // if the user discarded a card, animate the card getting sent to the discard pile
+                    // and potentially animate the drawn card entering the players hand
                     else if (message === "discard"){
                         const card2Data = webSocketData.card2Data
                         const pileCard = cards[card1Data.player][0]
-                        const discardedCard = cards[card2Data.player].find((card) => card.row === card2Data.row && card.col === card2Data.column)
+                        const discardedCard = cards[card2Data.player].find((card) => card === null ? false : card.row === card2Data.row && card.col === card2Data.column)
 
                         await animateDiscardCard(cardRefs.current, pileCard, discardedCard, getAngle(card2Data), radius, trigger, triggerVar)
                     }
+                    // if the user looked at a card, animate the card getting looked a
                     else if (message === "look"){
                         let isMyTurn;
                         if (thisUser === currentTurn){
@@ -108,27 +129,57 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                         else{
                             isMyTurn = false;
                         }
-                        const cardToAnimate = cards[card1Data.player].find((card) => card.row === card1Data.row && card.col === card1Data.column)
+                        const cardToAnimate = cards[card1Data.player].find((card) => card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
                         await animateLookCard(cardRefs.current, cardToAnimate, trigger, triggerVar, isMyTurn)
                     }
+                    // if the user swapped 2 cards, animate the cards moving to their new positions
                     else if (message === "swap"){
                         console.log("WEBSOCKET contents on swap: ", webSocketData)
                         const card2Data = webSocketData.card2Data
-                        const card1 = cards[card1Data.player].find((card) => card.row === card1Data.row && card.col === card1Data.column)
-                        const card2 = cards[card2Data.player].find((card) => card.row === card2Data.row && card.col === card2Data.column)
+                        const card1 = cards[card1Data.player].find((card) => card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
+                        const card2 = cards[card2Data.player].find((card) => card === null ? false : card.row === card2Data.row && card.col === card2Data.column)
 
                         console.log("card1: ", card1)
                         console.log("card2: ", card2)
 
-
                         await animateSwapCard(cardRefs.current, card1, card2, getAngle(card1Data), getAngle(card2Data), radius)
                     }
+                    // updates the cards and state to match what was broadcast
+                    webSocketData.cards !== null ? setCards(webSocketData.cards) : null;
+                    setState(webSocketData.state)
+                }
+                // if the user flipped a card
+                else if (webSocketData && webSocketData.type === "flipCard"){
+                    // if the user has just flipped a card, animate that card
+                    console.log("WENSOCKETDAAT FLOP: ", webSocketData)
+                    const card1Data = webSocketData.card1Data
+                    if (message === "flipCardSuccess"){
+                        const card1 = cards[card1Data.player].find((card) => card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
+                        await animateFlipCardSuccess(cardRefs.current, card1, getAngle(card1Data), radius, trigger, triggerVar)
+                    }
+                    else if (message === "flipCardFail"){
+                        const card2Data = webSocketData.card2Data;
+                        const card1 = cards[card1Data.player].find((card) => card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
+                        const card2 = cards[card2Data.player].find((card) => card === null ? false : card.row === card2Data.row && card.col === card2Data.column)
+                        console.log("CARDEFF 1", card1)
+                        await animateFlipCardFail(cardRefs.current, card1, card2, getAngle(card1Data), radius, trigger, triggerVar)
+                    }
+                    // if the user needs to give one of their cards away after a flip,
+                    // animate that card moving to it's new hand
+                    else if (message === "giveCard"){
+                        await animateGiveCard()
+                    }
+                    // update the cards / state accordingly
                     webSocketData.cards !== null ? setCards(webSocketData.cards) : null;
                     setState(webSocketData.state)
                 }
             }
             checkMessage();
-        }, [message])
+        }, [webSocketData])
+
+
+
+
 
 
         useEffect(()=>{
@@ -137,6 +188,10 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                 cards[thisUser][1].card.visible = false
             }
         }, [gameStarted])
+
+
+
+
 
 
         // updates necessary vars on game state change after websocket broadcast
@@ -155,6 +210,12 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
             }   
         }, [state])
 
+
+
+
+
+
+        // tells the backend to end the game if this user has previously called cambio and it is now their turn again
         useEffect(()=>{
             if (thisUser === currentTurn && cambio){
                 const sendEndgameRequest = async () => {
@@ -170,13 +231,21 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         }, [currentTurn])
 
 
+
+
+
+
     // updates bool deciding whether this user is currently able to flip cards
     useEffect(()=> {
         // cannot flip if the discard pile is empty
         const cardLength = Array.isArray(cards[1]) ? cards[1].length : 0;
         // cannot flip if this user was the last to discard a card
-        cardLength === 0 || lastToDiscard === thisUser ? setCanFlip(false) : setCanFlip(true);
+        cardLength === 0 || lastToDiscard === thisUser || hasFlipped ? setCanFlip(false) : setCanFlip(true);
     }, [cards, lastToDiscard])
+
+
+
+
 
 
     /**
@@ -191,6 +260,11 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
             console.error("ERROR: ", e)
         }
     }
+
+
+
+
+
 
     // swaps the two cads in the selectedSwapCards array 
     const swapCards = async (swap) => {
@@ -223,6 +297,12 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         }
     }
 
+
+
+
+
+
+    // if this user calls cambio on their turn, alert the backend
     const cambioClick = async () => {
         if (thisUser === currentTurn && state === 0){
             try{
@@ -235,6 +315,12 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
             }
         }
     }
+
+
+
+
+
+
     // when the game ends, sets all cards to visible for 5 seconds before entering engGame page
     const endGame = async () => {
         setState(-1)
@@ -258,6 +344,11 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         setEndGameScreen(true)
     }
 
+
+
+
+
+
     // when the game starts, update the button text and resets its visual indicator
     useEffect(()=>{
         if (gameStarted){
@@ -267,10 +358,14 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     }, [gameStarted])
 
 
+
+
+
+
     if (!endGameScreen){
         return (
             <div className = "body-container" key = "body">
-                <div ref={tableRef} className="game-table" style = {{transform: `rotate(${tableRotation}deg)`}}>
+                <div className="game-table" style = {{transform: `rotate(${tableRotation}deg)`}}>
                     <div className="card-row-container" style = {{transform: `rotate(${centerCardRotation}deg) scale(${centerScaleFactor})`}}>
                         <div className="card-row">
                             {// places 2 cards in the middle of the game table to act as a draw and discard pile
