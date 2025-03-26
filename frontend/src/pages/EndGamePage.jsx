@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import "../pages/Body.css"
 import axios from "axios";
-import GameContext from "./GameContext";
 import LobbyContext from "./LobbyContext";
 
-function EndGamePage ({setGameScreen, players}) {
+function EndGamePage ({setGameScreen}) {
     
     const {lobbyID, backendSite} = useContext(LobbyContext)
     const [playerNames, setPlayerNames] = useState([])

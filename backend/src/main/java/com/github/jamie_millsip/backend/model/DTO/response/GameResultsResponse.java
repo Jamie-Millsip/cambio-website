@@ -1,13 +1,13 @@
-package com.github.jamie_millsip.backend.model.DTO;
+package com.github.jamie_millsip.backend.model.DTO.response;
 
 import java.util.ArrayList;
 
-public class GameResults {
+public class GameResultsResponse {
 
     ArrayList<String> playerNames = new ArrayList<>();
     ArrayList<Integer> playerScores = new ArrayList<>();
 
-    public GameResults(ArrayList<String> playerNames, ArrayList<Integer> playerScores) {
+    public GameResultsResponse(ArrayList<String> playerNames, ArrayList<Integer> playerScores) {
         this.playerNames = playerNames;
         this.playerScores = playerScores;
     }

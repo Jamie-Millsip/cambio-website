@@ -1,11 +1,13 @@
 package com.github.jamie_millsip.backend.controller;
 
-import com.github.jamie_millsip.backend.model.DTO.*;
+import com.github.jamie_millsip.backend.model.DTO.request.ReadyUpRequest;
+import com.github.jamie_millsip.backend.model.DTO.request.nicknameInputRequest;
 import com.github.jamie_millsip.backend.model.DTO.response.GameSocketResponse;
 import com.github.jamie_millsip.backend.model.DTO.response.LobbySocketResponse;
 import com.github.jamie_millsip.backend.model.DTO.response.getCardsResponse;
 import com.github.jamie_millsip.backend.model.Lobby;
 import com.github.jamie_millsip.backend.model.Player;
+import com.github.jamie_millsip.backend.model.PlayerReady;
 import com.github.jamie_millsip.backend.model.SharedService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @RestController
-@CrossOrigin(origins = "https://jamie-millsip.github.io")
-//@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "https://jamie-millsip.github.io")
+@CrossOrigin(origins = "http://localhost:5173")
 public class LobbyController {
 
     @Autowired
@@ -58,7 +60,7 @@ public class LobbyController {
     }
 
     @RequestMapping("/addPlayer")
-    public int AddPlayer(@RequestBody ReadyUpPost request){
+    public int AddPlayer(@RequestBody ReadyUpRequest request){
         String lobbyID = request.getLobbyID();
         Player player = request.getPlayer();
         boolean availableName = true;
@@ -85,7 +87,7 @@ public class LobbyController {
     }
 
     @RequestMapping("/lobbyReadyUp")
-    public void lobbyReadyUp(@RequestBody ReadyUpPost request){        String lobbyID = request.getLobbyID();
+    public void lobbyReadyUp(@RequestBody ReadyUpRequest request){        String lobbyID = request.getLobbyID();
         String nickname = request.getPlayer().getNickname();
         Lobby lobby = null;
         for (Lobby l : lobbyList) {
@@ -125,7 +127,7 @@ public class LobbyController {
     }
 
     @RequestMapping("/gameReadyUp")
-    public void gameReadyUp(@RequestBody ReadyUpPost request){
+    public void gameReadyUp(@RequestBody ReadyUpRequest request){
         String lobbyID = request.getLobbyID();
         String nickname = request.getPlayer().getNickname();
         Lobby lobby = null;
@@ -167,7 +169,7 @@ public class LobbyController {
 
 
     @RequestMapping("/getThisUserIndex/{lobbyID}")
-    public int getPlayerIndex(@PathVariable String lobbyID, @RequestBody nicknameInput request){
+    public int getPlayerIndex(@PathVariable String lobbyID, @RequestBody nicknameInputRequest request){
         for (Lobby l : lobbyList) {
             if (l.getId().equals(lobbyID)) {
                 for (int i = 0; i < l.getAllPlayers().size(); i++) {

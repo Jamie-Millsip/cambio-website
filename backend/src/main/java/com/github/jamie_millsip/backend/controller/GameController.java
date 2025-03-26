@@ -7,6 +7,7 @@ import com.github.jamie_millsip.backend.model.DTO.request.DiscardCardRequest;
 import com.github.jamie_millsip.backend.model.DTO.request.FlipCardRequest;
 import com.github.jamie_millsip.backend.model.DTO.request.SwapCardRequest;
 import com.github.jamie_millsip.backend.model.DTO.response.CardResponse;
+import com.github.jamie_millsip.backend.model.DTO.response.GameResultsResponse;
 import com.github.jamie_millsip.backend.model.DTO.response.GameSocketResponse;
 import com.github.jamie_millsip.backend.model.Lobby;
 import com.github.jamie_millsip.backend.model.Player;
@@ -22,8 +23,8 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@CrossOrigin(origins = "https://jamie-millsip.github.io")
-//@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "https://jamie-millsip.github.io")
+@CrossOrigin(origins = "http://localhost:5173")
 public class GameController {
 
 
@@ -323,7 +324,7 @@ public class GameController {
     }
 
     @RequestMapping("/getGameResults/{lobbyID}")
-    public GameResults getGameResults(@PathVariable String lobbyID){
+    public GameResultsResponse getGameResults(@PathVariable String lobbyID){
         for (Lobby lobby : lobbyList) {
             if (lobby.getId().equals(lobbyID)) {
                 ArrayList<String> players = new ArrayList<>();
@@ -342,7 +343,7 @@ public class GameController {
                     scores.add(score);
                 }
 
-                return new GameResults(players, scores);
+                return new GameResultsResponse(players, scores);
             }
         }
         return null;

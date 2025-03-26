@@ -1,6 +1,6 @@
 package com.github.jamie_millsip.backend.model.DTO.response;
 
-import com.github.jamie_millsip.backend.model.DTO.PlayerReady;
+import com.github.jamie_millsip.backend.model.PlayerReady;
 
 public class LobbySocketResponse {
 

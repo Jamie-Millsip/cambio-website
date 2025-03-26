@@ -1,14 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { swapCards } from "../../utilities/CardAPIs"
 import { gameReadyUp, cambioClick, sendEndgameRequest } from "../../utilities/GameAPIs"
-import "../../pages/Game.css"
-import "../../pages/Body.css"
 import {animateDrawCard, animateDiscardCard, animateLookCard, 
     animateSwapCard, animateFlipCardSuccess, animateFlipCardFail,
     animateGiveCard} from "../../utilities/AnimateCard";
 import LobbyContext from "../../pages/LobbyContext";
 import GameContext from "../../pages/GameContext";
-import axios from "axios";
 import Stomp from 'stompjs';
 import Card from "./GameContent components/Card";
 import EndGamePage from "../../pages/EndGamePage";

@@ -1,14 +1,13 @@
-package com.github.jamie_millsip.backend.model.DTO;
+package com.github.jamie_millsip.backend.model.DTO.request;
 
-import com.github.jamie_millsip.backend.model.Lobby;
 import com.github.jamie_millsip.backend.model.Player;
 
-public class ReadyUpPost {
+public class ReadyUpRequest {
 
     private String lobbyID;
     private Player player;
 
-    public ReadyUpPost(String lobbyID, Player player) {
+    public ReadyUpRequest(String lobbyID, Player player) {
         this.lobbyID = lobbyID;
         this.player = player;
     }

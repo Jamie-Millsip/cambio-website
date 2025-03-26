@@ -24,7 +24,7 @@ function HomeContent ({setLobbyID, lobbyID, buttonResponse}) {
                 />
                 <button className="button submit-button" onClick={buttonResponse}>Submit</button>
             </div>
-            <p> or</p>
+            <p className="body-text">or</p>
             <CreateLobbyButton/>
       </>
     )

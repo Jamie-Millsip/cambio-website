@@ -2,7 +2,7 @@ import HomeContent from '../components/HomePage components/HomeContent';
 import {useState} from 'react';
 import axios from 'axios';
 
-import "./Body.css"
+import "./HomePage.css"
 import { useNavigate } from 'react-router-dom';
 
 /**
@@ -17,8 +17,8 @@ function HomePage(){
   const [errMessage, setErrMessage] = useState("");
   const navigate = useNavigate();
 
-  const backendSite = "https://cambio-backend-2smc.onrender.com/"
-  //const backendSite = "http://localhost:8080/"
+  //const backendSite = "https://cambio-backend-2smc.onrender.com/"
+  const backendSite = "http://localhost:8080/"
 
   /**
    * Handles the response to users clicking on the button to enter a lobby after inputting a lobby ID

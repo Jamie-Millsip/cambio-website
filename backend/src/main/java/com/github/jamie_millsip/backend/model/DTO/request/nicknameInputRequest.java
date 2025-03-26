@@ -1,14 +1,14 @@
-package com.github.jamie_millsip.backend.model.DTO;
+package com.github.jamie_millsip.backend.model.DTO.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-public class nicknameInput {
+public class nicknameInputRequest {
 
     private String nickname;
 
 
     @JsonCreator
-    public nicknameInput(String nickname) {
+    public nicknameInputRequest(String nickname) {
         this.nickname = nickname;
     }
 

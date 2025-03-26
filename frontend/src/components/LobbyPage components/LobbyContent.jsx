@@ -16,8 +16,6 @@ function LobbyContent({lobbyID}){
         webSocketSite
     } = useContext(LobbyContext);
 
-
-        const [triggerVar, trigger] = useState(0)
         const [messageArray, setMessageArray] = useState([])
         const [cards, setCards] = useState([])
         const [exists, setExists] = useState(false)
@@ -136,21 +134,6 @@ function LobbyContent({lobbyID}){
         updateUserIndex()
     }, [playerLeaveFlag])
 
-    /**
-
-    useEffect(()=>{
-        if (cards){
-            for (let x = 0; x < cards.length; x++){
-                for (let y = 0; y < cards[x].length; y++){
-                    if (cards[x][y]){
-                        cards[x][y].card.visible = true;
-                    }
-                }
-            }
-        }
-        console.log("CADDDASSDS: ", cards)
-    }, [cards])
-    */
 
     /**
      * checks if the lobby the user has entered exists or not
