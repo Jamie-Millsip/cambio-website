@@ -279,7 +279,7 @@ public class GameController {
     @RequestMapping("/giveCard/{lobbyID}")
     public void giveCard(@PathVariable String lobbyID, @RequestBody PositionData cardToGivePos){
         PositionData card2Data = null;
-
+        System.out.println("WEJFAEBHFINEA");
         for (Lobby lobby : lobbyList) {
             if (lobby.getId().equals(lobbyID)) {
                 int playerToRecieve = lobby.getPlayerToGiveCard();

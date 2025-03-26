@@ -2,10 +2,11 @@ import axios from "axios"
 
 // should figure out a way to save permanent vars here (like lobbyID and backendSite)
 
+const backendSite = "http://localhost:8080";
+//const backendSite = "https://cambio-backend-2smc.onrender.com/"
 
 
-
-const flipCard = async (state, thisUser, cardIndex, row, col, currentTurn, thisCard, backendSite, lobbyID, cards) => {
+const flipCard = async (state, thisUser, cardIndex, row, col, currentTurn, thisCard, lobbyID, cards) => {
     try{
         const flipData = {
             state: state,
@@ -14,13 +15,11 @@ const flipCard = async (state, thisUser, cardIndex, row, col, currentTurn, thisC
             currentTurn: currentTurn
         }
         if (thisCard.card.face === cards[1][0].card.face){
-            console.log("MATCHING CARD")
             await axios.post(backendSite + `flipCardSuccess/${lobbyID}`, flipData, {
                 "Content-Type" : "application/json"
             })
         }
         else{
-            console.log("NOT MATCHING CARD")
             await axios.post(backendSite + `flipCardFail/${lobbyID}`, flipData, {
                 "Content-Type" : "application/json"
             })
@@ -32,14 +31,13 @@ const flipCard = async (state, thisUser, cardIndex, row, col, currentTurn, thisC
 }
 
 
-const giveCard = async (cardIndex, row, col, backendSite, lobbyID) => {
+const giveCard = async (cardIndex, row, col, lobbyID) => {
     try{
         const giveData = {
             player: cardIndex, 
             row: row, 
             column: col
         }
-        console.log("AAAA")
         await axios.post(backendSite + `giveCard/${lobbyID}`, giveData, {
             "Content-Type" : "application/json"
         })
@@ -50,13 +48,13 @@ const giveCard = async (cardIndex, row, col, backendSite, lobbyID) => {
 }
 
 
-const drawCard = async (cards, cardIndex, trigger, triggerVar, backendSite, lobbyID, setSelectedPile) => {
+const drawCard = async (cards, cardIndex, trigger, triggerVar, lobbyID, setSelectedPile) => {
     // let the user draw a card if it is their turn and they are selecting a pile to draw from
     try{
         cards[cardIndex][0].card.visible = true
         trigger(triggerVar+1)
         setSelectedPile(cardIndex)
-        await axios.post(backendSite + `drawCard/${lobbyID}`, cardIndex, {headers: {"Content-Type":"application/json"}}) // figure out what inputs are needed
+        await axios.post(backendSite + `drawCard/${lobbyID}`, cardIndex, {headers: {"Content-Type":"application/json"}})
     }
     catch(e){
         console.error("ERROR: ", e)
@@ -67,11 +65,9 @@ const drawCard = async (cards, cardIndex, trigger, triggerVar, backendSite, lobb
 /**
  * checks if discarding the selected card is a valid move, if so, sends a request to the backend to discard the selected card
  */
-const discardCard = async (selectedPile, cardIndex, row, col, backendSite, lobbyID) => {
+const discardCard = async (selectedPile, cardIndex, row, col, lobbyID) => {
     // let a user discard a card if it is their turn and they select either the newly drawn card or one of their own cards 
     try{
-        //cards[cardIndex][0].card.visible = false;
-        //trigger(triggerVar+1)
         const requestData = {
             pile: selectedPile,
             player: cardIndex,
@@ -87,7 +83,7 @@ const discardCard = async (selectedPile, cardIndex, row, col, backendSite, lobby
     }
 }
 
-const lookCard = async (cardIndex, row, col, backendSite, lobbyID) => {
+const lookCard = async (cardIndex, row, col, lobbyID) => {
     const posData = {
         player: cardIndex,
         row: row,
@@ -104,7 +100,7 @@ const lookCard = async (cardIndex, row, col, backendSite, lobbyID) => {
 }
 
 // swaps the two cads in the selectedSwapCards array 
-const swapCards = async (swap, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, backendSite, lobbyID) => {
+const swapCards = async (swap, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, lobbyID) => {
     try{
         // correctly formats the data required by the swapcards backend function
         console.log("selectswapcard: ", selectedSwapCards)
