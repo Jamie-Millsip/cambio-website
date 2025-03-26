@@ -21,9 +21,6 @@ function EndGamePage ({setGameScreen}) {
                         "Accept": "application/json"
                     }
                 })
-                console.log(results.data)
-                console.log(results.data.playerNames)
-                console.log(results.data.playerScores)
                 setPlayerNames(results.data.playerNames)
                 setPlayerScores(results.data.playerScores)
             }

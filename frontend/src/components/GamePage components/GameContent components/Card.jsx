@@ -1,7 +1,6 @@
 import { forwardRef, useContext, useEffect, useState } from "react";
 import { drawCard, discardCard, lookCard, flipCard, giveCard} from "../../../utilities/CardAPIs"
 import LobbyContext from "../../../pages/LobbyContext";
-import axios from "axios";
 import GameContext from "../../../pages/GameContext";
 /**
  * this component is responsible for each individual game card, identifying the correct way of displaying the card, and for correctly dealing
