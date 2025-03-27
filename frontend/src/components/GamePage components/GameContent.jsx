@@ -309,14 +309,14 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                                     ${buttonMessage === "Cambio" ? cambioStyle : "" } `} 
                                 onClick=
                                     { buttonMessage === "Ready" ? () => gameReadyUp(readyButtonStyle, setReadyButtonStyle, backendSite, lobbyID, nickname) 
-                                    : buttonMessage === "Swap" ? () => swapCards(true, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, backendSite, lobbyID) 
+                                    : buttonMessage === "Swap" ? () => swapCards(true, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, lobbyID) 
                                     : buttonMessage === "Cambio" ? () => cambioClick(thisUser, currentTurn, state, backendSite, lobbyID, setCambio) 
                                     : null}
                             >
                                 {buttonMessage}
                             </button>
                             {(state === 5 || state === 4) && thisUser == currentTurn && (
-                                <button className= {`game-button ${readyButtonStyle}`} onClick= {() => swapCards(false, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, backendSite, lobbyID)}>
+                                <button className= {`game-button ${readyButtonStyle}`} onClick= {() => swapCards(false, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, lobbyID)}>
                                     keep
                                 </button>
                             )}

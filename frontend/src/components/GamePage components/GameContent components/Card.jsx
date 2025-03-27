@@ -63,12 +63,12 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
 
 
     const handleClick = () => {
-        canDraw ? drawCard(cards, cardIndex, trigger, triggerVar, backendSite, lobbyID, setSelectedPile) : 
-        canDiscard ? discardCard(selectedPile, cardIndex, row, col, backendSite, lobbyID) : 
-        canLook ? lookCard(cardIndex, row, col, backendSite, lobbyID) : 
+        canDraw ? drawCard(cards, cardIndex, trigger, triggerVar, lobbyID, setSelectedPile) : 
+        canDiscard ? discardCard(selectedPile, cardIndex, row, col, lobbyID) : 
+        canLook ? lookCard(cardIndex, row, col, lobbyID) : 
         canSwap ? swapCard() : 
-        canGiveCard ? giveCard(cardIndex, row, col, backendSite, lobbyID) :
-        canFlip ? flipCard(state, thisUser, cardIndex, row, col, currentTurn, thisCard, backendSite, lobbyID, cards) : 
+        canGiveCard ? giveCard(cardIndex, row, col, lobbyID) :
+        canFlip ? flipCard(state, thisUser, cardIndex, row, col, currentTurn, thisCard, lobbyID, cards) : 
         null;
     }
 
