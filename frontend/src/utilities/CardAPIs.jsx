@@ -7,26 +7,29 @@ const backendSite = "http://localhost:8080/";
 
 
 const flipCard = async (state, thisUser, cardIndex, row, col, currentTurn, thisCard, lobbyID, cards) => {
-    try{
-        const flipData = {
-            state: state,
-            thisPlayer: thisUser,
-            positionData: {player: cardIndex, row: row, column: col},
-            currentTurn: currentTurn
+    if (cardIndex > 1){
+
+        try{
+            const flipData = {
+                state: state,
+                thisPlayer: thisUser,
+                positionData: {player: cardIndex, row: row, column: col},
+                currentTurn: currentTurn
+            }
+            if (thisCard.card.face === cards[1][0].card.face){
+                await axios.post(backendSite + `flipCardSuccess/${lobbyID}`, flipData, {
+                    "Content-Type" : "application/json"
+                })
+            }
+            else{
+                await axios.post(backendSite + `flipCardFail/${lobbyID}`, flipData, {
+                    "Content-Type" : "application/json"
+                })
+            }
         }
-        if (thisCard.card.face === cards[1][0].card.face){
-            await axios.post(backendSite + `flipCardSuccess/${lobbyID}`, flipData, {
-                "Content-Type" : "application/json"
-            })
+        catch(e){
+            console.error("ERROR: ", e)
         }
-        else{
-            await axios.post(backendSite + `flipCardFail/${lobbyID}`, flipData, {
-                "Content-Type" : "application/json"
-            })
-        }
-    }
-    catch(e){
-        console.error("ERROR: ", e)
     }
 }
 

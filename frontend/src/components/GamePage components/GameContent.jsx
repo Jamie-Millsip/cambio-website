@@ -139,9 +139,6 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                         const card1 = cards[card1Data.player].find((card) => card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
                         const card2 = cards[card2Data.player].find((card) => card === null ? false : card.row === card2Data.row && card.col === card2Data.column)
 
-                        console.log("card1: ", card1)
-                        console.log("card2: ", card2)
-
                         await animateSwapCard(cardRefs.current, card1, card2, getAngle(card1Data), getAngle(card2Data), radius)
                     }
                     // updates the cards and state to match what was broadcast
@@ -239,7 +236,9 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         // cannot flip if the discard pile is empty
         const cardLength = Array.isArray(cards[1]) ? cards[1].length : 0;
         // cannot flip if this user was the last to discard a card
-        cardLength === 0 || lastToDiscard === thisUser || hasFlipped ? setCanFlip(false) : setCanFlip(true);
+        cardLength === 0 || lastToDiscard === thisUser
+        || hasFlipped 
+        || (thisUser === currentTurn && state !== 0) ? setCanFlip(false) : setCanFlip(true);
     }, [cards, lastToDiscard, hasFlipped])
 
 
