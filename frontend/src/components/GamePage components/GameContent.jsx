@@ -236,8 +236,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         // cannot flip if the discard pile is empty
         const cardLength = Array.isArray(cards[1]) ? cards[1].length : 0;
         // cannot flip if this user was the last to discard a card
-        cardLength === 0 || lastToDiscard === thisUser
-        || hasFlipped 
+        cardLength === 0 || lastToDiscard === thisUser || hasFlipped 
         || (thisUser === currentTurn && state !== 0) ? setCanFlip(false) : setCanFlip(true);
     }, [cards, lastToDiscard, hasFlipped])
 
