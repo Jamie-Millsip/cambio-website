@@ -67,7 +67,7 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
         }
         thisUser === currentTurn && state === 6 && thisUser === cardIndex 
         ? setCanGiveCard(true) : setCanGiveCard(false)
-    }, [state, thisUser, currentTurn, cardIndex, selectedPile, cardIndex, selectedSwapCards])
+    }, [state, thisUser, currentTurn, cardIndex, selectedPile, cardIndex, selectedSwapCards, hasActed])
 
 
 
