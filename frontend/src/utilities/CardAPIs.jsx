@@ -51,9 +51,10 @@ const giveCard = async (cardIndex, row, col, lobbyID) => {
 }
 
 
-const drawCard = async (cards, cardIndex, trigger, triggerVar, lobbyID, setSelectedPile) => {
+const drawCard = async (cards, cardIndex, trigger, triggerVar, lobbyID, setSelectedPile, setHasActed) => {
     // let the user draw a card if it is their turn and they are selecting a pile to draw from
     try{
+        setHasActed(true)
         cards[cardIndex][0].card.visible = true
         trigger(triggerVar+1)
         setSelectedPile(cardIndex)
@@ -68,9 +69,10 @@ const drawCard = async (cards, cardIndex, trigger, triggerVar, lobbyID, setSelec
 /**
  * checks if discarding the selected card is a valid move, if so, sends a request to the backend to discard the selected card
  */
-const discardCard = async (selectedPile, cardIndex, row, col, lobbyID) => {
+const discardCard = async (selectedPile, cardIndex, row, col, lobbyID, setHasActed) => {
     // let a user discard a card if it is their turn and they select either the newly drawn card or one of their own cards 
     try{
+        setHasActed(true)
         const requestData = {
             pile: selectedPile,
             player: cardIndex,
@@ -86,13 +88,14 @@ const discardCard = async (selectedPile, cardIndex, row, col, lobbyID) => {
     }
 }
 
-const lookCard = async (cardIndex, row, col, lobbyID) => {
+const lookCard = async (cardIndex, row, col, lobbyID, setHasActed) => {
     const posData = {
         player: cardIndex,
         row: row,
         column: col
     }
     try{
+        setHasActed(true)
         await axios.post(backendSite + `look/${lobbyID}`, posData, {
             "Content-Type" : "application/json"
         })
@@ -103,8 +106,9 @@ const lookCard = async (cardIndex, row, col, lobbyID) => {
 }
 
 // swaps the two cads in the selectedSwapCards array 
-const swapCards = async (swap, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, lobbyID) => {
+const swapCards = async (swap, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, lobbyID, setHasActed) => {
     try{
+        setHasActed(true)
         // correctly formats the data required by the swapcards backend function
         console.log("selectswapcard: ", selectedSwapCards)
         const swapRequest = {

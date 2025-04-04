@@ -21,13 +21,12 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
 
 
-    const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
     const setCardRef = (key, el) => { el ? cardRefs.current.set(key, el) : cardRefs.current.delete(key);};
 
     const {lobbyID, nickname, selectedSwapCards, setSelectedSwapCards, backendSite, webSocketSite} = useContext(LobbyContext);
     const {currentTurn, setCurrentTurn, state, setState,lastToDiscard,
-        setLastToDiscard, setCanFlip, trigger, triggerVar} = useContext(GameContext);
+        setLastToDiscard, setCanFlip, trigger, triggerVar, setHasActed, sleep} = useContext(GameContext);
     const [gameStarted, setGameStarted] = useState(false)
 
     const [hasFlipped, setHasFlipped] = useState(false)
@@ -37,7 +36,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     const [cambioStyle, setCambioStyle] = useState("")
     const [endGameScreen, setEndGameScreen] = useState(false)
     const [webSocketData, setWebSocketData] = useState(null)
-    const [hasActed, setHasActed] = useState(false)
+
     // define vars used in correctly displaying the dynamic game board
     let radius = 270 + players*4;
     let scaleFactor = 1.4 - players/40;
@@ -336,7 +335,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                                     { buttonMessage === "Ready" ? () => 
                                         gameReadyUp(readyButtonStyle, setReadyButtonStyle, backendSite, lobbyID, nickname) 
                                     : buttonMessage === "Swap" ? () => 
-                                        swapCards(true, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, lobbyID) 
+                                        swapCards(true, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, lobbyID, setHasActed) 
                                     : buttonMessage === "Cambio" ? () => 
                                         cambioClick(thisUser, currentTurn, state, backendSite, lobbyID, setCambio) 
                                     : null}
