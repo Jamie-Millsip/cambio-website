@@ -19,7 +19,7 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 - bugs
 
   - if a player flips when the current player is using an ability, after the flip, the ability resets, allowing them to use the abilities twice
-  -
+  - players can play their turn multiple times (can do it unlimited amounts before the animation ends)
 
 - Gameplay
 
