@@ -26,8 +26,6 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
       - when someone incorrectly flips a card, they are given the top card from the draw pile, if the current user is drawing from the draw pile, they are currently looking at the top card in the pile, therefore if an unsuccessful flip occurs when the current user is drawing, they will know details about the card given to the user that flipped
     - adding to the discard pile
       - when someone correctly flips a card, that card enters the discard pile, becoming the top card in the pile, if the current user is drawing from the discard pile, they are drawing the top card from the pile, therefore if a successful swap happens while the user is drawing from the discard, the card they draw will change and can affect the game (ie drawing a black king instead of red as someone flipped)
-  - if a player flips when a game action is occuring (during the animation), the current user is able to play that game action again
-  - the plan to fix many of these issues is to create a boolean for when an animation is occuring, and not allow flips to occur when the flag is true
 
 - Gameplay
 
