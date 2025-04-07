@@ -18,22 +18,18 @@ import GameContext from "../../../pages/GameContext";
  */
 
 const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
-
-
-    const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
     
     const {lobbyID, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext)
     const {currentTurn, state, canFlip, trigger, triggerVar, selectedPile, setSelectedPile, setHasActed, hasActed} = useContext(GameContext);
 
     const [currentTurnStyle, setCurrentTurnStyle]=useState("")
     const [thisCard, setThisCard] = useState(null);
-    let card = null;
-
     const [canDraw, setCanDraw] = useState(false);
     const [canDiscard, setCanDiscard] = useState(false);
     const [canLook, setCanLook] = useState(false)
     const [canGiveCard, setCanGiveCard] = useState(false)
     const [canSwap, setCanSwap] = useState(false)
+    let card = null;
 
 
 

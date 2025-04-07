@@ -48,10 +48,6 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     const cardRefs = useRef(new Map());
 
 
-
-
-
-    
         // useEffect to connect to websocket and to handle any broadcasts sent from that websocket
         useEffect(() => {
             const socket = new WebSocket(webSocketSite);
@@ -84,8 +80,6 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         const getAngle = (card2) => {
                 return( -((((card2.player-2) * 360) / players) + 90) + ((((thisUser-2) * 360) / players) + 90))
         }
-
-
 
         // runs after websocket broadcast and animates cards in response to the new info
         useEffect(()=>{
@@ -180,20 +174,22 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                         setCurrentTurn(webSocketData.newCurrentPlayer)
                     }
                     // update the cards / state accordingly
-                    webSocketData.cards !== null ? setCards(webSocketData.cards) : null;
                     setState(webSocketData.state)
-                    if (state === 5){
+                    console.log(webSocketData.cards)
+                    if (state === 5 && webSocketData.cards !== null){
                         for (let x = 0; x < selectedSwapCards.length; x++){
-                            for (let y = 0; y < cards[selectedSwapCards[x].player].length; y++){
-                                if (cards[selectedSwapCards[x].player][y]. row === selectedSwapCards.row
-                                    && cards[selectedSwapCards[x].player][y].col === selectedSwapCards.col){
-                                    if (cards[selectedSwapCards[x].player][y].card){
-                                        cards[selectedSwapCards[x].player][y].card.visible = true;        
+                            for (let y = 0; y < webSocketData.cards[selectedSwapCards[x].player].length; y++){
+                                if (webSocketData.cards[selectedSwapCards[x].player][y]. row === selectedSwapCards[x].row
+                                    && webSocketData.cards[selectedSwapCards[x].player][y].col === selectedSwapCards[x].col){
+                                    if (webSocketData.cards[selectedSwapCards[x].player][y].card){
+                                        webSocketData.cards[selectedSwapCards[x].player][y].card.visible = true;        
                                     }
                                 }
                             }
                         }
                     }
+                    sleep(30)
+                    webSocketData.cards !== null ? setCards(webSocketData.cards) : null;
                     trigger(triggerVar+1)
                 }
             }
@@ -202,17 +198,6 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
             }
         }, [webSocketData])
 
-
-
-
-
-
-        useEffect(()=>{
-            if (gameStarted){
-                cards[thisUser][0].card.visible = false
-                cards[thisUser][1].card.visible = false
-            }
-        }, [gameStarted])
 
 
 
@@ -239,7 +224,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
 
 
-        // tells the backend to end the game if this user has previously called cambio and it is now their turn again
+        // if the current user has previously called cambio, and it is now their turn again, ends the game
         useEffect(()=>{
             if (thisUser === currentTurn && cambio){
                 sendEndgameRequest(sleep, backendSite, lobbyID)
@@ -287,10 +272,13 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
 
     // when the game starts, update the button text and resets its visual indicator
+    // and make all cards not visible
     useEffect(()=>{
         if (gameStarted){
-            setButtonMessage("Cambio")
-            setReadyButtonStyle("button-unready"); 
+            setButtonMessage("Cambio");
+            setReadyButtonStyle("button-unready");
+            cards[thisUser][0].card.visible = false;
+            cards[thisUser][1].card.visible = false;
         }
     }, [gameStarted])
 

@@ -220,12 +220,14 @@ const animateFlipCardFail = async (refs, givenCard, flippedCard,  angle, radius,
         trigger(triggerVar+1)
         flippedCardEl.style.transition = "transform 1s ease-in-out";
         flippedCardEl.style.transform = "scale(1.2)"
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        flippedCard.card.visible = false;
+        trigger(triggerVar+1)
+        flippedCardEl.style.transform = "scale(1)";
         await new Promise(resolve => {
             flippedCardEl.addEventListener('transitionend', resolve, { once: true });
         });
-        flippedCardEl.style.transform = "";
-        flippedCard.card.visible = false;
-        trigger(triggerVar+1)
         flippedCardEl.style.transition = "transform";
 
 
