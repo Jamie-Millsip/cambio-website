@@ -12,7 +12,7 @@ const backendSite = "https://cambio-backend-2smc.onrender.com/"
    */
     const joinLobbyAttempt = async (lobbyID, setErrMessage, navigate) => {
         try{
-            const result = await axios.post(backendSite + "/verifyHomePageData", {id: lobbyID});
+            const result = await axios.post(backendSite + "verifyHomePageData", {id: lobbyID});
             if (result.data === 0){
                 setErrMessage("ERROR: No lobby Found");
             }
@@ -34,7 +34,7 @@ const backendSite = "https://cambio-backend-2smc.onrender.com/"
      */
     const createLobby = async (navigate) => {
         try{
-            const result= await axios.post(backendSite + "/createLobby");
+            const result= await axios.post(backendSite + "createLobby");
             const lobbyID = result.data;
             navigate(`/lobby/${lobbyID}`);
         }   
