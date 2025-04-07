@@ -175,8 +175,15 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                     // if the user needs to give one of their cards away after a flip,
                     // animate that card moving to it's new hand
                     else if (webSocketData.message === "giveCard"){
+                        console.log("deauifjnesjk")
+                        console.log(webSocketData.card2Data)
+                        const card2Data = webSocketData.card2Data;
+                        const card1 = cards[card1Data.player].find((card) => 
+                            card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
+                        const card2 = cards[card2Data.player].find((card) => 
+                            card === null ? false : card.row === card2Data.row && card.col === card2Data.column)
                         setIsAnimating(true)
-                        await animateGiveCard()
+                        await animateGiveCard(cardRefs.current, card1, card2, getAngle(card1Data), getAngle(card2Data), radius)
                         setCurrentTurn(webSocketData.newCurrentPlayer)
                     }
                     // update the cards / state accordingly
