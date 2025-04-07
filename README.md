@@ -18,6 +18,10 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 
 - bugs
 
+  - many bugs when an attempted flip interrupts a turn eg
+    - allowing the player to take more than one turn
+      - a flag exists to prevent users from taking more than one turn (hasActed), this resets at the end of the websocket handler useEffect,
+    - changing card visibility incorrectly
   - if a player flips when the current player is using an ability, after the flip, the ability resets, allowing them to use the abilities twice
   - players can play their turn multiple times (can do it unlimited amounts before the animation ends)
 
