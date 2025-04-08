@@ -307,8 +307,8 @@ public class GameController {
                 System.out.println("about to broadcast");
                 triggerBroadcast(lobbyID, new GameSocketResponse("flipCard", cards, lobby.getStateToReturnTo(),
                         "giveCard", cardToGivePos, card2Data, lobby.getPlayersToReturnTo()));
+                break;
             }
-            break;
         }
     }
 
