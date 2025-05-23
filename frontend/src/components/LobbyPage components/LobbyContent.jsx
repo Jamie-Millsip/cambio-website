@@ -13,7 +13,8 @@ function LobbyContent({lobbyID}){
     const {
         setLobbyID,
         backendSite,
-        webSocketSite
+        webSocketSite,
+        nicknameRef
     } = useContext(LobbyContext);
 
         const [messageArray, setMessageArray] = useState([])
@@ -23,7 +24,6 @@ function LobbyContent({lobbyID}){
         const [hasNickname, setHasNickname] = useState(false)
         const [loading, setLoading] = useState(true);
         const [playerCount, setPlayerCount] = useState("");
-        let nicknameRef = useRef("")
 
         const [thisUser, setThisUser] = useState(-1); 
         const [playerLeaveFlag, setPlayerLeaveFlag] = useState(false)
@@ -164,11 +164,12 @@ function LobbyContent({lobbyID}){
 
                 {!hasNickname && exists && (
                     <EnterNicknameView
-                        nicknameRef={nicknameRef}
                         setHasNickname={setHasNickname}
                     />)}
 
-                {exists && !loading && hasNickname && (<LobbyReadyUpView messageArray={messageArray}/>)}
+                {exists && !loading && hasNickname && (
+                    <LobbyReadyUpView 
+                        messageArray={messageArray}/>)}
             </div>
         </div>
         )

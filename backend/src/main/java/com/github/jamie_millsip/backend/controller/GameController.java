@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@CrossOrigin(origins = "https://jamie-millsip.github.io")
-//@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "https://jamie-millsip.github.io")
+@CrossOrigin(origins = "http://localhost:5173")
 public class GameController {
 
 
@@ -307,7 +307,6 @@ public class GameController {
                 System.out.println("about to broadcast");
                 triggerBroadcast(lobbyID, new GameSocketResponse("flipCard", cards, lobby.getStateToReturnTo(),
                         "giveCard", cardToGivePos, card2Data, lobby.getPlayersToReturnTo()));
-                break;
             }
         }
     }

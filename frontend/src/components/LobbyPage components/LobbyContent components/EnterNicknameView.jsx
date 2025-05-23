@@ -1,23 +1,29 @@
 import axios from "axios";
 import TextInput from "../../TextInput";
 import"../../../pages/Body.css";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import LobbyContext from "../../../pages/LobbyContext";
 
 
-function EnterNicknameView({nicknameRef, setHasNickname}){
+function EnterNicknameView({setHasNickname}){
     
-    let {setNickname, nickname, lobbyID, backendSite} = useContext(LobbyContext);
+    
+    let {nicknameRef, lobbyID, backendSite} = useContext(LobbyContext);
+
+    const [nickname, setNickname] = useState("")
+    const [errMessage, setErrMessage] = useState("")
 
     const handleNicknameButton = async (newNickname) => {
         try{
             let result = await axios.post(backendSite + "addPlayer", {lobbyID: lobbyID, player: {nickname: newNickname}});
-            if (result.data == 1){
-                nicknameRef.current = newNickname;
-                nickname = newNickname;
+            console.log(result.data)
+            if (result.data.type === "enterNicknameResponse"){
+                console.log("ehafbes")
+                nicknameRef.current = result.data.playerName;
                 setHasNickname(true);
             }
             else{
+                setErrMessage("ERROR: Please enter a nickname")
                 console.log("bad name")
             }
         }
@@ -36,6 +42,7 @@ function EnterNicknameView({nicknameRef, setHasNickname}){
                 cssClass={"lobby-textbox"} 
                 />
             <button className='button submit-button' onClick={(e) => {handleNicknameButton(nickname)}}>Submit</button>
+            <p>{errMessage}</p>
         </div>
         </>
     )

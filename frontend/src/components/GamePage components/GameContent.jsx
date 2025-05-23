@@ -24,7 +24,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
     const setCardRef = (key, el) => { el ? cardRefs.current.set(key, el) : cardRefs.current.delete(key);};
 
-    const {lobbyID, nickname, selectedSwapCards, setSelectedSwapCards, backendSite, webSocketSite} = useContext(LobbyContext);
+    const {lobbyID, nicknameRef, selectedSwapCards, setSelectedSwapCards, backendSite, webSocketSite} = useContext(LobbyContext);
     const {currentTurn, setCurrentTurn, state, setState,lastToDiscard,
         setLastToDiscard, setCanFlip, trigger, triggerVar, setHasActed, sleep} = useContext(GameContext);
     const [gameStarted, setGameStarted] = useState(false)
@@ -336,7 +336,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                                     ${buttonMessage === "Cambio" ? cambioStyle : "" } `} 
                                 onClick=
                                     { buttonMessage === "Ready" ? () => 
-                                        gameReadyUp(readyButtonStyle, setReadyButtonStyle, backendSite, lobbyID, nickname) 
+                                        gameReadyUp(readyButtonStyle, setReadyButtonStyle, backendSite, lobbyID, nicknameRef.current) 
                                     : buttonMessage === "Swap" ? () => 
                                         swapCards(true, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, lobbyID, setHasActed) 
                                     : buttonMessage === "Cambio" ? () => 
