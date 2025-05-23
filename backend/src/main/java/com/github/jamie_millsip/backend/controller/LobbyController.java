@@ -69,12 +69,22 @@ public class LobbyController {
         for (Lobby l : lobbyList) {
             if (l.getId().equals(lobbyID)) {
                 int count = 1;
-                for (Player p : l.getAllPlayers()){
-                    if (Objects.equals(p.getNickname(), player.getNickname())){
-                        String newNickname = player.getNickname() + " (" + count + ")";
-                        player.setNickname(newNickname);
+                boolean validName = false;
+                String newNickname = player.getNickname();
+                String nameAddition = "";
+                while (!validName){
+                    validName = true;
+                    for (Player p : l.getAllPlayers()){
+                        if (Objects.equals(p.getNickname(), newNickname + nameAddition)){
+                            nameAddition = " (" + count + ")";
+                            count++;
+                            validName = false;
+                            break;
+                        }
                     }
+
                 }
+                player.setNickname(newNickname + nameAddition);
                 l.addPlayer(player);
             }
         }
