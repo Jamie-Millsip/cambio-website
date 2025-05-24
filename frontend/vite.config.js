@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
     global: 'window',
   },
   build: {
-    outDir: `dist`
+    outDir: `../dist`
   }
 }))
 
