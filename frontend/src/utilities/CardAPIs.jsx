@@ -2,8 +2,8 @@ import axios from "axios"
 
 // should figure out a way to save permanent vars here (like lobbyID and backendSite)
 
-const backendSite = "http://localhost:8080/";
-//const backendSite = "https://cambio-backend-2smc.onrender.com/"
+//const backendSite = "http://localhost:8080/";
+const backendSite = "https://cambio-backend-2smc.onrender.com/"
 
 
 const flipCard = async (state, thisUser, cardIndex, row, col, currentTurn, thisCard, lobbyID, cards) => {
