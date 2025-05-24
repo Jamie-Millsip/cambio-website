@@ -2,7 +2,7 @@
 
 a website for playing the card game "cambio"
 
-hosted at https://jamie-millsip.github.io/Cambio-Website/
+hosted at https://jamie-millsip.github.io/cambio-website/
 
 # READ
 
@@ -11,6 +11,8 @@ this website tracks when a player leaves the site, this is to ensure lobbys only
 ad-blockers prevent this tracking from reaching the backend, and therefore need to be turned off when playing the game
 
 ## TODO
+
+- update the gh-pages branch to only contain the build output files
 
 - testing
 
