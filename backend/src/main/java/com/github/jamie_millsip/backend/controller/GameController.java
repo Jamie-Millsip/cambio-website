@@ -24,7 +24,7 @@ import java.util.Objects;
 
 @RestController
 //@CrossOrigin(origins = "https://jamie-millsip.github.io")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:4173")
 public class GameController {
 
 
