@@ -1,7 +1,7 @@
 import axios from "axios"
 
-//const backendSite = "http://localhost:8080/";
-const backendSite = "https://cambio-backend-2smc.onrender.com/"
+const backendSite = "http://localhost:8080/";
+//const backendSite = "https://cambio-backend-2smc.onrender.com/"
 
 
 const gameReadyUp = async(readyButtonStyle, setReadyButtonStyle, backendSite, lobbyID, nickname) =>{

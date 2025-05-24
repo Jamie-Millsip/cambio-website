@@ -63,6 +63,7 @@ public class LobbyController {
     public LobbySocketResponse AddPlayer(@RequestBody ReadyUpRequest request){
         String lobbyID = request.getLobbyID();
         Player player = request.getPlayer();
+        System.out.println("nickname: " + request.getPlayer().getNickname());
         if (player.getNickname().isEmpty()){
             return null;
         }
