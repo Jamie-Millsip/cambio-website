@@ -19,15 +19,20 @@ export function GameProvider({children}){
     const [lastToDiscard, setLastToDiscard] = useState(0);
     const [canFlip, setCanFlip] = useState(false);
     const [triggerVar, trigger] = useState(0)
+    const [selectedPile, setSelectedPile] = useState();
+    const [hasActed, setHasActed] = useState(false)
+    
+
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
     
 
     return(
         <GameContext.Provider value = {{
+            selectedPile, setSelectedPile,
             currentTurn, setCurrentTurn, state, setState,
             lastToDiscard, setLastToDiscard, canFlip, setCanFlip,
-            triggerVar, trigger, sleep
+            triggerVar, trigger, sleep, hasActed, setHasActed
         }}>
             {children}
         </GameContext.Provider>

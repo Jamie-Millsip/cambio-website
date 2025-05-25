@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { forwardRef, useContext, useEffect, useState } from "react";
+import { drawCard, discardCard, lookCard, flipCard, giveCard} from "../../../utilities/CardAPIs"
 import LobbyContext from "../../../pages/LobbyContext";
-import axios from "axios";
 import GameContext from "../../../pages/GameContext";
 /**
  * this component is responsible for each individual game card, identifying the correct way of displaying the card, and for correctly dealing
@@ -16,128 +16,71 @@ import GameContext from "../../../pages/GameContext";
  * 
  * @returns an interactive card object displayed onto the screen
  */
-function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
 
-
-    const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
     
     const {lobbyID, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext)
-    const {currentTurn, state, setLastToDiscard, canFlip, trigger, triggerVar} = useContext(GameContext);
+    const {currentTurn, state, canFlip, trigger, triggerVar, selectedPile, setSelectedPile, setHasActed, hasActed} = useContext(GameContext);
 
-    const [selectedPile, setSelectedPile] = useState();
     const [currentTurnStyle, setCurrentTurnStyle]=useState("")
     const [thisCard, setThisCard] = useState(null);
-    const [suit, setSuit] = useState("")
-    let card = null;
-
     const [canDraw, setCanDraw] = useState(false);
     const [canDiscard, setCanDiscard] = useState(false);
     const [canLook, setCanLook] = useState(false)
+    const [canGiveCard, setCanGiveCard] = useState(false)
     const [canSwap, setCanSwap] = useState(false)
+    let card = null;
 
 
 
     useEffect(() => {
         if (cards && cards[cardIndex]) {
             const foundCard = cards[cardIndex].find(
-                (card) => card && card.player === playerIndex && card.row === row && card.col === col
+                (card) => card && card.player === cardIndex && card.row === row && card.col === col
             );
             setThisCard(foundCard || null);
         }
     }, [cards]);
 
     useEffect(()=>{
-        // 
-
-        state === 0 && thisUser === currentTurn && cardIndex < 2 ? setCanDraw(true): setCanDraw(false);
-
-        state === 1 && thisUser === currentTurn && (cardIndex === selectedPile || playerIndex === thisUser) ? setCanDiscard(true) : setCanDiscard(false);
-
-        thisUser === currentTurn && ((state === 2 && thisUser === playerIndex) || (state === 3 && thisUser !== playerIndex)) ? setCanLook(true) : setCanLook(false);
-
-        thisUser === currentTurn && ((state === 4 || state === 5) && selectedSwapCards.length < 2) ? setCanSwap(true) : setCanSwap(false)
-
-        !canDraw && !canDiscard && !canLook && !canSwap && canFlip
-    }, [state, thisUser, currentTurn, cardIndex, selectedPile, playerIndex])
+        if (hasActed){
+            setCanDraw(false)
+            setCanDiscard(false)
+            setCanLook(false)
+            setCanSwap(false)
+        }
+        else{
+            state === 0 && thisUser === currentTurn && cardIndex < 2 ? setCanDraw(true): setCanDraw(false);
+            
+            state === 1 && thisUser === currentTurn && (cardIndex === selectedPile || cardIndex === thisUser) 
+            ? setCanDiscard(true) : setCanDiscard(false);
+            
+            thisUser === currentTurn && ((state === 2 && thisUser === cardIndex) || (state === 3 && thisUser !== cardIndex)) 
+            ? setCanLook(true) : setCanLook(false);
+            
+            thisUser === currentTurn && cardIndex > 1 && ((state === 4 || state === 5) && selectedSwapCards.length < 2) 
+            ? setCanSwap(true) : setCanSwap(false)
+        }
+        thisUser === currentTurn && state === 6 && thisUser === cardIndex 
+        ? setCanGiveCard(true) : setCanGiveCard(false)
+    }, [state, thisUser, currentTurn, cardIndex, selectedPile, cardIndex, selectedSwapCards, hasActed])
 
 
 
     const handleClick = () => {
-        canDraw ? drawCard() : canDiscard ? discardCard() : canLook ? lookCard() : canSwap ? swapCard() : canFlip ? flipCard() : null;
+        canDraw ? drawCard(cards, cardIndex, trigger, triggerVar, lobbyID, setSelectedPile, setHasActed) : 
+        canDiscard ? discardCard(selectedPile, cardIndex, row, col, lobbyID, setHasActed) : 
+        canLook ? lookCard(cardIndex, row, col, lobbyID, setHasActed) : 
+        canSwap ? swapCard() : 
+        canGiveCard ? giveCard(cardIndex, row, col, lobbyID) :
+        canFlip ? flipCard(state, thisUser, cardIndex, row, col, currentTurn, thisCard, lobbyID, cards) : 
+        null;
     }
 
-    const flipCard = async () => {
-        if (canFlip){
-            const flipData = {
-                state: state,
-                positionData: {player: playerIndex, row: row, column: col}
-            }
-            try{
-                await axios.post(backendSite + `flipCard/${lobbyID}`, flipData, {
-                    "Content-Type" : "application/json"
-                })
-            }
-            catch(e){
-                console.error("ERROR: ", e)
-            }
-        }
-    }
-
-    const drawCard = async () => {
-        // let the user draw a card if it is their turn and they are selecting a pile to draw from
-        console.log("draw")
-        try{
-            cards[cardIndex][0].card.visible = true
-            trigger(triggerVar+1)
-            setSelectedPile(cardIndex)
-            await axios.post(backendSite + `drawCard/${lobbyID}`, cardIndex, {headers: {"Content-Type":"application/json"}}) // figure out what inputs are needed
-        }
-        catch(e){
-            console.error("ERROR: ", e)
-        }
-    }
-
-
-    /**
-     * checks if discarding the selected card is a valid move, if so, sends a request to the backend to discard the selected card
-     */
-    const discardCard = async () => {
-        // let a user discard a card if it is their turn and they select either the newly drawn card or one of their own cards 
-        try{
-            cards[cardIndex][0].card.visible = false;
-            trigger(triggerVar+1)
-            const requestData = {
-                pile: selectedPile,
-                player: cardIndex,
-                row: row,
-                col: col
-            };
-            setLastToDiscard(thisUser);
-            await axios.post(backendSite + `discardCard/${lobbyID}`, requestData, {
-                "Content-Type" : "application/json"
-            })
-        }
-        catch(e){
-            console.error("ERROR: ", e)
-        }
-    }
-
-    const lookCard = async () => {
-        thisCard.card.visible = true
-        await sleep(30)
-        trigger(triggerVar+1)
-        await sleep(1500)
-        thisCard.card.visible = false
-        try{
-            await axios.post(backendSite + `look/${lobbyID}`)
-        }
-        catch(e){
-            console.error("ERROR: ", e)
-        }
-    }
+    
 
     const swapCard = async () => {
-        let card = selectedSwapCards.find((card) => row === card.row && playerIndex === card.player && card.col === col)
+        let card = selectedSwapCards.find((card) => row === card.row && cardIndex === card.player && card.col === col)
         if (card){
             return;
         }
@@ -159,7 +102,7 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         if (cardResponse == null){
             return false
         }
-        else if (cardResponse.player == playerIndex && cardResponse.row == row && cardResponse.col == col){
+        else if (cardResponse.player == cardIndex && cardResponse.row == row && cardResponse.col == col){
             return true
         }
         return false
@@ -187,14 +130,15 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
         // and the player needs to draw and this card belongs to the draw or discard pile
         && ((state === 0 && cardIndex < 2) 
         // or the player needs to discard and this card is one of theirs / the one they just drew
-        || (state === 1 && (playerIndex === currentTurn || cardIndex === selectedPile))
+        || (state === 1 && (cardIndex === currentTurn || cardIndex === selectedPile))
         // or the player needs to look at one of thier cards, and this is one of their cards
-        || (state === 2 && playerIndex === thisUser)
+        || (state === 2 && cardIndex === thisUser)
         // or the player needs to look at someone else's card, and this is someone else's card
-        || (state === 3 && (playerIndex !== thisUser && cardIndex > 1))
+        || (state === 3 && (cardIndex !== thisUser && cardIndex > 1))
         // or the player needs to swap 2 cards, and this card belongs to a player and isnt already selected
         || ((state === 4 || state === 5) && cardIndex > 1 &&
-        !selectedSwapCards.some(card => card !== null && card.player === playerIndex && card.row === row && card.col === col))
+        !selectedSwapCards.some(card => card !== null && card.player === cardIndex && card.row === row && card.col === col))
+        || (state === 6 && cardIndex === thisUser)
         )){
             setCurrentTurnStyle("current-player")
         }
@@ -207,35 +151,36 @@ function Card ({thisUser, cardIndex, playerIndex, row, col, cards}){
 
     card = returnCardContents()
     
-    if (card === null){
+    if (card === null || card.card === null){
         return(
-            <div key={`card-${row}${col}${playerIndex}`} className={`game-card game-card-space`}>
+            <div 
+                key={`card-${row}${col}${cardIndex}`} 
+                className={`game-card game-card-space`} 
+                ref={ref}>
                 <span className="card-text"></span>
                 </div>
         )
     }
-    
     else if (card.card.visible == false){
         return(
-            <button 
+            <button
+            ref={ref}
             className={`game-card face-down ${currentTurnStyle}`} 
             onClick={handleClick}>
                 <span className="card-text"></span>
             </button>
         )
     }
-    
-    //(card.card.suit === "Diamonds" || card.card.suit === "Hearts") ? setSuit("red-card") : setSuit("black-card")
-    
     return(
         <button
-            className={`game-card face-up ${suit} ${currentTurnStyle}`}
+            ref={ref}
+            className={`game-card face-up ${currentTurnStyle}`}
             style={{color: (card.card.suit === "Diamonds" || card.card.suit === "Hearts") ? "red" : "black"}} 
             onClick={handleClick}>
             <span className="card-text"> {card.card.face} </span>            
         </button> 
     )
-}
+})
 
 
 export default Card

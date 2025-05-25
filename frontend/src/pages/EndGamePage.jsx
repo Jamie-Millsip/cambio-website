@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import "../pages/Body.css"
 import axios from "axios";
-import GameContext from "./GameContext";
 import LobbyContext from "./LobbyContext";
 
-function EndGamePage ({setGameScreen, players}) {
+function EndGamePage ({setGameScreen}) {
     
     const {lobbyID, backendSite} = useContext(LobbyContext)
     const [playerNames, setPlayerNames] = useState([])
@@ -22,9 +21,6 @@ function EndGamePage ({setGameScreen, players}) {
                         "Accept": "application/json"
                     }
                 })
-                console.log(results.data)
-                console.log(results.data.playerNames)
-                console.log(results.data.playerScores)
                 setPlayerNames(results.data.playerNames)
                 setPlayerScores(results.data.playerScores)
             }

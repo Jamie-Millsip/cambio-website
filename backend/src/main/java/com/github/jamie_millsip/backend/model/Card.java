@@ -10,6 +10,12 @@ public class Card {
 
     private boolean visible = false;
 
+    public Card (Card newCard){
+        this.value = newCard.getValue();
+        this.face = newCard.getFace();
+        this.suit = newCard.getSuit();
+    }
+
     public Card(int value, String suit, String face) {
         this.value = value;
         this.suit = suit;

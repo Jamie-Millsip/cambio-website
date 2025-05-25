@@ -2,7 +2,14 @@
 .footer-container {
     height: 5vh;
     width: 100vw;
+    display: flex;
     background-color: rgb(170, 170, 170);
     box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
     min-width: 700px;
+}
+
+.footer-text {
+    font-weight: bold;
 }

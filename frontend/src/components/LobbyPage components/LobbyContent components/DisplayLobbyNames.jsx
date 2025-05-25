@@ -1,6 +1,4 @@
 import "../../../pages/Body.css"
-import { useContext } from "react"
-import LobbyContext from "../../../pages/LobbyContext"
 
 function DisplayLobbyNames({messageArray}){
 

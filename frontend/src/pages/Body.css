@@ -2,6 +2,7 @@
 .body-container {
     display: flex;
     justify-content: center;
+    position: relative;
     align-items: center;
     text-align: center;
     width: 100vw;
@@ -18,6 +19,7 @@
 .contents-container {
     background-color: #dedede;
     box-sizing: border-box;
+    position: relative;
     display: flex;
     flex-Direction: column;
     align-Items: center;

@@ -13,11 +13,10 @@ function LobbyContent({lobbyID}){
     const {
         setLobbyID,
         backendSite,
-        webSocketSite
+        webSocketSite,
+        nicknameRef
     } = useContext(LobbyContext);
 
-
-        const [triggerVar, trigger] = useState(0)
         const [messageArray, setMessageArray] = useState([])
         const [cards, setCards] = useState([])
         const [exists, setExists] = useState(false)
@@ -25,7 +24,6 @@ function LobbyContent({lobbyID}){
         const [hasNickname, setHasNickname] = useState(false)
         const [loading, setLoading] = useState(true);
         const [playerCount, setPlayerCount] = useState("");
-        let nicknameRef = useRef("")
 
         const [thisUser, setThisUser] = useState(-1); 
         const [playerLeaveFlag, setPlayerLeaveFlag] = useState(false)
@@ -84,8 +82,8 @@ function LobbyContent({lobbyID}){
                     const result = await axios.post(backendSite + `getCards/${lobbyID}`)
                     if (result.data != null){
                         setCards(result.data.cards)
-                        result.data.cards[thisUser+2][0].card.visible = true;
-                        result.data.cards[thisUser+2][1].card.visible = true;
+                        result.data.cards[thisUser][0].card.visible = true;
+                        result.data.cards[thisUser][1].card.visible = true;
                     }
                 }
                 catch(e){
@@ -136,6 +134,7 @@ function LobbyContent({lobbyID}){
         updateUserIndex()
     }, [playerLeaveFlag])
 
+
     /**
      * checks if the lobby the user has entered exists or not
      * 
@@ -165,11 +164,12 @@ function LobbyContent({lobbyID}){
 
                 {!hasNickname && exists && (
                     <EnterNicknameView
-                        nicknameRef={nicknameRef}
                         setHasNickname={setHasNickname}
                     />)}
 
-                {exists && !loading && hasNickname && (<LobbyReadyUpView messageArray={messageArray}/>)}
+                {exists && !loading && hasNickname && (
+                    <LobbyReadyUpView 
+                        messageArray={messageArray}/>)}
             </div>
         </div>
         )

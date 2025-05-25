@@ -2,6 +2,8 @@
 
 a website for playing the card game "cambio"
 
+hosted at https://jamie-millsip.github.io/cambio-website/
+
 # READ
 
 this website tracks when a player leaves the site, this is to ensure lobbys only consist of current players, and to ensure the game is not stuck waiting for a player who has left the game to take their turn
@@ -10,10 +12,35 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 
 ## TODO
 
-- finish implementing card flipping
+- update the gh-pages branch to only contain the build output files
 
-  - ensure only one card can be flipped for each discarded card
-  - when flipping another persons card, allow the player to give that person one of their cards
+- testing
+
+  - because I was learning both spring boot and react for this project, I decided to do test driven refactoring rather than test driven development (ie, program the project, then write tests, then refactor the code around the newly written tests) as I felt it would be better to write tests when I knew more about the frameworks and how / what to test.
+
+- bugs
+
+  - many bugs when an attempted flip interrupts a turn eg
+    - allowing the player to take more than one turn
+      - a flag exists to prevent users from taking more than one turn (hasActed), this resets at the end of the websocket handler useEffect,
+    - changing card visibility incorrectly
+    - removing from the draw pile
+      - when someone incorrectly flips a card, they are given the top card from the draw pile, if the current user is drawing from the draw pile, they are currently looking at the top card in the pile, therefore if an unsuccessful flip occurs when the current user is drawing, they will know details about the card given to the user that flipped
+    - adding to the discard pile
+      - when someone correctly flips a card, that card enters the discard pile, becoming the top card in the pile, if the current user is drawing from the discard pile, they are drawing the top card from the pile, therefore if a successful swap happens while the user is drawing from the discard, the card they draw will change and can affect the game (ie drawing a black king instead of red as someone flipped)
+
+- Gameplay
+
+  - remove players from the game when they flip incorrectly when having 7 cards (currently does nothing)
+  - stop abilities from being played if there are not enough cards on the board to play them (<2 cards for swaps, <1 for looks)
+  -
+
+- Animations
+
+  - add animations for giving one of your cards to a player after flipping thier card
+  - make animations edit zIndex of card-row-container to makecthe animated card always appear above the other cards
+  - currently has bug where if 2 incorrect cards are flipped at the same time, it does not correctly animate draw pile card entering players' hands as it manipulates the draw card's current position.
+    - to fix, I will create flag isAnimating, and only allow animations to play when is animating is false (will make pending animations wait until animation is over)
 
 - finish implementing endGame screen
 
