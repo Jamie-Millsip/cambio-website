@@ -12,12 +12,6 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 
 ## TODO
 
-- update the gh-pages branch to only contain the build output files
-
-- testing
-
-  - because I was learning both spring boot and react for this project, I decided to do test driven refactoring rather than test driven development (ie, program the project, then write tests, then refactor the code around the newly written tests) as I felt it would be better to write tests when I knew more about the frameworks and how / what to test.
-
 - bugs
 
   - many bugs when an attempted flip interrupts a turn eg
@@ -28,6 +22,9 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
       - when someone incorrectly flips a card, they are given the top card from the draw pile, if the current user is drawing from the draw pile, they are currently looking at the top card in the pile, therefore if an unsuccessful flip occurs when the current user is drawing, they will know details about the card given to the user that flipped
     - adding to the discard pile
       - when someone correctly flips a card, that card enters the discard pile, becoming the top card in the pile, if the current user is drawing from the discard pile, they are drawing the top card from the pile, therefore if a successful swap happens while the user is drawing from the discard, the card they draw will change and can affect the game (ie drawing a black king instead of red as someone flipped)
+    - solution - add a flag to the JSON sent to the backend where:
+      - False - if the discard pile is not currently in use (i.e. add / remove from the top of the discard pile)
+      - True - if the discard pile is currently in use (i.e. add / remove from the second item in the discard pile)
 
 - Gameplay
 
@@ -37,10 +34,7 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 
 - Animations
 
-  - add animations for giving one of your cards to a player after flipping thier card
-  - make animations edit zIndex of card-row-container to makecthe animated card always appear above the other cards
-  - currently has bug where if 2 incorrect cards are flipped at the same time, it does not correctly animate draw pile card entering players' hands as it manipulates the draw card's current position.
-    - to fix, I will create flag isAnimating, and only allow animations to play when is animating is false (will make pending animations wait until animation is over)
+  - make animations edit zIndex of card-row-container to make the animated card always appear above the other cards
 
 - finish implementing endGame screen
 
@@ -51,10 +45,6 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
   - save active lobbys and any necessary details in a database
     - ensures that lobbys are not interrupted in the event the backend goes down
     - allows for better scalability as the backend is not storing all variables for all active games
-
-- move backend calls & websocket connections to seperate API files
-
-  - better for maintainability as removes bloat from other files and makes the code more readable
 
 - refactor css to improve the look of the webpage
 

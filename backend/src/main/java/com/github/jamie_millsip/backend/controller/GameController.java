@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@CrossOrigin(origins = "https://jamie-millsip.github.io")
-//@CrossOrigin(origins = "http://localhost:4173")
+//@CrossOrigin(origins = "https://jamie-millsip.github.io")
+@CrossOrigin(origins = "http://localhost:5173")
 public class GameController {
 
 
