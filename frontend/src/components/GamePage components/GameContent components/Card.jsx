@@ -20,7 +20,8 @@ import GameContext from "../../../pages/GameContext";
 const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
     
     const {lobbyID, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext)
-    const {currentTurn, state, canFlip, trigger, triggerVar, selectedPile, setSelectedPile, setHasActed, hasActed} = useContext(GameContext);
+    const {currentTurn, state, canFlip, trigger, triggerVar, selectedPile,
+        isAnimating, setIsAnimating, setSelectedPile, setHasActed, hasActed} = useContext(GameContext);
 
     const [currentTurnStyle, setCurrentTurnStyle]=useState("")
     const [thisCard, setThisCard] = useState(null);
@@ -50,20 +51,20 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
             setCanSwap(false)
         }
         else{
-            state === 0 && thisUser === currentTurn && cardIndex < 2 ? setCanDraw(true): setCanDraw(false);
+            state === 0 && thisUser === currentTurn && cardIndex < 2 && !isAnimating ? setCanDraw(true): setCanDraw(false);
             
-            state === 1 && thisUser === currentTurn && (cardIndex === selectedPile || cardIndex === thisUser) 
+            state === 1 && thisUser === currentTurn && (cardIndex === selectedPile || cardIndex === thisUser) && !isAnimating
             ? setCanDiscard(true) : setCanDiscard(false);
             
-            thisUser === currentTurn && ((state === 2 && thisUser === cardIndex) || (state === 3 && thisUser !== cardIndex)) 
+            thisUser === currentTurn && ((state === 2 && thisUser === cardIndex) || (state === 3 && thisUser !== cardIndex)) && !isAnimating
             ? setCanLook(true) : setCanLook(false);
             
-            thisUser === currentTurn && cardIndex > 1 && ((state === 4 || state === 5) && selectedSwapCards.length < 2) 
+            thisUser === currentTurn && cardIndex > 1 && ((state === 4 || state === 5) && selectedSwapCards.length < 2) && !isAnimating
             ? setCanSwap(true) : setCanSwap(false)
         }
-        thisUser === currentTurn && state === 6 && thisUser === cardIndex 
+        thisUser === currentTurn && state === 6 && thisUser === cardIndex && !isAnimating
         ? setCanGiveCard(true) : setCanGiveCard(false)
-    }, [state, thisUser, currentTurn, cardIndex, selectedPile, cardIndex, selectedSwapCards, hasActed])
+    }, [state, thisUser, currentTurn, cardIndex, selectedPile, cardIndex, selectedSwapCards, hasActed, isAnimating])
 
 
 

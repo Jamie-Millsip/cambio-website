@@ -26,9 +26,8 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
     const {lobbyID, nicknameRef, selectedSwapCards, setSelectedSwapCards, backendSite, webSocketSite} = useContext(LobbyContext);
     const {currentTurn, setCurrentTurn, state, setState,lastToDiscard,
-        setLastToDiscard, setCanFlip, trigger, triggerVar, setHasActed, sleep} = useContext(GameContext);
+        setLastToDiscard, setCanFlip, trigger, triggerVar, setHasActed, sleep, isAnimating, setIsAnimating} = useContext(GameContext);
     const [gameStarted, setGameStarted] = useState(false)
-    const [isAnimating, setIsAnimating] = useState(false)
     const [hasFlipped, setHasFlipped] = useState(false)
     const [readyButtonStyle, setReadyButtonStyle] = useState("button-unready")
     const [buttonMessage, setButtonMessage] = useState("Ready")
@@ -81,6 +80,31 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                 return( -((((card2.player-2) * 360) / players) + 90) + ((((thisUser-2) * 360) / players) + 90))
         }
 
+        const findCard = (cardData) => {
+            return cards[cardData.player].find((card) => 
+                     card === null ? false : card.row === cardData.row && card.col === cardData.column);
+        }
+
+        const updateCards = (newCards) => {
+            if (state === 5 && newCards !== null){
+                for (let x = 0; x < selectedSwapCards.length; x++){
+                    for (let y = 0; y < newCards[selectedSwapCards[x].player].length; y++){
+                        if (newCards[selectedSwapCards[x].player][y]. row === selectedSwapCards[x].row
+                            && newCards[selectedSwapCards[x].player][y].col === selectedSwapCards[x].col){
+                            if (newCards[selectedSwapCards[x].player][y].card){
+                                newCards[selectedSwapCards[x].player][y].card.visible = true;        
+                            }
+                        }
+                    }
+                }
+            }
+            sleep(30)
+            newCards !== null ? setCards(newCards) : null;
+            trigger(triggerVar+1)
+        }
+
+        
+
         // runs after websocket broadcast and animates cards in response to the new info
         useEffect(()=>{
             const checkMessage = async () => {
@@ -88,73 +112,65 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                 if (webSocketData.message === "callCambio"){
                     currentTurn + 1 < players+2 ? setCurrentTurn(currentTurn+1): setCurrentTurn(2);
                 }   
+
                 // ends the game if told to by backend
                 else if (webSocketData.message === "endGame"){
                     await endGame()
                 }
+
                 // if the game state has changed, animates the moved cards
                 else if (webSocketData && webSocketData.type === "changeState"){
                     console.log("WEBSOCKETDATA: ", webSocketData)
                     const card1Data = webSocketData.card1Data;
+                    const card1 = findCard(card1Data)
                     // if the user drew a card, animate the card being drawn from the pile
+                    if (webSocketData.card2Data !== null){
+                        const card2Data = webSocketData.card2Data;
+                        const card2 = findCard(card2Data)
+                        
+                        if (webSocketData.message === "discard"){
+                            setHasFlipped(false);
+                            setLastToDiscard(currentTurn);
+                            const pileCard = cards[card1Data.player][0];
+                            setIsAnimating(true)
+                            await animateDiscardCard(cardRefs.current, pileCard, card2, 
+                                getAngle(card2Data), radius, trigger, triggerVar);
+                        }
+                        // if the user swapped 2 cards, animate the cards moving to their new positions
+                        else if (webSocketData.message === "swap"){
+                            setIsAnimating(true)
+                            await animateSwapCard(cardRefs.current, card1, card2, getAngle(card1Data), getAngle(card2Data), radius);
+                        }
+
+                    }
                     if (webSocketData.message === "draw"){
                         setIsAnimating(true)
                         await animateDrawCard(cardRefs.current, card1Data.player)
                     }
+
                     // if the user discarded a card, animate the card getting sent to the discard pile
                     // and potentially animate the drawn card entering the players hand
-                    else if (webSocketData.message === "discard"){
-                        setHasFlipped(false);
-                        setLastToDiscard(currentTurn);
-                        const card2Data = webSocketData.card2Data;
-                        const pileCard = cards[card1Data.player][0];
-                        const discardedCard = cards[card2Data.player].find((card) => 
-                            card === null ? false : card.row === card2Data.row && card.col === card2Data.column);
-                        setIsAnimating(true)
-                        await animateDiscardCard(cardRefs.current, pileCard, discardedCard, 
-                            getAngle(card2Data), radius, trigger, triggerVar);
-                    }
                     // if the user looked at a card, animate the card getting looked a
                     else if (webSocketData.message === "look"){
-                        let isMyTurn;
-                        if (thisUser === currentTurn){
-                            isMyTurn = true;
-                        }
-                        else{
-                            isMyTurn = false;
-                        }
-                        const cardToAnimate = cards[card1Data.player].find((card) => 
-                            card === null ? false : card.row === card1Data.row && card.col === card1Data.column);
+                        let isMyTurn = thisUser === currentTurn ? true : false
                         setIsAnimating(true)
-                        await animateLookCard(cardRefs.current, cardToAnimate, trigger, triggerVar, isMyTurn);
-                    }
-                    // if the user swapped 2 cards, animate the cards moving to their new positions
-                    else if (webSocketData.message === "swap"){
-                        console.log("WEBSOCKET contents on swap: ", webSocketData);
-                        const card2Data = webSocketData.card2Data;
-                        const card1 = cards[card1Data.player].find((card) => 
-                            card === null ? false : card.row === card1Data.row && card.col === card1Data.column);
-                        const card2 = cards[card2Data.player].find((card) => 
-                            card === null ? false : card.row === card2Data.row && card.col === card2Data.column);
-
-                        setIsAnimating(true)
-                        await animateSwapCard(cardRefs.current, card1, card2, getAngle(card1Data), getAngle(card2Data), radius);
+                        await animateLookCard(cardRefs.current, card1, trigger, triggerVar, isMyTurn);
                     }
                     // updates the cards and state to match what was broadcast
                     webSocketData.cards !== null ? setCards(webSocketData.cards) : null;
                     setState(webSocketData.state);
                     setHasActed(false);
                 }
+
+                
                 // if the user flipped a card
                 else if (webSocketData && webSocketData.type === "flipCard"){
                     // if the user has just flipped a card, animate that card
                     console.log("WENSOCKETDAAT FLOP: ", webSocketData)
                     const card1Data = webSocketData.card1Data
+                    const card1 = findCard(card1Data)
                     if (webSocketData.message === "flipCardSuccess"){
                         setHasFlipped(true)
-                        console.log("SUCCESS")
-                        const card1 = cards[card1Data.player].find((card) => 
-                            card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
                         setIsAnimating(true)
                         await animateFlipCardSuccess(cardRefs.current, card1, 
                             getAngle(card1Data), radius, trigger, triggerVar)
@@ -162,48 +178,26 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                             setCurrentTurn(webSocketData.newCurrentPlayer)
                         }
                     }
-                    else if (webSocketData.message === "flipCardFail"){
+                    else {
                         const card2Data = webSocketData.card2Data;
-                        const card1 = cards[card1Data.player].find((card) => 
-                            card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
-                        const card2 = cards[card2Data.player].find((card) => 
-                            card === null ? false : card.row === card2Data.row && card.col === card2Data.column)
-                        console.log("CARDEFF 1", card1)
-                        setIsAnimating(true)
-                        await animateFlipCardFail(cardRefs.current, card1, card2, getAngle(card1Data), radius, trigger, triggerVar)
+                        const card2 = findCard(card2Data)
+                        if (webSocketData.message === "flipCardFail"){
+                            setIsAnimating(true)
+                            await animateFlipCardFail(cardRefs.current, card1, card2, getAngle(card1Data), radius, trigger, triggerVar)
+                        }
+                        // if the user needs to give one of their cards away after a flip,
+                        // animate that card moving to it's new hand
+                        else if (webSocketData.message === "giveCard"){
+                            setIsAnimating(true)
+                            await animateGiveCard(cardRefs.current, card1, card2, getAngle(card1Data), getAngle(card2Data), radius)
+                            setCurrentTurn(webSocketData.newCurrentPlayer)
+                        }
+
                     }
-                    // if the user needs to give one of their cards away after a flip,
-                    // animate that card moving to it's new hand
-                    else if (webSocketData.message === "giveCard"){
-                        console.log("deauifjnesjk")
-                        console.log(webSocketData.card2Data)
-                        const card2Data = webSocketData.card2Data;
-                        const card1 = cards[card1Data.player].find((card) => 
-                            card === null ? false : card.row === card1Data.row && card.col === card1Data.column)
-                        const card2 = cards[card2Data.player].find((card) => 
-                            card === null ? false : card.row === card2Data.row && card.col === card2Data.column)
-                        setIsAnimating(true)
-                        await animateGiveCard(cardRefs.current, card1, card2, getAngle(card1Data), getAngle(card2Data), radius)
-                        setCurrentTurn(webSocketData.newCurrentPlayer)
-                    }
+
                     // update the cards / state accordingly
                     setState(webSocketData.state)
-                    console.log(webSocketData.cards)
-                    if (state === 5 && webSocketData.cards !== null){
-                        for (let x = 0; x < selectedSwapCards.length; x++){
-                            for (let y = 0; y < webSocketData.cards[selectedSwapCards[x].player].length; y++){
-                                if (webSocketData.cards[selectedSwapCards[x].player][y]. row === selectedSwapCards[x].row
-                                    && webSocketData.cards[selectedSwapCards[x].player][y].col === selectedSwapCards[x].col){
-                                    if (webSocketData.cards[selectedSwapCards[x].player][y].card){
-                                        webSocketData.cards[selectedSwapCards[x].player][y].card.visible = true;        
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    sleep(30)
-                    webSocketData.cards !== null ? setCards(webSocketData.cards) : null;
-                    trigger(triggerVar+1)
+                    updateCards(webSocketData.cards)
                 }
                 setIsAnimating(false)
             }
@@ -349,7 +343,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                                 <button 
                                     className= {`game-button ${readyButtonStyle}`} 
                                     onClick= {() => swapCards(false, selectedSwapCards, 
-                                        setSelectedSwapCards, setButtonMessage, state, lobbyID)}
+                                        setSelectedSwapCards, setButtonMessage, state, lobbyID, setHasActed)}
                                 >
                                     keep
                                 </button>
