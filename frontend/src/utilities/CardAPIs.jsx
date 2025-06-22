@@ -8,7 +8,6 @@ const backendSite = "http://localhost:8080/";
 
 const flipCard = async (state, thisUser, cardIndex, row, col, currentTurn, thisCard, lobbyID, cards) => {
     if (cardIndex > 1){
-
         try{
             const flipData = {
                 state: state,

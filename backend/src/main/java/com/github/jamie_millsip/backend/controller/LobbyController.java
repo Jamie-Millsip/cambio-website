@@ -113,15 +113,13 @@ public class LobbyController {
 
     public void checkEnterGameView(Lobby lobby){
         boolean allReadyUp = true;
-        int playerCount = 0;
-        playerCount = lobby.getAllPlayers().size();
         for(Player p : lobby.getAllPlayers()){
             if (!p.getLobbyReady()){
             allReadyUp = false;
             break;
             }
         }
-        if (allReadyUp && playerCount > 1) {
+        if (allReadyUp) {
             enterGameView(lobby);
         }
     }

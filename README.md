@@ -14,6 +14,9 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 
 - bugs
 
+  - when playing alone, cannot call cambio
+  - issues with the "keep" button
+
   - many bugs when an attempted flip interrupts a turn eg
 
     - allowing the player to take more than one turn

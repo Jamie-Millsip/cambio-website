@@ -23,7 +23,7 @@ function LobbyContent({lobbyID}){
         const [gameScreen, setGameScreen] = useState(false)
         const [hasNickname, setHasNickname] = useState(false)
         const [loading, setLoading] = useState(true);
-        const [playerCount, setPlayerCount] = useState("");
+        const [playerCount, setPlayerCount] = useState(0);
 
         const [thisUser, setThisUser] = useState(-1); 
         const [playerLeaveFlag, setPlayerLeaveFlag] = useState(false)
@@ -80,6 +80,7 @@ function LobbyContent({lobbyID}){
                 setPlayerCount(messageArray.length)
                 try{
                     const result = await axios.post(backendSite + `getCards/${lobbyID}`)
+                    console.log(result.data)
                     if (result.data != null){
                         setCards(result.data.cards)
                         result.data.cards[thisUser][0].card.visible = true;
@@ -94,6 +95,9 @@ function LobbyContent({lobbyID}){
         gameStartFunc() 
     }, [gameScreen, playerLeaveFlag])
 
+    useEffect( ()=> {
+        setPlayerCount(messageArray.length)
+    }, [messageArray])
 
     // fetches the index of the current player from the playerList stored in the backend,
     // sets their bottom two cards to visible, preparing for the start of the game
@@ -103,6 +107,7 @@ function LobbyContent({lobbyID}){
                 try{
                     const result = await axios.post(backendSite + `getThisUserIndex/${lobbyID}`, {nickname: nicknameRef.current})
                     if (result.data !== -1){
+                        console.log(result.data)
                         setThisUser(result.data)
                     }
                 }
@@ -152,10 +157,11 @@ function LobbyContent({lobbyID}){
         }
         catch(e) {console.error(e)}
     }
-
+    
     // runs the checkLobby function once only when the user first loads the lobbyPage
     useEffect(() => { checkLobby() }, []);
-
+    
+    console.log(thisUser)
     if (!gameScreen){
         return(
             <div className="body-container">
@@ -169,6 +175,7 @@ function LobbyContent({lobbyID}){
 
                 {exists && !loading && hasNickname && (
                     <LobbyReadyUpView 
+                        playerCount={playerCount}
                         messageArray={messageArray}/>)}
             </div>
         </div>

@@ -117,7 +117,7 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
      * @returns a CardResponse object (card itself along with location information) if the player has a card in that position, otherwise returns null
      */
     const returnCardContents = () => {
-        if (!cards || !cards[cardIndex] || cards.length < 4 || cardIndex < 0){
+        if (!cards || !cards[cardIndex] || cardIndex < 0){
             return null;
         }   
         const visibleCard = cards[cardIndex].find((card) => findCard(card))

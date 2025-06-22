@@ -186,8 +186,9 @@ public class GameController {
             }
         }
         else{
+            System.out.println("noSwappy");
             triggerBroadcast(lobbyID, new GameSocketResponse(
-                    "changeState", null, 0, "noSwap"));
+                    "changeState", null, 0, "noSwap", null, null, -1));
         }
     }
 
