@@ -36,6 +36,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     const [endGameScreen, setEndGameScreen] = useState(false)
     const [webSocketData, setWebSocketData] = useState(null)
     const [inSwapState, setInSwapState] = useState(false)
+    const [canEnd, setCanEnd] = useState(false)
 
     // define vars used in correctly displaying the dynamic game board
     let radius = 270 + players*4;
@@ -112,6 +113,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                 // if the previous user called cambio, move to the next turn
                 if (webSocketData.message === "callCambio"){
                     currentTurn + 1 < players+2 ? setCurrentTurn(currentTurn+1): setCurrentTurn(2);
+                    setCanEnd(true)
                 }   
 
                 // ends the game if told to by backend
@@ -238,10 +240,10 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
         // if the current user has previously called cambio, and it is now their turn again, ends the game
         useEffect(()=>{
-            if (thisUser === currentTurn && cambio){
+            if (currentTurn === cambio && canEnd){
                 sendEndgameRequest(sleep, backendSite, lobbyID)
             }
-        }, [currentTurn])
+        }, [currentTurn, webSocketData, canEnd])
 
 
 

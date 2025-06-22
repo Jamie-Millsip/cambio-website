@@ -20,7 +20,7 @@ const gameReadyUp = async(readyButtonStyle, setReadyButtonStyle, backendSite, lo
 const cambioClick = async (thisUser, currentTurn, state, backendSite, lobbyID, setCambio) => {
     if (thisUser === currentTurn && state === 0){
         try{
-            setCambio(true);
+            setCambio(thisUser);
             await axios.post(backendSite + `cambio/${lobbyID}`)
         }
         catch(e){
