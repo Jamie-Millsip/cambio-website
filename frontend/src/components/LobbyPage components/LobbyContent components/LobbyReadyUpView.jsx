@@ -29,7 +29,7 @@ function LobbyReadyUpView({playerCount, messageArray}){
     }
 
     const checkPlayerCount = () => {
-        if ((playerCount < 2 || playerCount > 10) ){
+        if ((playerCount < 2 || playerCount > 8) ){
             return false;
         }
         return true;
