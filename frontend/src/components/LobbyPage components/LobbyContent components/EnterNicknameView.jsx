@@ -1,7 +1,7 @@
 import axios from "axios";
 import TextInput from "../../TextInput";
 import"../../../pages/Body.css";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LobbyContext from "../../../pages/LobbyContext";
 
 
@@ -12,6 +12,7 @@ function EnterNicknameView({setHasNickname}){
 
     const [nickname, setNickname] = useState("")
     const [errMessage, setErrMessage] = useState("")
+    const [displayErrMessage, setDisplayErrMessage] = useState(false)
 
     const handleNicknameButton = async (newNickname) => {
         try{
@@ -30,6 +31,15 @@ function EnterNicknameView({setHasNickname}){
         catch(e){console.error("ERROR adding user: ", e)}
     }
 
+    useEffect(() => {
+        if (errMessage === ""){
+            setDisplayErrMessage(false)
+        }
+        else{
+            setDisplayErrMessage(true)
+        }
+    }, [errMessage])
+
 
     return(
         <>
@@ -42,7 +52,9 @@ function EnterNicknameView({setHasNickname}){
                 cssClass={"lobby-textbox"} 
                 />
             <button className='button submit-button' onClick={(e) => {handleNicknameButton(nickname)}}>Submit</button>
-            <p>{errMessage}</p>
+            {displayErrMessage && (
+                <p className="error-message">{errMessage}</p>
+            )}
         </div>
         </>
     )

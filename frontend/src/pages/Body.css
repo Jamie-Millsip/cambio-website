@@ -73,6 +73,7 @@
 
 .submit-button {
     width: 4.5em;
+
 }
 
 
@@ -98,7 +99,6 @@
 }
 
 .nickname-textbox{
-    margin: 0em 0em 4em 0em;
     width: 16.7em;
 }
 
@@ -121,7 +121,17 @@
 .warning-message{
     background-color: rgb(210, 140, 30);
     color: white;
-    padding: 0.5rem;
-    border-radius: 10px;
+    padding: 0.2em 1em;
+    border-radius: 0.3em;
     font-weight: bold;
+}
+
+.error-message{
+    background-color: red;
+    color: white;
+    padding: 0.2em 1em;
+    margin: 0.4em 0em;
+    border-radius: 0.3em;
+    font-weight: bold;
+    width: 100%;
 }
