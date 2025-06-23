@@ -90,6 +90,9 @@ public class LobbyController {
             }
         }
         PlayerReady[] playersArray = getPlayersReady(lobbyID);
+        for (PlayerReady playerReady : playersArray) {
+            playerReady.setReady(false);
+        }
         triggerBroadcast(lobbyID, new LobbySocketResponse("playerNames", playersArray));
         return new LobbySocketResponse("enterNicknameResponse", player.getNickname());
     }
@@ -215,6 +218,9 @@ public class LobbyController {
                 return;
             }
             PlayerReady[] playersArray = getPlayersReady(lobbyID);
+            for (PlayerReady playerReady : playersArray) {
+                playerReady.setReady(false);
+            }
             triggerBroadcast(lobbyID, new LobbySocketResponse("removedPlayer", playersArray));
         }
 
