@@ -74,6 +74,7 @@ public class GameController {
                     CardResponse temp = cards.get(pile).getFirst();
                     temp.setPlayer(1);
                     cards.get(pile).removeFirst();
+                    firstDiscardAction(cards);
                     temp.getCard().setVisible(true);
                     cards.get(1).addFirst(temp);
                     int cardValue = cards.get(1).getFirst().getCard().getValue();
@@ -94,12 +95,13 @@ public class GameController {
                 }
                 else{
                     // remove the selected card from its pile and prepare it for the hand
-                    CardResponse temp = cards.get(pile).getFirst();
+                    CardResponse temp = cards.get(pile).removeFirst();
                     temp.setRow(row);
                     temp.setCol(col);
                     temp.setPlayer(cardsIndex);
                     temp.getCard().setVisible(false);
-                    cards.get(pile).removeFirst();
+
+                    firstDiscardAction(cards);
 
                     // add the discarded card to the discard pile
                     cards.get(1).addFirst(cards.get(cardsIndex).get(index));
@@ -110,15 +112,18 @@ public class GameController {
                     // replaces the card in hand with the new card
                     cards.get(cardsIndex).set(index, temp);
                 }
-
-                if (cards.getFirst().isEmpty()){
+                // if the draw pile has < 6 cards, reshuffle the discarded cards into the draw pile
+                // this allows for a constant buffer of 5 cards, used for flip actions
+                if (cards.getFirst().size() < 6){
                     ArrayList<CardResponse> tempArray = new ArrayList<>(cards.get(1));
                     cards.removeFirst();
                     cards.addFirst(tempArray);
                     cards.get(1).clear();
-                    CardResponse temp = cards.getFirst().getFirst();
-                    cards.getFirst().removeFirst();
-                    cards.get(1).addFirst(temp);
+                    // leaves 5 cards in the discard pile to act as a buffer
+                    for (int x = 0; x < 6; x++){
+                        CardResponse temp = cards.getFirst().removeFirst();
+                        cards.get(1).addLast(temp);
+                    }
                     for (CardResponse card : cards.getFirst()){
                         card.getCard().setVisible(false);
                     }
@@ -129,6 +134,14 @@ public class GameController {
                 triggerBroadcast(lobbyID, new GameSocketResponse(
                         "changeState", cards, ability, "discard", card1Pos, card2Pos, -1));
             }
+        }
+    }
+
+    // if the discard pile is empty, add a card to act as a buffer for flip actions
+    public void firstDiscardAction(ArrayList<ArrayList<CardResponse>> cards){
+        if (cards.get(1).isEmpty()){
+            CardResponse temp = cards.getFirst().removeFirst();
+            cards.get(1).add(temp);
         }
     }
 

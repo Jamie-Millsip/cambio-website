@@ -107,29 +107,34 @@ const lookCard = async (cardIndex, row, col, lobbyID, setHasActed) => {
 // swaps the two cads in the selectedSwapCards array 
 const swapCards = async (swap, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, lobbyID, setHasActed) => {
     try{
-        setHasActed(true)
-        // correctly formats the data required by the swapcards backend function
-        console.log("selectswapcard: ", selectedSwapCards)
-        const swapRequest = {
-            swap: swap,
-            card1: {player : selectedSwapCards[0].player, row: selectedSwapCards[0].row, column: selectedSwapCards[0].col},
-            card2: {player : selectedSwapCards[1].player, row: selectedSwapCards[1].row, column: selectedSwapCards[1].col},
-        };
-        // ensures any cards looked at by a look swap are reset
-        if (state === 5){
-            for (let x = 0; x < selectedSwapCards.length; x++){
-                selectedSwapCards[x].card.visible = false
-            }
+        if (selectedSwapCards.length !== 2){
+            return
         }
-        // resets used variables
-        setSelectedSwapCards([])
-        setButtonMessage("Cambio")
-        // posts swapCards request to backend
-        await axios.post(backendSite + `swapCards/${lobbyID}`, swapRequest, {
-            headers: {
-                "Content-Type": "application/json",
+        else{
+            setHasActed(true)
+            // correctly formats the data required by the swapcards backend function
+            console.log("selectswapcard: ", selectedSwapCards)
+            const swapRequest = {
+                swap: swap,
+                card1: {player : selectedSwapCards[0].player, row: selectedSwapCards[0].row, column: selectedSwapCards[0].col},
+                card2: {player : selectedSwapCards[1].player, row: selectedSwapCards[1].row, column: selectedSwapCards[1].col},
+            };
+            // ensures any cards looked at by a look swap are reset
+            if (state === 5){
+                for (let x = 0; x < selectedSwapCards.length; x++){
+                    selectedSwapCards[x].card.visible = false
+                }
             }
-        })
+            // resets used variables
+            setSelectedSwapCards([])
+            setButtonMessage("Cambio")
+            // posts swapCards request to backend
+            await axios.post(backendSite + `swapCards/${lobbyID}`, swapRequest, {
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+        }
     }
     catch(e){
         console.error("ERROR: ", e)
