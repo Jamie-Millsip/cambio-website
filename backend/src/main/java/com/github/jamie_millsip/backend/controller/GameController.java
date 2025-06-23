@@ -128,6 +128,9 @@ public class GameController {
                         card.getCard().setVisible(false);
                     }
                     Collections.shuffle(cards.getFirst());
+                    for (int x = 0; x < cards.getFirst().size(); x++){
+                        cards.getFirst().get(x).setPlayer(0);
+                    }
                 }
                 PositionData card1Pos = new PositionData(pile, -1, -1);
                 PositionData card2Pos = new PositionData(cardsIndex, row, col);
