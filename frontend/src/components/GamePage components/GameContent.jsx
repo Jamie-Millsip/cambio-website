@@ -100,10 +100,15 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                     }
                 }
             }
+            if (state === 1 && newCards !== null && thisUser === currentTurn){
+                newCards[0][0].card.visible = true
+            }
             sleep(30)
             newCards !== null ? setCards(newCards) : null;
             trigger(triggerVar+1)
         }
+
+        
 
         
 
@@ -206,6 +211,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                     updateCards(webSocketData.cards)
                 }
                 setIsAnimating(false)
+                
             }
             if (webSocketData){
                 checkMessage();

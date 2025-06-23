@@ -114,24 +114,7 @@ public class GameController {
                 }
                 // if the draw pile has < 6 cards, reshuffle the discarded cards into the draw pile
                 // this allows for a constant buffer of 5 cards, used for flip actions
-                if (cards.getFirst().size() < 6){
-                    ArrayList<CardResponse> tempArray = new ArrayList<>(cards.get(1));
-                    cards.removeFirst();
-                    cards.addFirst(tempArray);
-                    cards.get(1).clear();
-                    // leaves 5 cards in the discard pile to act as a buffer
-                    for (int x = 0; x < 6; x++){
-                        CardResponse temp = cards.getFirst().removeFirst();
-                        cards.get(1).addLast(temp);
-                    }
-                    for (CardResponse card : cards.getFirst()){
-                        card.getCard().setVisible(false);
-                    }
-                    Collections.shuffle(cards.getFirst());
-                    for (int x = 0; x < cards.getFirst().size(); x++){
-                        cards.getFirst().get(x).setPlayer(0);
-                    }
-                }
+                cards = checkReshuffle(cards);
                 PositionData card1Pos = new PositionData(pile, -1, -1);
                 PositionData card2Pos = new PositionData(cardsIndex, row, col);
                 triggerBroadcast(lobbyID, new GameSocketResponse(
@@ -146,6 +129,28 @@ public class GameController {
             CardResponse temp = cards.getFirst().removeFirst();
             cards.get(1).add(temp);
         }
+    }
+
+    public ArrayList<ArrayList<CardResponse>> checkReshuffle(ArrayList<ArrayList<CardResponse>> cards){
+        if (cards.getFirst().size() < 6){
+            ArrayList<CardResponse> tempArray = new ArrayList<>(cards.get(1));
+            cards.removeFirst();
+            cards.addFirst(tempArray);
+            cards.get(1).clear();
+            // leaves 5 cards in the discard pile to act as a buffer
+            for (int x = 0; x < 6; x++){
+                CardResponse temp = cards.getFirst().removeFirst();
+                cards.get(1).addLast(temp);
+            }
+            for (CardResponse card : cards.getFirst()){
+                card.getCard().setVisible(false);
+            }
+            Collections.shuffle(cards.getFirst());
+            for (int x = 0; x < cards.getFirst().size(); x++){
+                cards.getFirst().get(x).setPlayer(0);
+            }
+        }
+        return cards;
     }
 
     @RequestMapping("/look/{lobbyID}")
@@ -221,6 +226,11 @@ public class GameController {
 
     @RequestMapping("/flipCardSuccess/{lobbyID}")
     public void flipCardSuccess(@PathVariable String lobbyID, @RequestBody FlipCardRequest flipRequest){
+        int state = flipRequest.getState();
+        int cardIndex = 0;
+        if (state == 1){
+            cardIndex = 1;
+        }
         PositionData positionData = flipRequest.getPositionData();
         for (Lobby lobby : lobbyList) {
             if (lobby.getId().equals(lobbyID)) {
@@ -235,7 +245,7 @@ public class GameController {
                                         CardResponse temp = new CardResponse(card.getCard(), 1, -1, -1);
                                         temp.getCard().setVisible(true);
                                         card.setCard(null);
-                                        cards.get(1).addFirst(temp);
+                                        cards.get(1).add(cardIndex, temp);
                                         break;
                                     }
                                 }
@@ -262,21 +272,22 @@ public class GameController {
 
     @RequestMapping("/flipCardFail/{lobbyID}")
     public void flipCardFail(@PathVariable String lobbyID, @RequestBody FlipCardRequest flipRequest){
+        int state = flipRequest.getState();
+        int cardIndex = 0;
+        if (state == 1){
+            cardIndex = 1;
+        }
         for (Lobby lobby : lobbyList) {
             if (lobby.getId().equals(lobbyID)) {
                 PositionData card1Data = null;
                 ArrayList<ArrayList<CardResponse>> cards = lobby.getCards();
                 for (int x = 0; x < cards.get(flipRequest.getThisPlayer()).size(); x++) {
                     if (cards.get(flipRequest.getThisPlayer()).get(x).getCard() == null){
-                        CardResponse temp = new CardResponse(
-                                cards.get(0).get(0).getCard(),
-                                flipRequest.getThisPlayer(),
-                                cards.get(flipRequest.getThisPlayer()).get(x).getRow(),
-                                cards.get(flipRequest.getThisPlayer()).get(x).getCol()
-                        );
                         cards.get(flipRequest.getThisPlayer()).get(x).setCard(
-                                new Card(cards.getFirst().getFirst().getCard()));
-                        cards.get(0).removeFirst();
+                                new Card(cards.getFirst().get(cardIndex).getCard()));
+
+                        cards.getFirst().remove(cardIndex);
+                        cards = checkReshuffle(cards);
 
                         card1Data = new PositionData(
                                 flipRequest.getThisPlayer(),
