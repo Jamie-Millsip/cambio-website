@@ -56,7 +56,7 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
             state === 1 && (cardIndex === selectedPile || cardIndex === thisUser)
             ? setCanDiscard(true) : setCanDiscard(false);
             
-            ((state === 2 && thisUser === cardIndex) || (state === 3 && thisUser !== cardIndex))
+            ((state === 2 && thisUser === cardIndex) || (state === 3 && thisUser !== cardIndex && cardIndex > 1))
             ? setCanLook(true) : setCanLook(false);
             
             cardIndex > 1 && ((state === 4 || state === 5) && selectedSwapCards.length < 2)
