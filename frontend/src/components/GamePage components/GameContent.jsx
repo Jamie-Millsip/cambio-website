@@ -96,16 +96,24 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                             if (newCards[selectedSwapCards[x].player][y].card){
                                 newCards[selectedSwapCards[x].player][y].card.visible = true;        
                             }
+                            else{
+                                setSelectedSwapCards(selectedSwapCards =>
+                                    selectedSwapCards.filter((_, index) => index !== x)
+                                );
+                            }
                         }
                     }
                 }
             }
-            if (state === 1 && newCards !== null && thisUser === currentTurn){
-                newCards[0][0].card.visible = true
-            }
             sleep(30)
             newCards !== null ? setCards(newCards) : null;
             trigger(triggerVar+1)
+        }
+
+        const updatePiles = (newCards) => {
+            if (state === 1 && newCards !== null && thisUser === currentTurn){
+                newCards[0][0].card.visible = true
+            }
         }
 
         
@@ -170,6 +178,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                 }
                     webSocketData.cards !== null ? setCards(webSocketData.cards) : null;
                     setState(webSocketData.state);
+                    updateCards(webSocketData.cards)
                     setHasActed(false);
                 }
 
@@ -207,8 +216,10 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                     }
 
                     // update the cards / state accordinglsy
+                    webSocketData.cards !== null ? setCards(webSocketData.cards) : null;
                     webSocketData.state === null ? "" : setState(webSocketData.state)
                     updateCards(webSocketData.cards)
+                    updatePiles(webSocketData.cards)
                 }
                 setIsAnimating(false)
                 

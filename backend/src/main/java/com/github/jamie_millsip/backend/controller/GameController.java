@@ -127,6 +127,7 @@ public class GameController {
     public void firstDiscardAction(ArrayList<ArrayList<CardResponse>> cards){
         if (cards.get(1).isEmpty()){
             CardResponse temp = cards.getFirst().removeFirst();
+            temp.setPlayer(1);
             cards.get(1).add(temp);
         }
     }
