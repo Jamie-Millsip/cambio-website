@@ -59,6 +59,7 @@
 .face-up{
     background-color: white;
     font-weight: bold;
+    text-decoration-line: underline;
 }
 
 .face-up:hover{
