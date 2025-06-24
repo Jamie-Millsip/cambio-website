@@ -138,8 +138,10 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
         || (state === 3 && (cardIndex !== thisUser && cardIndex > 1))
         // or the player needs to swap 2 cards, and this card belongs to a player and isnt already selected
         || ((state === 4 || state === 5) && cardIndex > 1 &&
-        !selectedSwapCards.some(card => card !== null && card.player === cardIndex && card.row === row && card.col === col))
+        !selectedSwapCards.some(card => card !== null && card.player === cardIndex && card.row === row && card.col === col)
+        && selectedSwapCards.length < 2)
         || (state === 6 && cardIndex === thisUser)
+        && (!isAnimating)
         )){
             setCurrentTurnStyle("current-player")
         }
@@ -147,7 +149,7 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
         else{
             setCurrentTurnStyle("")
         } 
-    }, [currentTurn, state, thisUser, selectedSwapCards])
+    }, [currentTurn, state, thisUser, selectedSwapCards, isAnimating])
 
 
     card = returnCardContents()

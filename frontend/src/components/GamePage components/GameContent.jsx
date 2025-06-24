@@ -33,10 +33,12 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     const [buttonMessage, setButtonMessage] = useState("Ready")
     const [cambio, setCambio] = useState(false)
     const [cambioStyle, setCambioStyle] = useState("")
+    const [swapStyle, setSwapStyle] = useState("")
     const [endGameScreen, setEndGameScreen] = useState(false)
     const [webSocketData, setWebSocketData] = useState(null)
     const [inSwapState, setInSwapState] = useState(false)
     const [canEnd, setCanEnd] = useState(false)
+
 
     // define vars used in correctly displaying the dynamic game board
     let radius = 270 + players*4;
@@ -231,7 +233,24 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
 
 
+        useEffect(() => {
+            if (thisUser === currentTurn && state === 0){
+                setCambioStyle("current-player")
+            }
+            else{
+                setCambioStyle("")
+            }
+        }, [state, currentTurn])
 
+
+        useEffect(() => {
+            if (thisUser === currentTurn && (state === 4 || state === 5) && selectedSwapCards.length === 2){
+                setSwapStyle("current-player")
+            }
+            else{
+                setSwapStyle("")
+            }
+        }, [state, selectedSwapCards, currentTurn])
 
 
 
@@ -358,7 +377,10 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                                 className=
                                     {`game-button 
                                     ${readyButtonStyle} 
-                                    ${buttonMessage === "Cambio" ? cambioStyle : "" } `} 
+                                    ${buttonMessage === "Cambio" ? `${cambioStyle}` 
+                                    : buttonMessage === "Swap" ? `${swapStyle}`
+                                    : buttonMessage === "Ready" ? `${""}` 
+                                    : "" } `}
                                 onClick=
                                     { buttonMessage === "Ready" ? () => 
                                         gameReadyUp(readyButtonStyle, setReadyButtonStyle, backendSite, lobbyID, nicknameRef.current) 
@@ -372,7 +394,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                             </button>
                             {inSwapState && thisUser == currentTurn && (
                                 <button 
-                                    className= {`game-button ${readyButtonStyle}`} 
+                                    className= {`game-button ${readyButtonStyle} ${swapStyle}`} 
                                     onClick= {() => {swapCards(false, selectedSwapCards, 
                                         setSelectedSwapCards, setButtonMessage, state, lobbyID, setHasActed)}}
                                 >
