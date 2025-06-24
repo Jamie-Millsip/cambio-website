@@ -264,7 +264,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
         cardLength === 0 || lastToDiscard === thisUser || hasFlipped 
         || (thisUser === currentTurn && state !== 0)
         || isAnimating === true ? setCanFlip(false) : setCanFlip(true);
-    }, [cards, lastToDiscard, hasFlipped])
+    }, [cards, lastToDiscard, hasFlipped, isAnimating])
 
 
 

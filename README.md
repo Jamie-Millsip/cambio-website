@@ -14,14 +14,12 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 
 - bugs
 
-  - many bugs when an attempted flip interrupts a turn eg
+  - allowing the player to take more than one turn
 
-    - allowing the player to take more than one turn
+    - a flag exists to prevent users from taking more than one turn (hasActed), this resets at the end of the websocket handler useEffect, therefore after a card is flipped, it is dealt with using the websocket handler, and then the hasActed boolean is set to false, regardless of if the user has acted
+    - this issue seems to be fixed, keeping it here in case it occurs again
 
-      - a flag exists to prevent users from taking more than one turn (hasActed), this resets at the end of the websocket handler useEffect, therefore after a card is flipped, it is dealt with using the websocket handler, and then the hasActed boolean is set to false, regardless of if the user has acted
-      - this issue seems to be fixed, keeping it here in case it occurs again
-
-    - if a card that is selected to be swapped is flipped, the space that card used to occupy is still selected for swap, despite not housing a card
+  - if a card that is selected to be swapped is flipped, the space that card used to occupy is still selected for swap, despite not housing a card
 
 - Gameplay
 
