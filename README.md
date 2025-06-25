@@ -14,11 +14,13 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 
 - bugs
 
+  - issue with some browsers not being able to play the game?? - must test this further
+
 - Gameplay
 
+  - prevent users from calling cambio if it has already been called
   - remove players from the game when they flip incorrectly when having 7 cards (currently just prevents them from flipping cards)
-  - stop abilities from being played if there are not enough cards on the board to play them (<2 cards for swaps, <1 for looks)
-  -
+  - in the endgmae screen, sort players from low to high based on card score
 
 - Animations
 
