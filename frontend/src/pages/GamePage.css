@@ -1,18 +1,4 @@
 
-.body-container {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    align-items: center;
-    text-align: center;
-    width: 100vw;
-    height: 85vh;
-    max-height: 85vh;
-    min-height: 700px;
-    min-width: 700px;
-    box-sizing: border-box;
-    background-color: rgb(196, 196, 196);
-}
 
 .game-card {
     z-index: 1;
