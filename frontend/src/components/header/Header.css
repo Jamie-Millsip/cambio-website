@@ -12,5 +12,30 @@
 
 .header-text {
     font-weight: bold;
-    font-size: 200%;
+    font-size: 2em;
+}
+
+@media (max-width: 600px){
+    
+}
+@media (min-width: 601px){
+
+}
+
+@media (min-width: 1900px){
+
+}
+
+@media (min-width: 2540px){
+
+}
+
+@media (min-width: 3200px){
+
+}
+
+@media (min-width: 3800px){
+    .header-text{
+        font-size: 7em;
+    }
 }

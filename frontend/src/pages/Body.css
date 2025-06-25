@@ -11,8 +11,6 @@
     background-color: rgb(196, 196, 196);
 }
 
-
-
 .contents-container {
     background-color: #dedede;
     box-sizing: border-box;
@@ -32,12 +30,49 @@
 }
 
 
-.endgame-row-container {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-}
+.contents-container {
+        background-color: #dedede;
+        box-sizing: border-box;
+        display: flex;
+        flex-Direction: column;
+        align-Items: center;
+        height: fit-content;
+        width: 100%;
+        max-width: 60%;
+        text-Align: center;
+        padding: 30px;
+        margin: 30px;
+        align-self: normal;
+        border-Radius: 20px;
+        transition: 'all 0.3s ease-in-out';
+        box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.1);
+    }
+    .textbox {
+        margin: 0.1em;
+        height: 2.5em;
+        padding: 0.15em;
+        border-Radius: 0.3em;
+        font-Size: 2.5vw;
+        outline: none;
+    }
+    .button{
+        background-color: rgb(203, 203, 203);
+        height: 2.5em;
+        padding: 0.15em;
+        border-radius: 0.3em;
+        font-Size: 2.5vw;
+        margin: 0.1em;
+        outline: none;
+    }
 
+    
+
+    .endgame-row-container {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+    }
+    
 .endgame-col-container {
     box-sizing: border-box;
     display: flex;
@@ -51,17 +86,7 @@
 
 .title{
     font-weight: bold;
-    font-size: 1.6em;
-}
-
-.button{
-    background-color: rgb(203, 203, 203);
-    height: 2.5em;
-    padding: 0.15em;
-    border-radius: 0.3em;
-    font-Size: 2vw;
-    margin: 0.1em;
-    outline: none;
+    font-size: 1.8em;
 }
 
 .button:hover{
@@ -81,15 +106,6 @@
 
 .ready-up-button{
     width: 5em;
-}
-
-.textbox {
-    margin: 0.1em;
-    height: 2.5em;
-    padding: 0.15em;
-    border-Radius: 0.3em;
-    font-Size: 2vw;
-    outline: none;
 }
 
 .lobby-textbox{
@@ -131,4 +147,101 @@
     margin: 0.4em 10em;
     border-radius: 0.3em;
     font-weight: bold;
+}
+
+
+@media (max-width: 600px){
+    .contents-container {
+        max-width: 100%;
+    }
+    .textbox {
+        font-Size: 4vw;
+    }
+    .button{
+        font-Size: 4vw;
+    }
+}
+@media (min-width: 601px){
+    .contents-container {
+        max-width: 60%;
+    }
+    .textbox {
+        font-Size: 2.5vw;
+        max-height: 100px;
+        max-width: 400px;
+    }
+    .button{
+        font-Size: 2.5vw;
+        max-height: 100px;
+        max-width: 216px;
+    }
+}
+
+@media (min-width: 1900px){
+    .contents-container {
+        max-width: 60%;
+    }
+    .textbox {
+        font-Size: 2.1vw;
+        max-height: 100px;
+        max-width: 400px;
+    }
+    .button{
+        font-Size: 2.1vw;
+        max-height: 100px;
+        max-width: 216px;
+    }
+}
+
+@media (min-width: 2540px){
+    .contents-container {
+        max-width: 60%;
+    }
+    .textbox {
+        font-Size: 1.7vw;
+        max-height: 100px;
+        max-width: 400px;
+    }
+    .button{
+        font-Size: 1.7vw;
+        max-height: 100px;
+        max-width: 216px;
+    }
+}
+
+@media (min-width: 3200px){
+    .contents-container {
+        max-width: 60%;
+    }
+    .textbox {
+        font-Size: 1.4vw;
+        max-height: 100px;
+        max-width: 400px;
+    }
+    .button{
+        font-Size: 1.4vw;
+        max-height: 100px;
+        max-width: 216px;
+    }
+}
+
+@media (min-width: 3800px){
+    .contents-container {
+        max-width: 60%;
+        padding: 4em;
+        border-radius: 40px;
+    }
+    .title{
+        font-size: 6em;
+    }
+    .textbox {
+        font-Size: 2.5vw;
+        max-height: 300px;
+        max-width: 1200px;
+    }
+    .button{
+        font-Size: 2.5vw;
+        max-height: 300px;
+        max-width: 648px;
+    }
 }
