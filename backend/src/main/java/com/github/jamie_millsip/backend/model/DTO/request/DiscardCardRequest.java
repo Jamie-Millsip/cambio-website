@@ -6,12 +6,22 @@ public class DiscardCardRequest {
     private int player;
     private int row;
     private int col;
+    private int cardIndex;
 
-    public DiscardCardRequest(int pile, int player, int row, int col) {
+    public DiscardCardRequest(int pile, int cardIndex,  int player, int row, int col) {
         this.pile = pile;
+        this.cardIndex = cardIndex;
         this.player = player;
         this.row = row;
         this.col = col;
+    }
+
+    public int getCardIndex() {
+        return cardIndex;
+    }
+
+    public void setCardIndex(int cardIndex) {
+        this.cardIndex = cardIndex;
     }
 
     public int getPile() {

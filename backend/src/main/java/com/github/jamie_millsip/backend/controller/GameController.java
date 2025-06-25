@@ -56,11 +56,14 @@ public class GameController {
     @RequestMapping("/discardCard/{lobbyID}")
     public void discardCard(@PathVariable String lobbyID, @RequestBody DiscardCardRequest request){
         int pile = request.getPile();
-        int cardsIndex = request.getPlayer();
+        int cardsIndex = request.getCardIndex();
+        int player = request.getPlayer();
+        System.out.println("NANANANA" + cardsIndex);
         int row = request.getRow();
         int col = request.getCol();
         int ability = 0;
-
+        int thisPlayerCardCount = 0;
+        int otherPlayerCardCount = 0;
         int index = 4-(2*row);
         if (col == 1){
             index += 1;
@@ -68,6 +71,23 @@ public class GameController {
         for (Lobby lobby : lobbyList) {
             if (lobby.getId().equals(lobbyID)) {
                 ArrayList<ArrayList<CardResponse>> cards = lobby.getCards();
+                for (int x = 2; x < cards.size(); x++){
+                    System.out.println("aaaaaaX" + x);
+                    for (int y = 0; y < cards.get(x).size(); y++){
+                        System.out.println("aaaaaaY " + y);
+                        CardResponse cardResponse = cards.get(x).get(y);
+                        if (cardResponse.getCard() != null){
+                            if (x == player){
+                                thisPlayerCardCount += 1;
+                            }
+                            else{
+                                otherPlayerCardCount += 1;
+                            }
+                            System.out.println("WOWOWOW" + thisPlayerCardCount);
+                            System.out.println("WAWAWA" + otherPlayerCardCount);
+                        }
+                    }
+                }
 
                 // if the discarded card is from a pile
                 if (cardsIndex < 2){
@@ -78,17 +98,17 @@ public class GameController {
                     temp.getCard().setVisible(true);
                     cards.get(1).addFirst(temp);
                     int cardValue = cards.get(1).getFirst().getCard().getValue();
-                    if (cardValue > 6 && cardValue < 13 /* && cardsIndex == 0*/){
-                        if (cardValue < 9){
+                    if (cardValue > 6 && cardValue < 13){
+                        if (cardValue < 9 && thisPlayerCardCount > 0){
                             ability = 2;
                         }
-                        else if (cardValue < 11 ){
+                        else if (cardValue < 11 && otherPlayerCardCount > 0){
                             ability = 3;
                         }
-                        else if (cardValue == 11){
+                        else if (cardValue == 11 && thisPlayerCardCount + otherPlayerCardCount > 1){
                             ability = 4;
                         }
-                        else{
+                        else if (cardValue == 12 && thisPlayerCardCount + otherPlayerCardCount > 1){
                             ability = 5;
                         }
                     }

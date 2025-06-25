@@ -212,7 +212,9 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                         else if (webSocketData.message === "giveCard"){
                             setIsAnimating(true)
                             await animateGiveCard(cardRefs.current, card1, card2, getAngle(card1Data), getAngle(card2Data), radius)
-                            setCurrentTurn(webSocketData.newCurrentPlayer)
+                            if (webSocketData.newCurrentPlayer !== -1){
+                                setCurrentTurn(webSocketData.newCurrentPlayer)
+                            }
                         }
 
                     }

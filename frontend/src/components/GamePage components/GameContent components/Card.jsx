@@ -70,7 +70,7 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
 
     const handleClick = () => {
         canDraw ? drawCard(cards, cardIndex, trigger, triggerVar, lobbyID, setSelectedPile, setHasActed) : 
-        canDiscard ? discardCard(selectedPile, cardIndex, row, col, lobbyID, setHasActed) : 
+        canDiscard ? discardCard(thisUser, selectedPile, cardIndex, row, col, lobbyID, setHasActed) : 
         canLook ? lookCard(cardIndex, row, col, lobbyID, setHasActed) : 
         canSwap ? swapCard() : 
         canGiveCard ? giveCard(cardIndex, row, col, lobbyID) :

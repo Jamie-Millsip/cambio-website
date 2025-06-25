@@ -68,13 +68,14 @@ const drawCard = async (cards, cardIndex, trigger, triggerVar, lobbyID, setSelec
 /**
  * checks if discarding the selected card is a valid move, if so, sends a request to the backend to discard the selected card
  */
-const discardCard = async (selectedPile, cardIndex, row, col, lobbyID, setHasActed) => {
+const discardCard = async (thisUser, selectedPile, cardIndex, row, col, lobbyID, setHasActed) => {
     // let a user discard a card if it is their turn and they select either the newly drawn card or one of their own cards 
     try{
         setHasActed(true)
         const requestData = {
             pile: selectedPile,
-            player: cardIndex,
+            cardIndex: cardIndex,
+            player: thisUser,
             row: row,
             col: col
         };
