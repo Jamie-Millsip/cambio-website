@@ -16,6 +16,12 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 
   - issue with some browsers not being able to play the game?? - must test this further
 
+- general
+
+  - rewrite markdown to make it clearer
+    - split into multiple files
+    - use hyperlinks for easy access to specific parts
+
 - Gameplay
 
   - prevent users from calling cambio if it has already been called
