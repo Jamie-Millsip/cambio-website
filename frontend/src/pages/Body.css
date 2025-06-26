@@ -144,9 +144,16 @@
     background-color: red;
     color: white;
     padding: 0.2em 1em;
-    margin: 0.4em 10em;
+    width: 100%;
+    max-width: fit-content;
+    margin: 0.4em;
     border-radius: 0.3em;
     font-weight: bold;
+    font-size: 0.7em;
+}
+
+.body-text{
+    font-size: 1.5em;
 }
 
 
@@ -155,10 +162,13 @@
         max-width: 100%;
     }
     .textbox {
-        font-Size: 4vw;
+        font-Size: 3.7vw;
     }
     .button{
-        font-Size: 4vw;
+        font-Size: 3.7vw;
+    }
+    .body-text{
+        font-size: 1.2em;
     }
 }
 @media (min-width: 601px){
@@ -173,7 +183,38 @@
     .button{
         font-Size: 2.5vw;
         max-height: 100px;
-        max-width: 216px;
+        max-width: 300px;
+    }
+    .error-message{
+        font-size: 1em;
+    }
+    .body-text{
+        font-size: 1.5em;
+    }
+}
+
+@media(min-width: 1000px){
+    .contents-container {
+        max-width: 60%;
+    }
+    .title{
+        font-size: 2.3em;
+    }
+    .textbox {
+        font-Size: 2vw;
+        max-height: 100px;
+        max-width: 400px;
+    }
+    .button{
+        font-Size: 2vw;
+        max-height: 100px;
+        max-width: 300px;
+    }
+    .error-message{
+        font-size: 1em;
+    }
+    .body-text{
+        font-size: 1.9em;
     }
 }
 
@@ -181,47 +222,72 @@
     .contents-container {
         max-width: 60%;
     }
+    .title{
+        font-size: 3em;
+    }
     .textbox {
         font-Size: 2.1vw;
-        max-height: 100px;
-        max-width: 400px;
+        max-height: 200px;
+        max-width: 700px;
     }
     .button{
         font-Size: 2.1vw;
         max-height: 100px;
-        max-width: 216px;
+        max-width: 400px;
+    }
+    .error-message{
+        font-size: 1.5em;
+    }
+    .body-text{
+        font-size: 2.3em;
     }
 }
 
 @media (min-width: 2540px){
     .contents-container {
         max-width: 60%;
+        padding: 2.5em;
+        border-radius: 30px;
+    }
+    .title{
+        font-size: 4.5em;
     }
     .textbox {
         font-Size: 1.7vw;
-        max-height: 100px;
-        max-width: 400px;
+        max-height: 150px;
+        max-width: 600px;
     }
     .button{
         font-Size: 1.7vw;
-        max-height: 100px;
-        max-width: 216px;
+        max-height: 150px;
+        max-width: 350px;
+    }
+    .body-text{
+        font-size: 3em;
     }
 }
 
 @media (min-width: 3200px){
     .contents-container {
         max-width: 60%;
+        padding: 3em;
+        border-radius: 30px;
+    }
+    .title{
+        font-size: 5.5em;
     }
     .textbox {
-        font-Size: 1.4vw;
-        max-height: 100px;
-        max-width: 400px;
+        font-Size: 2.5vw;
+        max-height: 250px;
+        max-width: 1000px;
     }
     .button{
-        font-Size: 1.4vw;
-        max-height: 100px;
-        max-width: 216px;
+        font-Size: 2.5vw;
+        max-height: 250px;
+        max-width: 600px;
+    }
+    .body-text{
+        font-size: 4.5em;
     }
 }
 
@@ -243,5 +309,8 @@
         font-Size: 2.5vw;
         max-height: 300px;
         max-width: 648px;
+    }
+    .body-text{
+        font-size: 5em;
     }
 }

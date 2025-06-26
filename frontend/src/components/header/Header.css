@@ -16,22 +16,32 @@
 }
 
 @media (max-width: 600px){
-    
+    .header-text{
+        font-size: 2em;
+    }
 }
 @media (min-width: 601px){
-
+    .header-text{
+        font-size: 3em;
+    }
 }
 
 @media (min-width: 1900px){
-
+    .header-text{
+        font-size: 4em;
+    }
 }
 
 @media (min-width: 2540px){
-
+    .header-text{
+        font-size: 5em;
+    }
 }
 
 @media (min-width: 3200px){
-
+    .header-text{
+        font-size: 6em;
+    }
 }
 
 @media (min-width: 3800px){

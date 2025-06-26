@@ -41,7 +41,7 @@ function LobbyReadyUpView({playerCount, messageArray}){
         <p className="title">Ready Up to Play</p>
         <DisplayLobbyNames messageArray={messageArray}/>
         {showWarning && (
-            <p className="warning-message">{playerCountWarning}</p>
+            <p className="warning-message body-text">{playerCountWarning}</p>
         )}
         <button className="button ready-up-button" onClick={readyUp}>Ready Up</button>
         </>

@@ -52,10 +52,10 @@ function EnterNicknameView({setHasNickname}){
                 cssClass={"lobby-textbox"} 
                 />
             <button className='button submit-button' onClick={(e) => {handleNicknameButton(nickname)}}>Submit</button>
+        </div>
             {displayErrMessage && (
                 <p className="error-message">{errMessage}</p>
             )}
-        </div>
         </>
     )
 }
