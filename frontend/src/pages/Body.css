@@ -67,21 +67,29 @@
 
     
 
-    .endgame-row-container {
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: row;
-    }
+.endgame-row-container {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    margin: 0.1em;
+    padding: 0.1em;
+}
     
 .endgame-col-container {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    justify-content: center;
+    align-items: center;
 }
 
-.endgame-row-container-text {
-    padding: 1rem;
+.endgame-text {
+    padding: 0.2em 1em;
+    margin: 0.1em;
+    text-align: center;
 }
 
 .title{
@@ -154,6 +162,14 @@
 
 .body-text{
     font-size: 1.5em;
+}
+
+.first-place{
+    background-color: gold;
+}
+
+.second-place{
+    background-color: silver;
 }
 
 
