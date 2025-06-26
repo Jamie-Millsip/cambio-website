@@ -89,8 +89,8 @@ public class GameController {
                     }
                 }
 
-                // if the discarded card is from a pile
-                if (cardsIndex < 2){
+                // if the discarded card is from the draw pile
+                if (cardsIndex == 0){
                     CardResponse temp = cards.get(pile).getFirst();
                     temp.setPlayer(1);
                     cards.get(pile).removeFirst();
