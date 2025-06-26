@@ -390,10 +390,35 @@ public class GameController {
                     }
                     scores.add(score);
                 }
-
-                return new GameResultsResponse(players, scores);
+                GameResultsResponse results = new GameResultsResponse(players, scores);
+                results = sortResults(results, lobby);
+                return results;
             }
         }
         return null;
+    }
+
+    public GameResultsResponse sortResults(GameResultsResponse results, Lobby lobby){
+        ArrayList<String> players = results.getPlayerNames();
+        ArrayList<Integer> scores = results.getPlayerScores();
+        int i = scores.size();
+        boolean sorted = false;
+        while (i > 1 && !sorted){
+            sorted = true;
+            for (int j = 1; j < i; j++){
+                if (scores.get(j-1) > scores.get(j)){
+                    int tempScore = scores.get(j-1);
+                    String tempPlayer = players.get(j-1);
+                    scores.set(j-1, scores.get(j));
+                    players.set(j-1, players.get(j));
+                    scores.set(j, tempScore);
+                    players.set(j, tempPlayer);
+                    sorted = false;
+                }
+            }
+            i--;
+        }
+
+        return new GameResultsResponse(players, scores);
     }
 }
