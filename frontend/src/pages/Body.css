@@ -84,6 +84,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
 }
 
 .endgame-text {
@@ -164,12 +165,20 @@
     font-size: 1.5em;
 }
 
+.endgame-title{
+    font-weight: bold;
+}
+
 .first-place{
     background-color: gold;
+    width: 70%;
+    font-weight: bolder;
 }
 
 .second-place{
     background-color: silver;
+    width: 55%;
+    font-weight: bold;
 }
 
 

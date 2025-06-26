@@ -60,7 +60,8 @@ function EndGamePage ({setGameScreen}) {
                             return(
                                 <div className=
                                 {`endgame-row-container 
-                                ${index === 1 ? "first-place" 
+                                ${index === 0 ? "endgame-title" 
+                                : index === 1 ? "first-place" 
                                 : index === 2 ? "second-place" : "" }`} key={index}>
                                     <p className="endgame-text">{playerNames[index]}</p>
                                     <p className="endgame-text">{playerScores[index]}</p>
@@ -68,6 +69,7 @@ function EndGamePage ({setGameScreen}) {
                             )
                         })}
                     </div>
+                <button className="button" onClick={handleReturn}>Return to Lobby</button>
             </div>
         </div>
     )
