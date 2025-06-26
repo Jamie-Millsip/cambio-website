@@ -17,8 +17,8 @@ const gameReadyUp = async(readyButtonStyle, setReadyButtonStyle, backendSite, lo
 
 
 // if this user calls cambio on their turn, alert the backend
-const cambioClick = async (thisUser, currentTurn, state, backendSite, lobbyID, setCambio) => {
-    if (thisUser === currentTurn && state === 0){
+const cambioClick = async (thisUser, currentTurn, state, backendSite, lobbyID, cambio, setCambio) => {
+    if (thisUser === currentTurn && state === 0 && cambio === -1){
         try{
             setCambio(thisUser);
             await axios.post(backendSite + `cambio/${lobbyID}`)

@@ -73,36 +73,6 @@ function EndGamePage ({setGameScreen}) {
             </div>
         </div>
     )
-
-    /*
-
-    return(
-        <div className="body-container">
-            <div className="contents-container">
-                <div className={`endgame-row-container`}>
-                    <div className="endgame-col-container">
-                        <p style={{fontWeight: "bold"}}>Name</p>
-                        {playerNames.map((playerName)=>{
-                            return(
-                                <p className={`${listCountStyle}`}>{playerName}</p>
-                            )
-                        })}
-                    </div>
-                    <div className="endgame-col-container">
-                        <p style={{fontWeight: "bold"}}>Score</p>
-                        {playerScores.map((playerScore)=>{
-                            listCount++;
-                            return(
-                                <p className={`${listCountStyle}`}>{playerScore}</p>
-                            )
-                        })}
-                    </div>
-                </div>
-                <button className="button" onClick={handleReturn}>Return to Lobby</button>
-            </div>
-        </div>
-    )
-        */
 }
 
 export default EndGamePage;

@@ -31,7 +31,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
     const [hasFlipped, setHasFlipped] = useState(false)
     const [readyButtonStyle, setReadyButtonStyle] = useState("button-unready")
     const [buttonMessage, setButtonMessage] = useState("Ready")
-    const [cambio, setCambio] = useState(false)
+    const [cambio, setCambio] = useState(-1)
     const [cambioStyle, setCambioStyle] = useState("")
     const [swapStyle, setSwapStyle] = useState("")
     const [endGameScreen, setEndGameScreen] = useState(false)
@@ -127,6 +127,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
             const checkMessage = async () => {
                 // if the previous user called cambio, move to the next turn
                 if (webSocketData.message === "callCambio"){
+                    setCambio(currentTurn)
                     currentTurn + 1 < players+2 ? setCurrentTurn(currentTurn+1): setCurrentTurn(2);
                     setCanEnd(true)
                 }   
@@ -236,7 +237,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
 
         useEffect(() => {
-            if (thisUser === currentTurn && state === 0){
+            if (thisUser === currentTurn && state === 0 && cambio === -1){
                 setCambioStyle("current-player")
             }
             else{
@@ -389,7 +390,7 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
                                     : buttonMessage === "Swap" ? () => {
                                         swapCards(true, selectedSwapCards, setSelectedSwapCards, setButtonMessage, state, lobbyID, setHasActed)}
                                     : buttonMessage === "Cambio" ? () => 
-                                        cambioClick(thisUser, currentTurn, state, backendSite, lobbyID, setCambio) 
+                                        cambioClick(thisUser, currentTurn, state, backendSite, lobbyID, cambio, setCambio) 
                                     : null}
                             >
                                 {buttonMessage}
