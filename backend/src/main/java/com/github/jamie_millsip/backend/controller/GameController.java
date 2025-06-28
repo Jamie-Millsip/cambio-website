@@ -3,6 +3,7 @@ package com.github.jamie_millsip.backend.controller;
 
 import com.github.jamie_millsip.backend.model.Card;
 import com.github.jamie_millsip.backend.model.DTO.*;
+import com.github.jamie_millsip.backend.model.DTO.request.CambioRequest;
 import com.github.jamie_millsip.backend.model.DTO.request.DiscardCardRequest;
 import com.github.jamie_millsip.backend.model.DTO.request.FlipCardRequest;
 import com.github.jamie_millsip.backend.model.DTO.request.SwapCardRequest;
@@ -77,11 +78,13 @@ public class GameController {
                         System.out.println("aaaaaaY " + y);
                         CardResponse cardResponse = cards.get(x).get(y);
                         if (cardResponse.getCard() != null){
-                            if (x == player){
-                                thisPlayerCardCount += 1;
-                            }
-                            else{
-                                otherPlayerCardCount += 1;
+                            if (lobby.getCambio() != x){
+                                if (x == player){
+                                    thisPlayerCardCount += 1;
+                                }
+                                else{
+                                    otherPlayerCardCount += 1;
+                                }
                             }
                             System.out.println("WOWOWOW" + thisPlayerCardCount);
                             System.out.println("WAWAWA" + otherPlayerCardCount);
@@ -362,7 +365,14 @@ public class GameController {
     }
 
     @RequestMapping("/cambio/{lobbyID}")
-    public void callCambio (@PathVariable String lobbyID){
+    public void callCambio (@RequestBody CambioRequest cambioRequest){
+        String lobbyID = cambioRequest.getLobbyID();
+        int cambioIndex = cambioRequest.getPlayerIndex();
+        for (Lobby lobby : lobbyList) {
+            if (lobby.getId().equals(lobbyID)) {
+                lobby.setCambio(cambioIndex);
+            }
+        }
         triggerBroadcast(lobbyID, new GameSocketResponse(
                 "changePlayer", null, 0, "callCambio"));
     }

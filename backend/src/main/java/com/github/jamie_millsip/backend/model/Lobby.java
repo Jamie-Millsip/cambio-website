@@ -17,6 +17,7 @@ public class Lobby {
     private int stateToReturnTo = -1;
     private int playersToReturnTo = -1;
     private int playerToGiveCard = -1;
+    private int cambio = -1;
 
 
 
@@ -175,5 +176,13 @@ public class Lobby {
 
     public void setPlayerToGiveCard(int playerToGiveCard){
         this.playerToGiveCard = playerToGiveCard;
+    }
+
+    public int getCambio (){
+        return cambio;
+    }
+
+    public void setCambio(int cambio){
+        this.cambio = cambio;
     }
 }

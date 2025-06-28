@@ -21,7 +21,7 @@ const cambioClick = async (thisUser, currentTurn, state, backendSite, lobbyID, c
     if (thisUser === currentTurn && state === 0 && cambio === -1){
         try{
             setCambio(thisUser);
-            await axios.post(backendSite + `cambio/${lobbyID}`)
+            await axios.post(backendSite + `cambio/${lobbyID}`, {lobbyID: lobbyID, playerIndex: thisUser})
         }
         catch(e){
             console.error("ERROR: ", e)
