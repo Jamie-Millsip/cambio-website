@@ -22,6 +22,8 @@ export function GameProvider({children}){
     const [selectedPile, setSelectedPile] = useState();
     const [hasActed, setHasActed] = useState(false)
     const [isAnimating, setIsAnimating] = useState(false)
+    const [cambio, setCambio] = useState(-1)
+
     
 
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
@@ -34,7 +36,8 @@ export function GameProvider({children}){
             selectedPile, setSelectedPile,
             currentTurn, setCurrentTurn, state, setState,
             lastToDiscard, setLastToDiscard, canFlip, setCanFlip,
-            triggerVar, trigger, sleep, hasActed, setHasActed
+            triggerVar, trigger, sleep, hasActed, setHasActed,
+            cambio, setCambio
         }}>
             {children}
         </GameContext.Provider>

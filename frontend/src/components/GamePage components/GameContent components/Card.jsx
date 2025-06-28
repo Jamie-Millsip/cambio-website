@@ -19,9 +19,10 @@ import GameContext from "../../../pages/GameContext";
 
 const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
     
-    const {lobbyID, selectedSwapCards, setSelectedSwapCards, backendSite} = useContext(LobbyContext)
+    const {lobbyID, selectedSwapCards, setSelectedSwapCards} = useContext(LobbyContext)
     const {currentTurn, state, canFlip, trigger, triggerVar, selectedPile,
-        isAnimating, setSelectedPile, setHasActed, hasActed} = useContext(GameContext);
+        isAnimating, setSelectedPile, setHasActed, hasActed,
+        cambio, setCambio} = useContext(GameContext);
 
     const [currentTurnStyle, setCurrentTurnStyle]=useState("")
     const [thisCard, setThisCard] = useState(null);
@@ -44,7 +45,7 @@ const  Card = forwardRef(({thisUser, cardIndex, row, col, cards}, ref) => {
     }, [cards]);
 
     useEffect(()=>{
-        if (hasActed || isAnimating || thisUser !== currentTurn){
+        if (hasActed || isAnimating || thisUser !== currentTurn || cambio === cardIndex){
             setCanDraw(false)
             setCanDiscard(false)
             setCanLook(false)

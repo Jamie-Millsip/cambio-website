@@ -90,7 +90,7 @@ public class GameController {
                 }
 
                 // if the discarded card is from the draw pile
-                if (cardsIndex == 0){
+                if (cardsIndex < 2){
                     CardResponse temp = cards.get(pile).getFirst();
                     temp.setPlayer(1);
                     cards.get(pile).removeFirst();
@@ -98,7 +98,7 @@ public class GameController {
                     temp.getCard().setVisible(true);
                     cards.get(1).addFirst(temp);
                     int cardValue = cards.get(1).getFirst().getCard().getValue();
-                    if (cardValue > 6 && cardValue < 13){
+                    if (cardsIndex == 0 && cardValue > 6 && cardValue < 13){
                         if (cardValue < 9 && thisPlayerCardCount > 0){
                             ability = 2;
                         }
@@ -124,6 +124,7 @@ public class GameController {
                     firstDiscardAction(cards);
 
                     // add the discarded card to the discard pile
+                    // ISSUE LINE --- ISSUE LINE ---
                     cards.get(1).addFirst(cards.get(cardsIndex).get(index));
                     cards.get(1).getFirst().setRow(-1);
                     cards.get(1).getFirst().setCol(-1);

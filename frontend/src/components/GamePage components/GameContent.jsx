@@ -26,12 +26,12 @@ const GameContent = ({ players, thisUser, setGameScreen, cards, setCards }) => {
 
     const {lobbyID, nicknameRef, selectedSwapCards, setSelectedSwapCards, backendSite, webSocketSite} = useContext(LobbyContext);
     const {currentTurn, setCurrentTurn, state, setState,lastToDiscard,
-        setLastToDiscard, setCanFlip, trigger, triggerVar, setHasActed, sleep, isAnimating, setIsAnimating} = useContext(GameContext);
+        setLastToDiscard, setCanFlip, trigger, triggerVar, setHasActed, sleep, isAnimating, setIsAnimating,
+        cambio, setCambio} = useContext(GameContext);
     const [gameStarted, setGameStarted] = useState(false)
     const [hasFlipped, setHasFlipped] = useState(false)
     const [readyButtonStyle, setReadyButtonStyle] = useState("button-unready")
     const [buttonMessage, setButtonMessage] = useState("Ready")
-    const [cambio, setCambio] = useState(-1)
     const [cambioStyle, setCambioStyle] = useState("")
     const [swapStyle, setSwapStyle] = useState("")
     const [endGameScreen, setEndGameScreen] = useState(false)
