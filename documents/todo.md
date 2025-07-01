@@ -15,7 +15,6 @@
 ## Gameplay
 
 - remove players from the game when they flip incorrectly when having 7 cards (currently just prevents them from flipping cards)
-- prevent users from using abilities on a player if they have called "cambio"
 
 ## CSS
 

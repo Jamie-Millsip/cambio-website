@@ -17,3 +17,17 @@ ad-blockers prevent this tracking from reaching the backend, and therefore need 
 [Planned Improvements](./documents/todo.md)
 
 [Known Bugs / Issues](./documents/known-bugs.md)
+
+## Tech Stack
+
+- Frontend:
+  - built using React as website responsiveness was a priority
+  - hosted on github pages
+  - for communication with backend:
+    - axios for standard HTTP requests (fetching / sending game data)
+    - stomp for websocket communications (live updates to game state to all users in a lobby)
+    - navigator.sendbeacon used for sending page closure information (allows absent players to be removed from the lobby)
+- backend:
+  - server built using Spring Boot Framework
+  - packaged into a docker container to be hosted by a third party service
+  - database hosted on Supabase for integrated authentication & high security
