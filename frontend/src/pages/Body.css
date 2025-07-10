@@ -27,43 +27,28 @@
     border-Radius: 20px;
     transition: 'all 0.3s ease-in-out';
     box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
-
-.contents-container {
-        background-color: #dedede;
-        box-sizing: border-box;
-        display: flex;
-        flex-Direction: column;
-        align-Items: center;
-        height: fit-content;
-        width: 100%;
-        max-width: 60%;
-        text-Align: center;
-        padding: 30px;
-        margin: 30px;
-        align-self: normal;
-        border-Radius: 20px;
-        transition: 'all 0.3s ease-in-out';
-        box-shadow: 1rem 1rem 1rem rgba(0, 0, 0, 0.1);
-    }
-    .textbox {
-        margin: 0.1em;
-        height: 2.5em;
-        padding: 0.15em;
-        border-Radius: 0.3em;
-        font-Size: 2.5vw;
-        outline: none;
-    }
-    .button{
-        background-color: rgb(203, 203, 203);
-        height: 2.5em;
-        padding: 0.15em;
-        border-radius: 0.3em;
-        font-Size: 2.5vw;
-        margin: 0.1em;
-        outline: none;
-    }
+.textbox {
+    margin: 0.1em;
+    height: 2.5em;
+    padding: 0.15em;
+    border-Radius: 0.3em;
+    font-Size: 2.5vw;
+    outline: none;
+    transition: all 0.3s ease;
+}
+.button{
+    background-color: rgb(203, 203, 203);
+    height: 2.5em;
+    padding: 0.15em;
+    border-radius: 0.3em;
+    font-Size: 2.5vw;
+    margin: 0.1em;
+    outline: none;
+    transition: all 0.3s ease;
+}
 
     
 
@@ -96,6 +81,7 @@
 .title{
     font-weight: bold;
     font-size: 1.8em;
+    transition: all 0.3s ease;
 }
 
 .button:hover{
@@ -159,10 +145,12 @@
     border-radius: 0.3em;
     font-weight: bold;
     font-size: 0.7em;
+    transition: all 0.3s ease;
 }
 
 .body-text{
     font-size: 1.5em;
+    transition: all 0.3s ease-out;
 }
 
 .endgame-title{
@@ -257,8 +245,8 @@
     }
     .button{
         font-Size: 2.1vw;
-        max-height: 100px;
-        max-width: 400px;
+        max-height: 200px;
+        max-width: 600px;
     }
     .error-message{
         font-size: 1.5em;
