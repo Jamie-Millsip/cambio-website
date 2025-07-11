@@ -159,6 +159,7 @@ public class GameController {
     public ArrayList<ArrayList<CardResponse>> checkReshuffle(ArrayList<ArrayList<CardResponse>> cards){
         if (cards.getFirst().size() < 6){
             ArrayList<CardResponse> tempArray = new ArrayList<>(cards.get(1));
+            tempArray.addAll(cards.get(0));
             cards.removeFirst();
             cards.addFirst(tempArray);
             cards.get(1).clear();
